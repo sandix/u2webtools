@@ -1,0 +1,12 @@
+###############################################
+#
+# defs_cygwin.lst
+#
+# Defines zu Libraries
+#
+# DEFINE      Library       Sonst
+###############################################
+-DMYSQLCLIENT -lmysqlclient
+-DWITH_SSL    -lssl,-lcrypto,-lz
+-DHAS_PAM     -lpam         -lcrypt
+-DWITH_GETTEXT -lintl,-liconv

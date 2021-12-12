@@ -1,0 +1,95 @@
+NAME
+unix2webd - a webserver for the u2w language
+
+SYNOPSIS
+unix2webd [-a] [-b path] [-d] [-e path|-er path]
+          [-f] [-fP] [-fc] [-fp path] [-fD] [-fS size]
+          [-g|-gg [-gf path]] [-h home] [-i path] [j] [-k] [-l|-lp path]
+#MYSQL#[-me]
+          [-o|-op path|-og path] [-of] [-or ips] [-p port] [-r]
+          [-s|-sp path|-sg path|-sH path|[[-sU user]%% %%[-sP pwd]|[-sB b64]]
+          [-sf] [-t sek] [-u[s|u] user] [-v] [-w] [-x] [-B] [-C charset]
+          [-D] [-Dp path]
+          [-E] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]
+          [-S] [-Sc path] [-Sk path] [-Sa path|-SA path] [-Sf|-SF]
+          [-V [-Ve path]|-Vh] [-Xd def] [-Xi path] [-Xs path] [-XS path] [-?]
+
+DESCRIPTION
+unix2webd is the webserver who interprets the u2w language
+
+OPTIONS
+-a       :: no access if file ".access" is missing
+-b path  :: set path for binaries
+-d       :: show directory contents
+-e path  :: path of errorpage
+-er path :: path of redirectpage on error
+-f       :: allow uploads with POST
+-fP      :: uploads with POST only to directories with write permission
+-fc      :: on uploads with POST get filename from client
+-fp path :: path for uploads with POST
+-fD      :: don't delete temporary files after uploads with POST
+-fS size :: maximum size of post files in bytes
+-g       :: allow uploads with PUT
+-gf path :: server root for PUT
+-gg      :: allow uploads with PUT without authorization
+-h home  :: set path home as server root
+-i path  :: Include-path for *.i2w files
+-j       :: don't interpret u2w-files
+-k       :: allow Keep-Alive
+-l       :: switch logging on
+-lp path :: write logging into path
+#MYSQL#-me      :: write MySQL-Errors into logfile/stderr
+-n       :: allow ?&edit
+-o       :: accesscontrol with file ".hosts"
+-of      :: no access if hosts file ".hosts" is missing
+-og path :: path is hosts file for all directories without ".hosts" file
+-op path :: path is global hosts file for all directories
+-or ips  :: allow only this IP-addresses
+-p port  :: set listen port -r name  show this name as realm
+-rd name :: set realm and use digest access authentication
+-s       :: get user and passwords from file ".passwd"
+-sf      :: no access if password file ".passwd" is missing
+-sg path :: path is global password file for all directories without ".passwd" file
+-sh path :: path is global password file including homedirectories
+-sp path :: path is global password file for all directories
+-sB b64  :: user and password in base64
+-sP pwd  :: allow only this password
+-sU user :: allow only this user
+-t sek   :: set timeout in seconds
+-tu msek :: set timeout in microseconds
+-u user  :: defaultuser for webserver
+-us user :: user for webserver
+-uu user :: defaultuser, change user after opening *.u2w file
+-v       :: show version
+-w       :: allow uploads of .?2w und .?3w files
+-x       :: print executed lines
+-B       :: browser/cmd variables only readable by %bpar/%cpar
+-C chset :: set characterset in HTTP-header to chset
+-D       :: make daemon
+-Dp path :: make daemon and wirte PID of process to path
+-E       :: ignore empty pars on calling programs
+-G bcklg :: set backlog in listen to bcklg
+-H       :: send no HTTP-header
+-I td    :: set textdomain to td
+-Ip path :: set textdomaindir to path
+-L ip    :: bind only on this IP-address
+-N       :: deny methode OPTIONS
+-P       :: force authorization
+-S       :: use HTTPS
+-Sc path :: file with SSL-certificate
+-Sk path :: file with SSL-key
+-Sa path :: file with SSL-CA
+-SA path :: file with SSL-Chain
+-Sf      :: force client certificate
+-SF      :: ask for client certificate
+-V       :: change directory after authorization
+-Ve path :: home-directory for anonymous
+-Vh      :: change into home-directory of user (forces -P)
+-Xd def  :: define systemvars (-Xd <varname>=<value>)
+-Xi path :: read systemvars from file on startup
+-Xs prg  :: execute prg on programstart
+-XS prg  :: execute prg on programstop
+-?       :: show this help
+
+AUTHOR
+#PACKAGER#

@@ -1,0 +1,578 @@
+# German translations for unix package.
+# Copyright (C) 2008 THE unix'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the unix package.
+# Henning Sander <unix2web@web.de>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unix2web\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-22 18:52+0100\n"
+"PO-Revision-Date: 2013-03-22 18:54+0100\n"
+"Last-Translator: Henning Sander <unix2web@web.de>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: u2w_compiler.c:118
+#: u2w_compiler.c:123
+#, c-format
+msgid "Unable to open %s.\n"
+msgstr "Kann %s nicht öffnen.\n"
+
+#: u2w_dirlist.c:156
+#: u2w_dirlist.c:161
+#: u2w_dirlist.c:211
+msgid "Content from"
+msgstr "Inhalt von"
+
+#: u2w_form.c:618
+#: u2w_form.c:773
+#: u2w_form.c:779
+msgid "Back"
+msgstr "Zurück"
+
+#: u2w_form.c:640
+msgid "   Close   "
+msgstr " Schließen  "
+
+#: u2w_form.c:644
+#: u2w_menu.c:598
+#: u2w_u2wput.c:619
+msgid "Main Menu"
+msgstr "Hauptmenü"
+
+#: u2w_form.c:762
+msgid "Abort"
+msgstr "Abbruch"
+
+#: u2w_form.c:784
+msgid "Clear"
+msgstr "Clear"
+
+#: u2w_hosts.c:297
+msgid "edit hosts.uaw file"
+msgstr "hosts.uaw Datei ändern"
+
+#: u2w_hosts.c:299
+msgid "edit .hosts file"
+msgstr ".hosts Datei ändern"
+
+#: u2w_hosts.c:308
+msgid "IP-address"
+msgstr "IP-Adresse"
+
+#: u2w_hosts.c:308
+#: u2w_passwd.c:645
+msgid "delete"
+msgstr "löschen"
+
+#: u2w_hosts.c:344
+#: u2w_passwd.c:732
+msgid "new entry"
+msgstr "Neuer Eintrag"
+
+#: u2w_maxdb.c:368
+#: u2w_maxdb.c:482
+#: u2w_maxdb.c:1135
+#: u2w_maxdb.c:1234
+#: u2w_mysql.c:373
+#: u2w_mysql.c:479
+#: u2w_mysql.c:528
+#: u2w_mysql.c:618
+#: u2w_mysql.c:1299
+#: u2w_mysql.c:1388
+#: u2w_pgsql.c:354
+#: u2w_pgsql.c:460
+#: u2w_pgsql.c:1107
+#: u2w_pgsql.c:1198
+#: u2w_sql.c:719
+#: u2w_sql.c:818
+#, c-format
+msgid "Unable to allocate memory.\n"
+msgstr "Kann keinen Speicher allozieren.\n"
+
+#: u2w_menu.c:552
+#: u2w_menu.c:558
+#: u2w_u2wput.c:612
+msgid "   Back    "
+msgstr "  Zurück   "
+
+#: u2w_multi.c:244
+msgid "Can't write to file."
+msgstr "Kann nicht in Datei schreiben."
+
+#: u2w_multi.c:258
+msgid "Can't open file."
+msgstr "Datei kann icht geöffnet werden."
+
+#: u2w_multi.c:264
+#: u2w_multi.c:270
+msgid "Access denied."
+msgstr "Zugriff verweigert."
+
+#: u2w_multi.c:275
+msgid "Filename not allowed."
+msgstr "Dateiname nicht erlaubt."
+
+#: u2w_passwd.c:616
+msgid "ERROR on changing password file."
+msgstr "Passwortdatei konnte nicht geändert werden."
+
+#: u2w_passwd.c:634
+msgid "edit .passwd file"
+msgstr ".passwd Datei ändern"
+
+#: u2w_passwd.c:642
+msgid "user"
+msgstr "User"
+
+#: u2w_passwd.c:642
+msgid "password"
+msgstr "Passwort"
+
+#: u2w_passwd.c:643
+msgid "setuser"
+msgstr "Setuser"
+
+#: u2w_passwd.c:644
+msgid "userpath"
+msgstr "Userpfad"
+
+#: u2w_passwd.c:756
+#, c-format
+msgid "change password for %s."
+msgstr "Passwort für %s ändern."
+
+#: u2w_passwd.c:767
+msgid "old password"
+msgstr "altes Passwort"
+
+#: u2w_passwd.c:768
+#: u2w_passwd.c:769
+msgid "new password"
+msgstr "neues Passwort"
+
+#: u2w_passwd.c:866
+msgid "wrong password."
+msgstr "falsches Passwort."
+
+#: u2w_passwd.c:873
+msgid "password wasn't retyped correctly."
+msgstr "Das Passwort wurde nicht richtig wiederholt."
+
+#: u2w_passwd.c:904
+msgid "changed password."
+msgstr "Passwort geändert."
+
+#: u2w_passwd.c:910
+msgid "ERROR on changing password."
+msgstr "Passwort konnte nicht geändert werden."
+
+#: u2w_put.c:479
+#, c-format
+msgid "File %s not found.\n"
+msgstr "Datei %s nicht gefunden.\n"
+
+#: u2w_u2w.c:149
+msgid "Private key does not match the certificate public key\n"
+msgstr "Private key does not match the certificate public key\n"
+
+#: u2w_u2w.c:224
+#, c-format
+msgid "Error on opening Pidfile %s.\n"
+msgstr "Kann Pid-Datei %s nicht öffnen.\n"
+
+#: u2w_u2w.c:244
+#: u2w_u2w.c:249
+#, c-format
+msgid "Error on change user to %s.\n"
+msgstr "Fehler beim Wechseln des Users auf %s.\n"
+
+#: unix2webd.c:299
+#: unix2webd.c:415
+msgid "Include-path for *.i2w files."
+msgstr "Include-Pfad für *.i2w Dateien."
+
+#: unix2webd.c:301
+#: unix2webd.c:421
+msgid "switch logging on."
+msgstr "logging einschalten."
+
+#: unix2webd.c:304
+#: unix2webd.c:424
+msgid "set loglevel to l."
+msgstr "Loglevel auf l."
+
+#: unix2webd.c:307
+#: unix2webd.c:427
+msgid "write logging into path."
+msgstr "logging in Datei path schreiben."
+
+#: unix2webd.c:310
+#: unix2webd.c:430
+msgid "write MySQL-Errors into logfile/stderr."
+msgstr "MySQL-Errors ins Logfile/stderr."
+
+#: unix2webd.c:312
+msgid "change MySQL-Port."
+msgstr "MySQL-Port ändern."
+
+#: unix2webd.c:316
+#: unix2webd.c:450
+msgid "write PostgreSQL-Errors into logfile/stderr."
+msgstr "PostgrSQL-Errors ins Logfile/stderr."
+
+#: unix2webd.c:318
+msgid "change PostgreSQL-Port."
+msgstr "PostgreSQL-Port ändern."
+
+#: unix2webd.c:321
+#: unix2webd.c:489
+msgid "show version."
+msgstr "Version anzeigen."
+
+#: unix2webd.c:323
+#: unix2webd.c:493
+msgid "print executed lines."
+msgstr "ausgeführte Zeilen anzeigen."
+
+#: unix2webd.c:325
+#: unix2webd.c:495
+msgid "browser/cmd variables only readable by %bpar/%cpar."
+msgstr "Parameter des Browser nur per %bpar/%cpar lesbar."
+
+#: unix2webd.c:327
+#: unix2webd.c:505
+msgid "ignore empty pars on calling programs."
+msgstr "leere Parameter nicht an Programme übergeben."
+
+#: unix2webd.c:330
+#: unix2webd.c:510
+msgid "set textdomain to td."
+msgstr "Textdomain auf td."
+
+#: unix2webd.c:332
+#: unix2webd.c:512
+msgid "set textdomaindir to path."
+msgstr "Testdomaindir auf path."
+
+#: unix2webd.c:335
+msgid "don't change user."
+msgstr "Server wechselt den User nicht."
+
+#: unix2webd.c:337
+msgid "change user after opening *.u2w file."
+msgstr "Server wechselt User erst nach öffnen der *.u2w Datei."
+
+#: unix2webd.c:339
+#: unix2webd.c:539
+msgid "show this help."
+msgstr "Diese Kurzhilfe anzeigen."
+
+#: unix2webd.c:342
+#: unix2webd.c:542
+msgid "logging of all functions."
+msgstr "alle Funktionen loggen."
+
+#: unix2webd.c:344
+#: unix2webd.c:544
+msgid "logging of sended data."
+msgstr "gesendete Daten ausgeben."
+
+#: unix2webd.c:346
+#: unix2webd.c:546
+msgid "logging of functions from sourcecode file dat.c."
+msgstr "Funktionen aus Quelldatei dat.c loggen."
+
+#: unix2webd.c:348
+#: unix2webd.c:548
+msgid "verbose logging."
+msgstr "ausführliches Logging."
+
+#: unix2webd.c:350
+#: unix2webd.c:550
+msgid "logging of readed data from browser."
+msgstr "gelesene Daten des Browsers ausgeben."
+
+#: unix2webd.c:386
+#: unix2webd.c:437
+#: unix2webd.c:459
+msgid "no access if file is missing."
+msgstr "Datei muss vorh. sein, sonst kein Zugriff auf Verzeichnis."
+
+#: unix2webd.c:389
+msgid "set path for binaries."
+msgstr "Pfad für externe Binaries."
+
+#: unix2webd.c:391
+msgid "show directory contents."
+msgstr "Directories werden mit Links angezeigt."
+
+#: unix2webd.c:393
+msgid "path of errorpage."
+msgstr "Fehlerseite (statt \"Page not found\")."
+
+#: unix2webd.c:395
+msgid "path of redirectpage on error."
+msgstr "Fehlerseite mit Redirect (statt \"Page not found\")."
+
+#: unix2webd.c:397
+msgid "allow uploads with POST."
+msgstr "Uploads mit POST erlauben."
+
+#: unix2webd.c:399
+msgid "uploads with POST only to directories with write permission."
+msgstr "Uploads mit POST nur zu Verzeichnissen mit Schreibrecht."
+
+#: unix2webd.c:401
+msgid "on uploads with POST get filename from client."
+msgstr "Bei Upload mit POST Dateiname des Clients übernehmen."
+
+#: unix2webd.c:403
+msgid "path for uploads with POST."
+msgstr "Pfad für Uploads mit POST."
+
+#: unix2webd.c:405
+msgid "don't delete temporary files after uploads with POST."
+msgstr "Dateien nach Uploads mit POST nicht automatisch löschen."
+
+#: unix2webd.c:407
+msgid "allow uploads with PUT."
+msgstr "Uploads mit PUT erlauben."
+
+#: unix2webd.c:409
+msgid "server root for PUT."
+msgstr "Server root für PUT."
+
+#: unix2webd.c:411
+msgid "allow uploads with PUT without authorization."
+msgstr "Upload mit PUT auch ohne Anmeldung erlaubt."
+
+#: unix2webd.c:413
+msgid "set path home as server root."
+msgstr "unter Pfad home liegen die Dateien."
+
+#: unix2webd.c:417
+msgid "don't interpret u2w-files."
+msgstr "u2w-Dateien werden nicht ausgewertet."
+
+#: unix2webd.c:419
+msgid "allow Keep-Alive."
+msgstr "Keep-Alive erlaubt."
+
+#: unix2webd.c:433
+msgid "allow ?&edit."
+msgstr "?&edit erlauben."
+
+#: unix2webd.c:435
+msgid "accesscontrol with .hosts."
+msgstr "Zugriff wird über .hosts Datei geregelt."
+
+#: unix2webd.c:439
+#: unix2webd.c:442
+#: unix2webd.c:461
+#: unix2webd.c:465
+#: unix2webd.c:468
+msgid "path is"
+msgstr "path ist"
+
+#: unix2webd.c:440
+#: unix2webd.c:469
+msgid "file for all directories."
+msgstr "Datei für alle Verzeichnisse."
+
+#: unix2webd.c:443
+#: unix2webd.c:462
+msgid "file for all directories without"
+msgstr "Datei für alle Verz. ohne"
+
+#: unix2webd.c:446
+msgid "allow only this IP-adresses"
+msgstr "Zugriff nur von den angegebenen IP-Adressen."
+
+#: unix2webd.c:447
+msgid "use port, not"
+msgstr "port verwenden, nicht"
+
+#: unix2webd.c:453
+msgid "show this name as realm."
+msgstr "name im Anmeldefenster zeigen."
+
+#: unix2webd.c:455
+msgid "set realm and use digest access authentication."
+msgstr "Setzt Realm und Anmeldung auf \"digest access authentication\"."
+
+#: unix2webd.c:457
+msgid "get user and passwords from .passwd file."
+msgstr "Zugriff wird über .passwd Datei geregelt, nicht über User."
+
+#: unix2webd.c:466
+msgid "get file and homedirectories from this file."
+msgstr "Datei und Homeverzeichnisse daraus."
+
+#: unix2webd.c:471
+msgid "user and password in base64."
+msgstr "User und Passwort B64 codiert angegeben."
+
+#: unix2webd.c:473
+msgid "allow only this password."
+msgstr "Anmeldung nur über dieses Kennwort."
+
+#: unix2webd.c:475
+msgid "allow only this user."
+msgstr "Anmeldung nur über diesen User."
+
+#: unix2webd.c:477
+msgid "set timeout in seconds."
+msgstr "Timeout der Verbindung auf sek Sekunden."
+
+#: unix2webd.c:479
+msgid "set timeout in microseconds."
+msgstr "Timeout der Verbindung auf msek Mikrosekunden."
+
+#: unix2webd.c:482
+msgid "defaultuser for webserver."
+msgstr "Defaultuser des Web-Servers."
+
+#: unix2webd.c:484
+msgid "user for webserver."
+msgstr "Server läuft als user."
+
+#: unix2webd.c:486
+msgid "defaultuser, change user after opening *.u2w file."
+msgstr "Defaultuser, User wechselt erst nach öffnen der *.u2w Datei."
+
+#: unix2webd.c:491
+msgid "allow uploads of .?2w und .?3w files."
+msgstr "Uploads von .?2w und .?3w Dateien erlauben."
+
+#: unix2webd.c:497
+msgid "set characterset in HTTP-header to chset."
+msgstr "setze characterset im HTTP-Header auf chset."
+
+#: unix2webd.c:500
+msgid "make daemon."
+msgstr "dämonisieren."
+
+#: unix2webd.c:502
+msgid "make daemon and wirte PID of process to path."
+msgstr "Daemonisieren und PID des Prozessein in path schreiben."
+
+#: unix2webd.c:507
+msgid "send no HTTP-header."
+msgstr "keinen HTTP-Header senden."
+
+#: unix2webd.c:515
+msgid "bind only on this IP-address."
+msgstr "Nur an diese IP-Adresse binden."
+
+#: unix2webd.c:517
+msgid "deny methode OPTIONS."
+msgstr "Methode OPTIONS nicht erlaubt."
+
+#: unix2webd.c:519
+msgid "force authorization."
+msgstr "immer Username und Passwort erfragen."
+
+#: unix2webd.c:522
+msgid "use HTTPS."
+msgstr "HTTPS verwenden."
+
+#: unix2webd.c:524
+msgid "file with SSL-Certifikat."
+msgstr "Datei mit SSL-Certifikat."
+
+#: unix2webd.c:526
+msgid "file with SSL-Key."
+msgstr "Datei mit SSL-Key."
+
+#: unix2webd.c:528
+msgid "file with SSL-CA."
+msgstr "Datei mit SSL-CA."
+
+#: unix2webd.c:530
+msgid "force client certifikate."
+msgstr "Force Client Zertifikat."
+
+#: unix2webd.c:533
+msgid "change directory after authorization."
+msgstr "Nach Anmeldung automatisch ins Verzeichnis wechseln."
+
+#: unix2webd.c:535
+msgid "home-directory for anonymous."
+msgstr "Keine Anmeldung, dann ins Verzeichnis path wechseln."
+
+#: unix2webd.c:537
+msgid "change into home-directory of user (forces -P)."
+msgstr "Nach Anmeldung in Home-Verzeichnis des Anmelders wechseln (setzt -P)."
+
+#: unix2webd.c:614
+#, c-format
+msgid "can't get current directory!\n"
+msgstr "Aktuelles Verzeichnis kann nicht bestimmt werden!\n"
+
+#: unix2webd.c:828
+#, c-format
+msgid "%s: bin-path too long.\n"
+msgstr "%s: Bin-Pfad ist zu lang.\n"
+
+#: unix2webd.c:869
+#, c-format
+msgid "%s: unable to change to user %s.\n"
+msgstr "%s: Server kann nicht als %s laufen.\n"
+
+#: unix2webd.c:881
+#, c-format
+msgid "%s: home-path too long.\n"
+msgstr "%s: Home-Pfad ist zu lang.\n"
+
+#: unix2webd.c:1051
+#, c-format
+msgid "Error: Unknown option: %s.\n"
+msgstr "Fehler: Unbekannte Option: %s.\n"
+
+#: unix2webd.c:1067
+msgid "Error: Option -rd without -sp.\n"
+msgstr "Fehler: Option -rd ohne -sp.\n"
+
+#: unix2webd.c:1091
+#, c-format
+msgid "-Vh only without -s or -us/-uu!\n"
+msgstr "-Vh darf nur ohne -s und -us/-uu benutzt werden!\n"
+
+#~ msgid "%s: user name too long.\n"
+#~ msgstr "%s: User Name ist zu lang.\n"
+
+#~ msgid "Error: %s.\n"
+#~ msgstr "Fehler: %s.\n"
+
+#~ msgid "Unable to start subprocess.\n"
+#~ msgstr "Subprozess konnte nicht gestartet werden.\n"
+
+#~ msgid "New entry"
+#~ msgstr "Neuer Eintrag"
+
+#~ msgid "Error: '&' not found in: %s.\n"
+#~ msgstr "Fehler: '&' nicht gefunden in: %s.\n"
+
+#~ msgid "allow uploads with POST without authorization."
+#~ msgstr "Uploads mit POST auch ohne Anmeldung."
+
+#~ msgid "Yout must be authenticated to use this service!"
+#~ msgstr "Username und Passwort muss angegeben werden!"
+
+#~ msgid "page not found."
+#~ msgstr "Die angeforderte Seite wurde nicht gefunden."
+
+#~ msgid "acces of page is not allowed."
+#~ msgstr "Der Zugriff auf die angeforderte Seite ist nicht gestattet."
+
+#~ msgid "File was created."
+#~ msgstr "Datei wurde angelegt."
+
+#~ msgid "Unable to write file. Probably file system fulll."
+#~ msgstr ""
+#~ "Datei konnte nicht geschrieben werden. Möglicherweise ist die Platte voll."

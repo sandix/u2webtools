@@ -1,0 +1,52 @@
+# Konfigurationsdatei für Unix2web
+#
+#####################################################
+# Beispielkonfiguration
+#
+# U2WPORT: Port des Webservers
+# U2WPORT=3232
+#
+# U2WHOME: Root der Webseiten
+# U2WHOME=/usr/local/unix2web/html
+#
+# Userwechsel: Es darf nur eine der Optionen
+#              SWITCHUSER, U2WDEFUSER, U2WSETUSER
+#              gesetzt sein.
+#
+# SWITCHUSER: Userwechsel vor dem Starten des unix2webd-Daemons.
+#             -> -us $SWITCHUSER
+# SWITCHUSER=unix2web
+#
+# U2WDEFUSER: Default-User, unter dem der Server läuft. Der Daemon
+#             läuft als root und der User wird als erste Aktion
+#             in Abhängigkeit von der Anmeldung gewechselt.
+#             Ohne Anmeldung oder bei falscher Anmeldung wird
+#             auf U2WDEFUSER gewechselt. Ist SWITCHUSER gesetzt,
+#             dann wird U2WDEFUSER nicht beachtet.
+#             -> -u $U2WDEFUSER
+# U2WDEFUSER=nobody
+#
+# U2WSETUSER: User des Webservers wird über die *.??w Dateien bestimmt.
+#             Ist in den *.??w Dateien keine "%setuser", dann wird auf
+#             U2WSETUSER gewechselt. Ist SWITCHUSER oder U2WDEFUSER
+#             gesetzt, dann wird U2WSETUSER nicht beachtet.
+#             -> -us $U2WSETUSER
+# U2WSETUSER=nobody
+#
+# U2WPARS: weitere Aufrufparameter für den unix2webd
+# U2WPARS="-P"
+#
+# U2WLANG: Sprache auswaehlen
+# U2WLANG="de_DE"
+#
+#####################################################
+#
+#
+SWITCHUSER=unix2web
+#U2WDEFUSER=
+#U2WSETUSER=
+#
+U2WPORT=3232
+U2WHOME=/usr/local/unix2web/html
+U2WPARS="-P"
+U2WLANG=

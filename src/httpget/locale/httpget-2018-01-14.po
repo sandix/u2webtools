@@ -1,0 +1,201 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: u2webtools-httpget\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-14 18:02+0100\n"
+"PO-Revision-Date: 2018-01-14 18:35+0100\n"
+"Last-Translator: Henning Sander <unix2web@web.de>\n"
+"Language-Team: Henning Sander <sandix@universal-logging-system.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: httpget.c:74
+msgid "set user:password in base64"
+msgstr "direkte Eingabe user:pwd Base64 kodiert"
+
+#: httpget.c:76
+msgid "set size of inputbuffer for reading from stdin"
+msgstr "Inputbuffergröße beim Lesen von stdin"
+
+#: httpget.c:78
+msgid "write inputbuffer to file on errors"
+msgstr "im Fehlerfall Inputbuffer nach pfad schreiben"
+
+#: httpget.c:80
+msgid "URL is coded"
+msgstr "URL ist schon codiert"
+
+#: httpget.c:82
+msgid "set content-type of post data"
+msgstr "Content-Type der Post-Daten setzen"
+
+#: httpget.c:84
+msgid "set default path on server"
+msgstr "Pfad auf dem Server bei mehreren Dateien"
+
+#: httpget.c:86
+msgid "path of post data"
+msgstr "Pfad der zu sendenden POST-Daten"
+
+#: httpget.c:88
+msgid "on error write page to file/stdout"
+msgstr "im Fehlerfall Seite ausgeben"
+
+#: httpget.c:90
+msgid "path to outputfile"
+msgstr "Filename, unter dem die Daten gespeichert werden"
+
+#: httpget.c:92
+msgid "write received http-header to file/stdout"
+msgstr "HTTP-Header mit ausgeben"
+
+#: httpget.c:94
+msgid "set method to HEAD"
+msgstr "HTTP HEAD schicken"
+
+#: httpget.c:96
+msgid "add text to http-header"
+msgstr "text zum HTTP Header hinzufügen"
+
+#: httpget.c:98
+msgid "read URLs from stdin"
+msgstr "URLs von stdin lesen"
+
+#: httpget.c:100
+msgid "set mthod to post with multipart-content block"
+msgstr "Parameter als Multipart-Content-Block senden"
+
+#: httpget.c:102
+msgid "send file in multipart-content block"
+msgstr "Datei per Multipart-Content Block senden"
+
+#: httpget.c:104
+msgid "set mime-type"
+msgstr "Mime-Type der Datei festlegen"
+
+#: httpget.c:106
+msgid "set name for multipart-content block"
+msgstr "Parametername für Multipart-Content Block"
+
+#: httpget.c:108
+msgid "read file for multipart-content from stdin"
+msgstr "Inhalt der Datei von STDIN lesen"
+
+#: httpget.c:110
+msgid "write output to path"
+msgstr "Pfad für die Ausgabedateien"
+
+#: httpget.c:112
+msgid "set method to POST"
+msgstr "Anforderung als POST schicken"
+
+#: httpget.c:114
+msgid "set password"
+msgstr "Passwort für die Verbindung"
+
+#: httpget.c:116
+msgid "set proxy-server"
+msgstr "Proxy Server setzen (Host:port)"
+
+#: httpget.c:118
+msgid "suppress writing to stderr"
+msgstr "keine Ausgaben auf stderr"
+
+#: httpget.c:120
+msgid "set byterange"
+msgstr "Byterange"
+
+#: httpget.c:122
+msgid "don't send HTTP-header"
+msgstr "keinen HTTP-Header senden"
+
+#: httpget.c:124
+msgid "write file to stdout"
+msgstr "Ausgabe an stdout"
+
+#: httpget.c:127
+msgid "use https"
+msgstr "HTTPS verwenden"
+
+#: httpget.c:129
+msgid "path to ssl-ca"
+msgstr "Pfad mit SSL-CA"
+
+#: httpget.c:131
+msgid "path to ssl-cert"
+msgstr "Pfad mit SSL-Cert"
+
+#: httpget.c:133
+msgid "force server cert"
+msgstr "Server muss über CA zertifiziert sein"
+
+#: httpget.c:135
+msgid "path to ssl-key"
+msgstr "Pfad mit SSL-Key"
+
+#: httpget.c:137
+msgid "get ssl-certificate"
+msgstr "SSL-Zertifikat anfordern"
+
+#: httpget.c:140
+msgid "send method TRACE"
+msgstr "Methode TRACE senden"
+
+#: httpget.c:142
+msgid "set timeout in seconds"
+msgstr "Timeout in Sekunden setzen"
+
+#: httpget.c:144
+msgid "set connect-timeout in seconds"
+msgstr "Connect-Timeout in Sekunden setzen"
+
+#: httpget.c:146
+msgid "set username"
+msgstr "Username für die Verbindung"
+
+#: httpget.c:148
+msgid "show version"
+msgstr "Version anzeigen"
+
+#: httpget.c:150
+msgid "show usage"
+msgstr "usage zeigen"
+
+#: httpget.c:439
+#, c-format
+msgid "password for user %s: "
+msgstr "Passwort des users %s: "
+
+#: httpget.c:448
+#, c-format
+msgid "hostname: "
+msgstr "Hostname: "
+
+#: httpget.c:468
+#, c-format
+msgid "filename: "
+msgstr "Dateiname: "
+
+#: httpget.c:477
+#, c-format
+msgid "specify file name.\n"
+msgstr "Dateiname eingeben.\n"
+
+#: httpget.c:506
+#, c-format
+msgid "Error on allocating buffer.\n"
+msgstr "Error bei Anfordern von Speicher.\n"
+
+#: httpget_httpget.c:275
+#, c-format
+msgid "Error in hostname, missing ']'.\n"
+msgstr "Error beim Hostname, fehlende ']'\n"

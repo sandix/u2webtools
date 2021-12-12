@@ -1,0 +1,199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-14 18:02+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: httpget.c:74
+msgid "set user:password in base64"
+msgstr ""
+
+#: httpget.c:76
+msgid "set size of inputbuffer for reading from stdin"
+msgstr ""
+
+#: httpget.c:78
+msgid "write inputbuffer to file on errors"
+msgstr ""
+
+#: httpget.c:80
+msgid "URL is coded"
+msgstr ""
+
+#: httpget.c:82
+msgid "set content-type of post data"
+msgstr ""
+
+#: httpget.c:84
+msgid "set default path on server"
+msgstr ""
+
+#: httpget.c:86
+msgid "path of post data"
+msgstr ""
+
+#: httpget.c:88
+msgid "on error write page to file/stdout"
+msgstr ""
+
+#: httpget.c:90
+msgid "path to outputfile"
+msgstr ""
+
+#: httpget.c:92
+msgid "write received http-header to file/stdout"
+msgstr ""
+
+#: httpget.c:94
+msgid "set method to HEAD"
+msgstr ""
+
+#: httpget.c:96
+msgid "add text to http-header"
+msgstr ""
+
+#: httpget.c:98
+msgid "read URLs from stdin"
+msgstr ""
+
+#: httpget.c:100
+msgid "set mthod to post with multipart-content block"
+msgstr ""
+
+#: httpget.c:102
+msgid "send file in multipart-content block"
+msgstr ""
+
+#: httpget.c:104
+msgid "set mime-type"
+msgstr ""
+
+#: httpget.c:106
+msgid "set name for multipart-content block"
+msgstr ""
+
+#: httpget.c:108
+msgid "read file for multipart-content from stdin"
+msgstr ""
+
+#: httpget.c:110
+msgid "write output to path"
+msgstr ""
+
+#: httpget.c:112
+msgid "set method to POST"
+msgstr ""
+
+#: httpget.c:114
+msgid "set password"
+msgstr ""
+
+#: httpget.c:116
+msgid "set proxy-server"
+msgstr ""
+
+#: httpget.c:118
+msgid "suppress writing to stderr"
+msgstr ""
+
+#: httpget.c:120
+msgid "set byterange"
+msgstr ""
+
+#: httpget.c:122
+msgid "don't send HTTP-header"
+msgstr ""
+
+#: httpget.c:124
+msgid "write file to stdout"
+msgstr ""
+
+#: httpget.c:127
+msgid "use https"
+msgstr ""
+
+#: httpget.c:129
+msgid "path to ssl-ca"
+msgstr ""
+
+#: httpget.c:131
+msgid "path to ssl-cert"
+msgstr ""
+
+#: httpget.c:133
+msgid "force server cert"
+msgstr ""
+
+#: httpget.c:135
+msgid "path to ssl-key"
+msgstr ""
+
+#: httpget.c:137
+msgid "get ssl-certificate"
+msgstr ""
+
+#: httpget.c:140
+msgid "send method TRACE"
+msgstr ""
+
+#: httpget.c:142
+msgid "set timeout in seconds"
+msgstr ""
+
+#: httpget.c:144
+msgid "set connect-timeout in seconds"
+msgstr ""
+
+#: httpget.c:146
+msgid "set username"
+msgstr ""
+
+#: httpget.c:148
+msgid "show version"
+msgstr ""
+
+#: httpget.c:150
+msgid "show usage"
+msgstr ""
+
+#: httpget.c:439
+#, c-format
+msgid "password for user %s: "
+msgstr ""
+
+#: httpget.c:448
+#, c-format
+msgid "hostname: "
+msgstr ""
+
+#: httpget.c:468
+#, c-format
+msgid "filename: "
+msgstr ""
+
+#: httpget.c:477
+#, c-format
+msgid "specify file name.\n"
+msgstr ""
+
+#: httpget.c:506
+#, c-format
+msgid "Error on allocating buffer.\n"
+msgstr ""
+
+#: httpget_httpget.c:275
+#, c-format
+msgid "Error in hostname, missing ']'.\n"
+msgstr ""

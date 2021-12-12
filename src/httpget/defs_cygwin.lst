@@ -1,0 +1,10 @@
+###############################################
+#
+# defs_cygwin.lst
+#
+# Defines zu Libraries
+#
+# DEFINE      Library       Sonst
+###############################################
+-DWITH_HTTPS   -lssl,-lcrypto,-lz
+-DWITH_GETTEXT -lintl,-liconv

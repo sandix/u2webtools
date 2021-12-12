@@ -1,0 +1,12 @@
+###############################################
+# LINUX Interpreter
+
+BINFILE ?= u2w_interpreter
+
+MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -DINTERPRETER
+
+TESTCFLAGS := -DMYSQLCLIENT -DWITH_GETTEXT
+
+MINLIBS = 
+
+include Makefile.u2w

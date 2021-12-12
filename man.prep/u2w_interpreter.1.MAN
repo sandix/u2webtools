@@ -1,0 +1,30 @@
+NAME
+u2w_interpreter - interpreter for the u2w language
+
+SYNOPSIS
+u2w_interpreter [-i path] [-l] [-lp path]
+#MYSQL#[-me]
+                [-mp port] [-v] [-x] [-B]
+                [-E] [-Xd def] [-Xi path] [-I td] [-Ip path] [-?] path [par=value ...]
+
+DESCRIPTION
+u2w_interpreter is the interpreter for the u2w language
+
+OPTIONS
+-i path  :: include-path for *.i2w files
+-l       :: switch logging on
+-lp path :: write logging into path
+#MYSQL#-me      :: write MySQL-Errors into logfile/stderr
+#MYSQL#-mp port :: change MySQL-Port
+-v       :: show version
+-x       :: print executed lines
+-B       :: browser/cmd variables only readable by %bpar/%cpar
+-E       :: ignore empty pars on calling programs
+-I td    :: set textdomain to td
+-Ip path :: set textdomaindir to path
+-Xd def  :: define systemvars (-Xd <varname>=<value>)
+-Xi path :: read systemvars from file on startup
+-?       :: show this help
+
+AUTHOR
+#PACKAGER#

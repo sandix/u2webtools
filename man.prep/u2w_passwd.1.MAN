@@ -1,0 +1,17 @@
+NAME
+u2w_passwd - modify unix2webd user accounts
+
+SYNOPSIS
+u2w_passwd [-r <realm>] [-p <pwd>] <u2w-pwdfile> <user>
+
+DESCRIPTION
+u2w_passwd program to modify the password file for the unix2webd webserver
+
+OPTIONS
+-r <realm>   :: set realm and use digest access authentication
+-p <pwd>     :: password
+<u2w-pwdfile>:: U2W password file
+<user>       :: username
+
+AUTHOR
+#PACKAGER#

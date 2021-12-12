@@ -1,0 +1,11 @@
+###############################################
+#
+# defs.lst
+#
+# Defines zu Libraries
+#
+# DEFINE      Library       Sonst
+###############################################
+ALL -lsocket
+#
+-DWITH_HTTPS    -lssl,-lcrypto

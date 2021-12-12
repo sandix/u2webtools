@@ -1,0 +1,72 @@
+AWK ?= awk
+
+WALL = -Wall
+
+PRG = unix2web
+
+ifeq (${BINFILE},u2w_passwd)
+PRGCS = u2w_u2w_passwd.c \
+	u2w_md5.c \
+	u2w_pwd.c \
+        u2w_str.c \
+	unix2web_version.c
+else
+PRGCS = unix2web.c \
+	u2w_acc.c \
+	u2w_calc.c \
+	u2w_command.c \
+	u2w_command_progs.c \
+	u2w_read_content.c \
+	u2w_dirlist.c \
+	u2w_error.c \
+	u2w_file.c \
+	u2w_form.c \
+	u2w_frame.c \
+	u2w_get.c \
+	u2w_hash.c \
+	u2w_head.c \
+	u2w_hosts.c \
+	u2w_httpd.c \
+	u2w_read_inifile.c \
+	u2w_logging.c \
+	u2w_md5.c \
+	u2w_menu.c \
+	u2w_multi.c \
+	u2w_mysql.c \
+	u2w_par.c \
+	u2w_passwd.c \
+	u2w_pgsql.c \
+	u2w_programm.c \
+	u2w_put.c \
+	u2w_put_header_progs.c \
+	u2w_put_pre_header_progs.c \
+	u2w_put_progs.c \
+	u2w_pwd.c \
+	u2w_read.c \
+	u2w_scan.c \
+	u2w_scan_progs.c \
+	u2w_send.c \
+	u2w_send_status.c \
+	u2w_shell.c \
+	u2w_sqlite.c \
+	u2w_store.c \
+	u2w_str.c \
+	u2w_time.c \
+	u2w_trace.c \
+	u2w_u2w.c \
+	u2w_u2w_command_progs.c \
+	u2w_u2wput.c \
+	u2w_upload.c \
+	u2w_user.c \
+	unix2web_version.c
+endif
+
+PRGOBJS = $(foreach v,$(PRGCS),$(OBJDIR)/$(basename $v).o)
+
+MAININCLUDE = u2w.h
+
+PRGHS = ${MAININCLUDE} u2w_token.h u2w_http.h
+
+PRGVARS = u2w_command.c u2w_store.c u2w_u2wput.c u2w_put_pre_header_progs.c u2w_mysql.c u2w_read.c u2w_sqlite.c
+
+include Makefile.all

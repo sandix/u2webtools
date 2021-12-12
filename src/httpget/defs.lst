@@ -1,0 +1,9 @@
+###############################################
+#
+# defs.lst
+#
+# Defines zu Libraries
+#
+# DEFINE      Library       Sonst
+###############################################
+-DWITH_HTTPS    -lssl,-lcrypto

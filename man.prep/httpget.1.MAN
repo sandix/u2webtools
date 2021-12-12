@@ -1,0 +1,56 @@
+NAME
+httpget - perform http requests
+
+SYNOPSIS
+httpget [-a auth] [-b len] [-B path] [-c] [-C ct] [-d path] [-D path]
+               [-e] [-f file] [-h|-hh] [-H text] [-i] [-m] [-mf file]
+               [-mm mime] [-mn name] [-m-] [-o path] [-O] [-p pwd] [-P proxy]
+               [-q] [-r range] [-R] [-s] [-S] [-Sa path] [-Sc path] [-Sf]
+               [-Sk path] [-SC] [-t sec] [-tc sec] [-T] [-u user]
+               [-v] [-?] host:port file1 ...
+
+DESCRIPTION
+httpget is a simple tool to perform http requests
+
+OPTIONS
+-a auth  :: set user:password in base64
+-b len   :: set size of inputbuffer for reading from stdin
+-B path  :: write inputbuffer to file on errors
+-c       :: URL is coded
+-C ct    :: set content-type of post data
+-d path  :: set default path on server
+-D path  :: path of post data
+-e       :: on error write page to file/stdout
+-f file  :: path to outputfile
+-h       :: write received http-header to file/stdout
+-hh      :: set method to HEAD
+-H text  :: add text to http-header
+-i       :: read URLs from stdin
+-m       :: set mthod to post with multipart-content block
+-mf file :: send file in multipart-content block
+-mm mime :: set mime-type
+-mn name :: set name for multipart-content block
+-m-      :: read file for multipart-content from stdin
+-o path  :: write output to path
+-O       :: set method to POST
+-p pwd   :: set password
+-P proxy :: set proxy-server
+-q       :: suppress writing to stderr
+-r range :: set byterange
+-R       :: don't send HTTP-header
+-s       :: write file to stdout
+-S       :: use https
+-Sa path :: path to ssl-ca
+-Sc path :: path to ssl-cert
+-Sf      :: force server cert
+-Sk path :: path to ssl-key
+-SC      :: get ssl-certificate
+-T       :: send method TRACE
+-t sec   :: set timeout in seconds
+-tc sec  :: set connect-timeout in seconds
+-u user  :: set username
+-v       :: show version
+-?       :: show usage
+
+AUTHOR
+#PACKAGER#

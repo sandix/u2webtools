@@ -1,0 +1,95 @@
+NAME
+unix2webd - Webserver für die U2W Sprache
+
+SYNTAX
+unix2webd [-a] [-b path] [-d] [-e path|-er path]
+          [-f] [-fP] [-fc] [-fp path] [-fD] [-fS size]
+          [-g|-gg [-gf path]] [-h home] [-i path] [j] [-k] [-l|-lp path]
+#MYSQL#[-me]
+          [-o|-op path|-og path] [-of] [-or ips] [-p port] [-r]
+          [-s|-sp path|-sg path|-sH path|[[-sU user]%% %%[-sP pwd]|[-sB b64]]
+          [-sf] [-t sek] [-u[s|u] user] [-v] [-w] [-x] [-B] [-C charset]
+          [-D] [-Dp path]
+          [-E] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]
+          [-S] [-Sc path] [-Sk path] [-Sa path|-SA path] [-Sf|-SF]
+          [-V [-Ve path]|-Vh] [-Xd def] [-Xi path] [-Xs path] [-XS path] [-?]
+
+BESCHREIBUNG
+unix2webd ist der Webserver, der die U2W Sprache interpretiert
+
+OPTIONEN
+-a       :: kein Zugriff auf Verzeichnis, wenn Datei .access nicht vorhanden ist
+-b path  :: Pfad für externe Binaries
+-d       :: Directories werden mit Links angezeigt
+-e path  :: Fehlerseite (statt "Page not found")
+-er path :: Fehlerseite mit Redirect (statt "Page not found")
+-f       :: Uploads mit POST erlauben
+-fP      :: Uploads mit POST nur zu Verzeichnissen mit Schreibrecht
+-fc      :: bei Upload mit POST Dateiname des Clients übernehmen
+-fp path :: Pfad für Uploads mit POST
+-fD      :: Dateien nach Uploads mit POST nicht automatisch löschen
+-fS size :: maximale Größe in Bytes von Post Dateien
+-g       :: Uploads mit PUT erlauben
+-gf path :: Server root für PUT
+-gg      :: Upload mit PUT auch ohne Anmeldung erlaubt
+-h home  :: unter Pfad home liegen die Dateien
+-i path  :: Include-Pfad für *.i2w Dateien
+-j       :: u2w-Dateien werden nicht ausgewertet
+-k       :: Keep-Alive erlauben
+-l       :: logging einschalten
+-lp path :: logging in Datei path schreiben
+#MYSQL#-me      :: MySQL-Errors ins Logfile/stderr
+-n       :: ?&edit erlauben
+-o       :: Zugriff wird über "%" Datei geregelt
+-of      :: kein Zugriff, wenn Hosts-Datei ".hosts" nicht vorhanden ist
+-og path :: path ist Hosts-Datei für alle Verzeichnisse ohne ".hosts" Datei
+-op path :: path ist globale Hosts-Datei für alle Verzeichnisse
+-or ips  :: Zugriff nur von den angegebenen IP-Adressen
+-p port  :: Listen-Port setzen -r name  "name" im Anmeldefenster zeigen
+-rd name :: setzt Realm und Anmeldung auf "digest access authentication"
+-s       :: User und Password aus Datei ".passwd" lesen
+-sf      :: kein Zugriff, wenn Passwort-Datei ".passwd" nicht vorhanden ist
+-sg path :: path ist globale Passwort-Datei für alle Verzeichnisse ohne ".passwd" Datei
+-sh path :: path ist globale Passwort-Datei mit Home-Direktories
+-sp path :: path ist globale Passwort-Datei für alle Verzeichnisse
+-sB b64  :: User und Passwort B64 codiert angegeben
+-sP pwd  :: Anmelde Passwort festlegen
+-sU user :: Anmelde User festlegen
+-t sek   :: Timeout der Verbindung auf sek Sekunden
+-tu msek :: Timeout der Verbindung auf msek Mikrosekunden
+-u user  :: Defaultuser des Web-Servers
+-us user :: Server läuft als user
+-uu user :: Defaultuser, User wechselt erst nach öffnen der *.u2w Datei
+-v       :: Version anzeigen
+-w       :: Uploads von .?2w und .?3w Dateien erlauben
+-x       :: ausgeführte Zeilen anzeigen
+-B       :: Parameter des Browser nur per %bpar/%cpar lesbar
+-C chset :: setze characterset im HTTP-Header auf chset
+-D       :: dämonisieren
+-Dp path :: daemonisieren und PID des Prozessein in path schreiben
+-E       :: leere Parameter nicht an Programme übergeben
+-G bcklg :: Backlog bei Listen auf bcklg setzen
+-H       :: keinen HTTP-Header senden
+-I td    :: Textdomain auf td
+-Ip path :: Textdomaindir auf path
+-L ip    :: nur an diese IP-Adresse binden
+-N       :: Methode OPTIONS nicht erlauben
+-P       :: immer Username und Passwort erfragen
+-S       :: HTTPS verwenden
+-Sc path :: Datei mit SSL-Certifikat
+-Sk path :: Datei mit SSL-Key
+-Sa path :: Datei mit SSL-CA
+-SA path :: Datei mit SSL-CA
+-Sf      :: Client Zertifikat ist notwendig
+-SF      :: Client Zertifikat anfordern
+-V       :: nach Anmeldung automatisch ins User-Verzeichnis wechseln
+-Ve path :: keine Anmeldung, dann ins Verzeichnis path wechseln
+-Vh      :: nach Anmeldung in Home-Verzeichnis des Anmelders wechseln (setzt -P)
+-Xd def  :: Systemvariablen definieren (-Xd <varname>=<wert>)
+-Xi path :: Systemvariablen beim Start aus Datei file lesen
+-Xs prg  :: Programm prg beim Starten ausführen
+-XS prg  :: Programm prg beim Stoppen ausführen
+-?       :: diese Kurzhilfe anzeigen
+
+AUTOR
+#PACKAGER#

@@ -1,0 +1,56 @@
+NAME
+httpget - http requests ausführen
+
+SYNTAX
+httpget [-a auth] [-b len] [-B path] [-c] [-C ct] [-d path] [-D path]
+               [-e] [-f file] [-h|-hh] [-H text] [-i] [-m] [-mf file]
+               [-mm mime] [-mn name] [-m-] [-o path] [-O] [-p pwd] [-P proxy]
+               [-q] [-r range] [-R] [-s] [-S] [-Sa path] [-Sc path] [-Sf]
+               [-Sk path] [-SC] [-t sec] [-tc sec] [-T] [-u user]
+               [-v] [-?] host:port file1 ...
+
+BESCHREIBUNG
+httpget ist ein einfacher http Client
+
+OPTIONEN
+-a auth  :: direkte Eingabe user:pwd Base64 kodiert
+-b len   :: Inputbuffergröße beim Lesen von stdin
+-B path  :: im Fehlerfall Inputbuffer nach pfad schreiben
+-c       :: URL ist schon codiert
+-C ct    :: Content-Type der Post-Daten setzen
+-d path  :: Pfad auf dem Server bei mehreren Dateien
+-D path  :: Pfad der zu sendenden POST-Daten
+-e       :: im Fehlerfall Seite ausgeben
+-f file  :: Filename, unter dem die Daten gespeichert werden
+-h       :: HTTP-Header mit ausgeben
+-hh      :: HTTP HEAD schicken
+-H text  :: text zum HTTP Header hinzufügen
+-i       :: URLs von stdin lesen
+-m       :: Parameter als Multipart-Content-Block senden
+-mf file :: Datei per Multipart-Content Block senden
+-mm mime :: Mime-Type der Datei festlegen
+-mn name :: Parametername für Multipart-Content Block
+-m-      :: Inhalt der Datei von STDIN lesen
+-o path  :: Pfad für die Ausgabedateien
+-O       :: Anforderung als POST schicken
+-p pwd   :: Passwort für die Verbindung
+-P proxy :: Proxy Server setzen (Host:port)
+-q       :: keine Ausgaben auf stderr
+-r range :: Byterange
+-R       :: keinen HTTP-Header senden
+-s       :: Ausgabe an stdout
+-S       :: HTTPS verwenden
+-Sa path :: Pfad mit SSL-CA
+-Sc path :: Pfad mit SSL-Cert
+-Sf      :: Server muss über CA zertifiziert sein
+-Sk path :: Pfad mit SSL-Key
+-SC      :: SSL-Zertifikat anfordern
+-T       :: Methode TRACE senden
+-t sec   :: Timeout in Sekunden setzen
+-tc sec  :: Connect-Timeout in Sekunden setzen
+-u user  :: Username für die Verbindung
+-v       :: Version anzeigen
+-?       :: usage zeigen
+
+AUTOR
+#PACKAGER#

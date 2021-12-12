@@ -1,0 +1,14 @@
+###############################################
+# LINUX
+
+BINFILE ?= unix2webd
+
+MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -D_LARGEFILE64_SOURCE
+
+TESTCFLAGS := -DMYSQLCLIENT -DWITH_SSL -DHAS_PAM -DWITH_GETTEXT -DWITH_MMAP -DENABLE_DH_CURVE
+
+STATIC ?= 
+
+MINLIBS := 
+
+include Makefile.u2w

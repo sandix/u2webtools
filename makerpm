@@ -1,0 +1,793 @@
+#!/bin/bash
+#
+# makerpm: RPM-Paket erzeugen
+#
+#####################################################################
+#
+# Steuerung pro Distri in der *.spec:
+#
+# Name: SETNAME
+# Provides: SETNAME
+# Version: SETVERSION
+# Release: SETRELEASE
+# Source: SETSOURCE
+# BuildRoot: /dev/shm/#NAME#_makerpm
+#            #BUILDROOT#
+#
+# #DATAPORT#   ... nur bei Dataport-Paketen (Schalter -D)
+# #NODATAPORT# ... Pakete ohne Dataport (Schalter -D) 
+#
+# #SYSTEMD#   ... Systemd
+# #NOSYSTEMD# ... kein Systemd
+#
+# #NODEB#   ... nicht bei Debian Paketen
+# #DEB#     ... bei Debian Paketen
+# #NOSLES#  ... nicht bei SLES
+# #SLES#    ... bei SLES
+# #NORHEL#  ... nicht bei RedHat
+# #RHEL#    ... RedHat
+# #NOOTHER# ... nicht bei anderen Distris
+# #OTHER#   ... andere
+# #APPLIANCE# . nur bei Appliance
+# #NOAPPLIANCE# nicht bei Appliance 
+#
+# #BEGIN DATAPORT#  ... ab hier Block nur bei Dataport-Paketen (Schalter -D)
+# #END DATAPORT#
+# #BEGIN SYSTEMD#   ... ab hier Block bei Systemd
+# #END SYSTEMD#
+# #BEGIN NOSYSTEMD# ... ab hier Block bei kein Systemd
+# #END NOSYSTEMD#
+# #BEGIN DEB#       ... ab hier Block bei Debian Paketen
+# #END DEB#
+# #BEGIN NODEB#     ... ab hier Block nicht bei Debian Paketen
+# #END NODEB#
+# #BEGIN SLES#      ... ab hier Block bei SLES
+# #END NOSLES#
+# #BEGIN NOSLES#    ... ab hier Block nicht bei SLES
+# #END SLES#
+#
+# #PKGNAME#     wird ersetzt durch Paketname
+# #PKGVERSION#  wird ersetzt durch Version-Release
+# #PACKAGER#    wird ersetzt durch Packager
+# #CHANGELOGDATE# Datum fuers changelog
+#
+# #SPV-<special>#    gilt bei -V <special>
+# #NOSPV-<special>#  sonst
+#
+# %rpmsave%     bei RPM -> "rpmsave", bei DEB -> "dpkg-old"
+# wenn es die Datei PREP.sed gibt:
+#   - 1. Zeile "sed" zum Umbenennen der Dateinamen unter files.prep
+#   - 2. Zeile "sed" zum anpassen der Dateien unter files.prep
+#
+# wenn es nur den Ordner files.prep gibt:
+#   - es werden die Codes wie bei der SPEC-Datei angewendet
+#####################################################################
+#
+BUILDDIR=/dev/shm/$(id -un)-rpmbuild
+DEBIANBASE=/dev/shm/$(id -un)-deb
+#
+TAREXCLUDE='--exclude=.*.swp'
+#
+unset DISTRV CFGFILES D DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE
+FUSER="root"
+FGROUP="root"
+SOURCEFLAG=0
+#
+while getopts An:v:V:sSu:g:rD? op; do
+  case "$op" in
+   A) APPLIANCE="-appliance";;
+   n) SETNAME="$OPTARG";;
+   v) SETVERSION="$OPTARG";;
+   V) SPECIALVERSION="$OPTARG"
+      SPECIALV=".$OPTARG";;
+   s) SOURCEFLAG=1;;
+   S) SOURCEFLAG=2;;
+   u) FUSER=$OPTARG;;
+   g) FGROUP=$OPTARG;;
+   D) D=_dataport;;
+   ?) echo "usage: `basename $0` [-A] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
+  -A Appliance
+  -D Dataport package
+  -g set group to <grp>
+  -n set name to <name>
+  -s only source package
+  -S source and binary package
+  -u set files to <user>
+  -v set version to <version>
+  -V set special version to <sv>"
+      exit 0;;
+  esac
+done
+shift $(( $OPTIND - 1))
+#
+if grep -q 'BuildArch: *noarch' "$1"; then
+  RPMS=noarch
+  FILES=""
+else
+  RPMS=`uname -m`
+fi
+#
+SPECFILE="$1"
+SPECFILENAME=$(basename "$SPECFILE")
+OUTPUTDIR=$(readlink -f "$2")
+#
+if [[ $# -ne 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
+  echo "usage: `basename $0` [-C] [-d] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] <spec> <outputdir>"
+  exit 1
+fi
+#
+if uname -v | egrep -qi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
+  DEB=_debian
+fi
+#
+if [[ ${1##*-} = "0.spec" ]]; then
+  echo "Error: Release muss > 0 sein"
+  exit 1
+fi
+#
+WD=$(dirname $(readlink -f $0))
+#
+PKGNAME=`awk '/^Name: /{print $2}' $SPECFILE`
+PROVIDES=`awk '/^Provides: /{print $2}' $SPECFILE`
+VERSION=`awk '/^Version: /{print $2}' $SPECFILE`
+RELEASE=`awk '/^Release: /{print $2}' $SPECFILE`
+SOURCE=`awk '/^Source: /{print $2}' $SPECFILE`
+BUILDROOTSPEC=`awk '/^BuildRoot: /{print $2}' $SPECFILE`
+#
+export LANG=C
+#
+BUILDROOT=${BUILDROOTSPEC/\#NAME\#/$PKGNAME}
+if [[ "$BUILDROOTSPEC" != "$BUILDROOT" ]]; then
+  MVBSED="s|^BuildRoot: $BUILDROOTSPEC|BuildRoot: $BUILDROOT|;s/#CHANGELOGDATE#/$(date '+%a %b %e %Y')/g;"
+else
+  MVBSED="s/#CHANGELOGDATE#/$(date '+%a %b %e %Y')/g;"
+fi
+if [[ "$PKGNAME" = "SETNAME" ]]; then
+  PKGNAME="${SETNAME:-$(sed 's/-[0-9][0-9]*\.[1-9][0-9]*-[1-9][0-9]*.*//') <<<$SPECFILENAME}"
+  MVBSED="${MVBSED}s|^\\(Name: *\\)SETNAME|\\1$PKGNAME|g;"
+fi
+if [[ "$PROVIDES" = "SETNAME" ]]; then
+  MVBSED="${MVBSED}s|^\\(Provides: *\\)SETNAME|\\1$PKGNAME|g;"
+fi
+if [[ "$VERSION" = "SETVERSION" ]]; then
+  V=${SETVERSION%-*}
+  VERSION="${V:-$(sed 's/.*-\([0-9][0-9]*\.[0-9][0-9]*\)-[1-9][0-9]*.*/\1/' <<<$SPECFILENAME)}"
+  if [[ "$VERSION" = "SETVERSION" ]]; then
+    echo "Error: Wrong version in SPEC name"
+    exit 1
+  fi
+  MVBSED="${MVBSED}s|^\\(Version: *\\)SETVERSION|\\1$VERSION|g;"
+fi
+if [[ "$SOURCE" = "SETSOURCE" ]]; then
+  NAME="$PKGNAME-$VERSION"
+  SOURCE="$PKGNAME-$VERSION.tgz"
+  SOURCESED="${MVBSED}s|#BUILDROOT#|$BUILDROOT|;s/^\\(Source: *\\)SETSOURCE/\\1$NAME.tgz/;"
+elif [[ -z "$SOURCE" ]]; then
+  NAME="$PKGNAME-$VERSION"
+  SOURCESED="${MVBSED}s|#BUILDROOT#|$BUILDROOT|;"
+else
+  NAME=`basename $SOURCE .tgz`
+  SOURCESED="${MVBSED}s|#BUILDROOT#|$BUILDROOT|;"
+fi
+#
+SPEC=$NAME.spec
+#
+if [[ -z "$SETVERSION" ]]; then
+  if [[ "$RELEASE" = "SETRELEASE" ]]; then
+    if [[ $SPECFILENAME != *"$VERSION-"*.spec ]]; then
+      echo "Mismatch: Version $VERSION and Spec $SPECFILENAME"
+      exit
+    fi
+  elif [[ $SPECFILENAME != *"$VERSION-$RELEASE.spec" ]]; then
+    echo "Mismatch: Version $VERSION-$RELEASE and Spec $SPECFILENAME"
+    exit
+  fi
+fi
+#
+unset DISTRO DISTRV
+#
+if [[ "$RPMS" = "noarch" ]]; then
+  DISTRO='SuSE or any RPM based'
+elif [[ -z "$DISTRV" ]]; then
+  if [[ -f /etc/SuSE-release ]] && grep -q 'SUSE Linux Enterprise Server' /etc/SuSE-release; then
+    DISTRV="SLES$(awk -F ' *[=.] *' '$1 == "VERSION" { print $2 }' /etc/SuSE-release)"
+    DISTRO="$(sed -n 's/\(SUSE Linux.*\) (.*/\1/p' /etc/SuSE-release)"
+  elif [[ -f /etc/redhat-release ]]; then
+    DISTRV="el$(sed -n 's/^[^0-9]*\([0-9]*\)[.].*/\1/p' /etc/redhat-release)"
+    DISTRO="$(sed -n 's/\(Red Hat .* Linux.*\)[.].*/\1/p' /etc/redhat-release)"
+  elif [[ -f /etc/os-release ]]; then
+    if fgrep -q SLES /etc/os-release; then
+      DISTRV="$(sed -n 's/^NAME="\([^" ]*\)[" ].*/\1/p' /etc/os-release)$(sed -n 's/^VERSION="\([0-9]*\).*"/\1/p' /etc/os-release)"
+    else
+      DISTRV="$(sed -n 's/^NAME="\([^" ]*\)[" ].*/\L\1/p' /etc/os-release)$(sed -n 's/^VERSION="\([0-9]*\).*"/\1/p' /etc/os-release)"
+    fi
+    DISTRO="$(sed -n 's/^PRETTY_NAME="\([^"]*\)"/\1/p' /etc/os-release)"
+  fi
+fi
+#
+if [[ -n "$SETVERSION" ]]; then
+  RELEASE=${SETVERSION#*-}
+else
+  RELEASE=${1##*-}
+  RELEASE=${RELEASE%.spec}
+fi
+#
+if [[ -n "$SPECIALVERSION" ]]; then
+  SPVSPEC="s/^#SPV-$SPECIALVERSION#//;/^#NOSPV-$SPECIALVERSION/d;/^#SPV-.*#/d;s/^#NOSPV-[^#]*#//"
+else
+  SPVSPEC="/^#SPV-.*#/d;s/^#NOSPV-[^#]*#//"
+fi
+#
+if [[ -n "$APPLIANCE" ]]; then
+  APPLSPEC='/^#NOAPPLIANCE#/d;s/^#APPLIANCE#//;/^#BEGIN APPLIANCE#/d;/^#END APPLIANCE#/d'
+else
+  APPLSPEC='/^#APPLIANCE#/d;s/^#NOAPPLIANCE#//;/^#BEGIN NOAPPLIANCE#/d;/^#END NOAPPLIANCE#/d'
+fi
+#
+if [[ -n "$D" ]]; then
+  DAPOSPEC='/^#NODATAPORT#/d;s/^#DATAPORT#//;/^#BEGIN DATAPORT#/d;/^#END DATAPORT#/d'
+else
+  DAPOSPEC='/^#DATAPORT#/d;s/^#NODATAPORT#//;/^#BEGIN NODATAPORT#/d;/^#END NODATAPORT#/d'
+fi
+#
+PACKAGER=$(sed -n "$DAPOSPEC;s/^Packager: *\(.*\)/\1/p" $SPECFILE)
+MAKEDEFINE=$(sed -n 's/#MAKEDEFINE#//p' $SPECFILE)
+if [[ -n "$MAKEDEFINE" ]]; then
+  MANSED="s/^#${MAKEDEFINE%=*}#//;s/^#$MAKEDEFINE#//;/^#[A-Z][A-Z]*=\"[^\"]*\"#/d"
+else
+  MANSED="/^#[A-Z][A-Z]*=\"[^\"]*\"#/d"
+fi
+#
+if which systemctl &>/dev/null; then
+  SYSTEMDSPEC='/^#NOSYSTEMD#/d;s/^#SYSTEMD#//;/^#BEGIN SYSTEMD#/d;/^#END SYSTEMD#/d'
+else
+  SYSTEMDSPEC='/^#SYSTEMD#/d;s/^#NOSYSTEMD#//;/^#BEGIN NOSYSTEMD#/d;/^#END NOSYSTEMD#/d'
+fi
+#
+if [[ -n "$DEB" ]]; then
+  SPECSED="$APPLSPEC;$DAPOSPEC;$SPVSPEC;$SYSTEMDSPEC;/^#NODEB#/d;s/^#NO[A-Z]*#//;s/^#DEB#//;s/#PKGNAME#/$PKGNAME/g;s/#PKGVERSION#/$VERSION-$RELEASE/g;s/#PACKAGER#/$PACKAGER/g;/^#[A-Z][A-Z]*#/d;s/%rpmsave%/dpkg-old/g;/^#BEGIN DEB#/d;/^#END DEB#/d;/^#BEGIN NOSLES#/d;/^#END NOSLES#/d;/^#BEGIN [A-Z]*#/,/^#END [A-Z]*#/d"
+elif [[ $DISTRV == SLES* ]]; then
+  SPECSED="$APPLSPEC;$DAPOSPEC;$SPVSPEC;$SYSTEMDSPEC;/^#NOSLES#/d;s/^#NO[A-Z]*#//;s/^#SLES#//;s/#PKGNAME#/$PKGNAME/g;s/#PKGVERSION#/$VERSION-$RELEASE/g;s/#PACKAGER#/$PACKAGER/g;/^#[A-Z][A-Z]*#/d;s/%rpmsave%/rpmsave/g;/^#BEGIN SLES#/d;/^#END SLES#/d;/^#BEGIN NODEB#/d;/^#END NODEB#/d;/^#BEGIN [A-Z]*#/,/^#END [A-Z]*#/d"
+elif [[ $DISTRV == el* ]]; then
+  SPECSED="$APPLSPEC;$DAPOSPEC;$SPVSPEC;$SYSTEMDSPEC;/^#NORHEL#/d;s/^#NO[A-Z]*#//;s/^#RHEL#//;s/#PKGNAME#/$PKGNAME/g;s/#PKGVERSION#/$VERSION-$RELEASE/g;s/#PACKAGER#/$PACKAGER/g;/^#[A-Z][A-Z]*#/d;s/%rpmsave%/rpmsave/g;/^#BEGIN RHEL#/d;/^#END RHEL#/d;/^#BEGIN NODEB#/d;/^#END NODEB#/d;/^#BEGIN NOSLES#/d;/^#END NOSLES#/d;/^#BEGIN [A-Z]*#/,/^#END [A-Z]*#/d"
+else
+  SPECSED="$APPLSPEC;$DAPOSPEC;$SPVSPEC;$SYSTEMDSPEC;/^#NOOTHER#/d;s/^#NO[A-Z]*#//;s/^#OTHER#//;s/#PKGNAME#/$PKGNAME/g;s/#PKGVERSION#/$VERSION-$RELEASE/g;s/#PACKAGER#/$PACKAGER/g;/^#[A-Z][A-Z]*#/d;s/%rpmsave%/rpmsave/g;/^#BEGIN OTHER#/d;/^#END OTHER#/d;/^#BEGIN NODEB#/d;/^#END NODEB#/d;/^#BEGIN NOSLES#/d;/^#END NOSLES#/d;/^#BEGIN [A-Z]*#/,/^#END [A-Z]*#/d"
+fi
+#
+MYDIR=$(pwd -P)
+DIRSEARCH=`basename $SPEC | sed 's/[^a-zA-Z].*//'`
+#
+TMPBASE=/dev/shm/rpmbuild.tmp.
+TMPDIR=$TMPBASE$$
+mkdir -p $TMPDIR
+FILESLIST=$TMPDIR/fileslist
+SYSDIRSLIST=$TMPDIR/sysdirslist
+#
+if which rpm >/dev/null 2>&1; then
+  rpm -ql filesystem >$SYSDIRSLIST
+else
+  >$SYSDIRSLIST
+fi
+#
+if [[ ! -s $SYSDIRSLIST ]]; then
+  cat >$SYSDIRSLIST <<EOF
+/
+/etc
+/etc/init.d
+/usr
+/usr/bin
+/usr/local
+/usr/local/bin
+/usr/share
+/usr/share/locale
+/usr/share/locale/de
+/usr/share/locale/de/LC_MESSAGES
+EOF
+fi
+#
+PRGSED="$SPECSED"
+STARTDIR=$(pwd)
+if [[ -n "$SOURCE" ]]; then
+  BD=$TMPDIR
+  if mkdir -p "$TMPDIR" && cd "$WD"; then
+    cp -a files "$TMPDIR/$NAME"
+    [[ -d src ]] && cp -a src "$TMPDIR/$NAME/SRC"
+    if [[ -f PREP.seds ]]; then
+      FNSED="`head -1 PREP.seds`"
+      PRGSED="`tail -1 PREP.seds`;$SPECSED"
+      ( if cd files.prep; then
+          for f in `find * -type d`; do
+            ND=$(sed "$FNSED" <<<$f)
+            mkdir -p $TMPDIR/$NAME/$ND
+          done
+          for f in `find * -type f`; do
+            NF=$( sed "$FNSED" <<<$f )
+            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$NF
+            chmod --reference="$f" $TMPDIR/$NAME/$NF
+            touch --reference="$f" $TMPDIR/$NAME/$NF
+          done
+        fi
+      )
+    elif [[ -d files.prep ]]; then
+      ( if cd files.prep; then
+          for f in `find * -type d`; do
+            mkdir -p $TMPDIR/$NAME/$f
+          done
+          for f in `find * -type f`; do
+            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
+            chmod --reference="$f" $TMPDIR/$NAME/$f
+            touch --reference="$f" $TMPDIR/$NAME/$f
+          done
+        fi
+      )
+    fi
+    if [[ -d src.prep ]]; then
+      ( if cd src.prep; then
+          for f in `find * -type d`; do
+            mkdir -p $TMPDIR/$NAME/SRC/$f
+          done
+          for f in `find * -type f`; do
+            sed "$PRGSED" "$f" >$TMPDIR/$NAME/SRC/$f
+            chmod --reference="$f" $TMPDIR/$NAME/SRC/$f
+            touch --reference="$f" $TMPDIR/$NAME/SRC/$f
+          done
+        fi
+      )
+    fi
+    if [[ -d man.prep ]]; then
+      ( if cd man.prep; then
+          for f in `find * -type f`; do
+            if [[ $f == */* ]]; then
+              L="${f%%/*}/"
+            else
+              L=""
+            fi
+            if [[ $f == *.MAN ]]; then
+              F=${f%.MAN}
+              N=${F##*.}
+              F=${F%.*}
+              mkdir -p $TMPDIR/$NAME/usr/share/man/${L}man${N}
+              sed "$MANSED;$PRGSED" "$f" | awk -v NUM=$N -v PRG="${F##*/}" -v DATE=`date '+%F'` -v "MANUAL=User Manuals" -f $WD/man2groff.awk | gzip -9 >$TMPDIR/$NAME/usr/share/man/${L}man${N}/${F##*/}.$N.gz
+              chmod 644 $TMPDIR/$NAME/usr/share/man/${L}man${N}/${F##*/}.$N.gz
+              touch --reference="$f" $TMPDIR/$NAME/usr/share/man/${L}man${N}/${F##*/}.$N.gz
+            else
+              N=${f##*.}
+              F=${f%.*}
+              mkdir -p $TMPDIR/$NAME/usr/share/man/${L}man${N}
+              sed "$MANSED;$PRGSED" "$f" | gzip -9 -c >$TMPDIR/$NAME/usr/share/man/${L}man${N}/${f##*/}.$N.gz
+              chmod 644 $TMPDIR/$NAME/usr/share/man/${L}man${N}/${f##*/}.$N.gz
+              touch --reference="$f" $TMPDIR/$NAME/usr/share/man/${L}man${N}/${f##*/}.$N.gz
+            fi
+          done
+        fi
+      )
+    fi
+  else
+    echo "Error on creating $TMPDIR/$NAME"
+    exit 1
+  fi
+fi
+#
+cd $STARTDIR
+#
+mkdir -p $BUILDDIR/BUILD $BUILDDIR/RPMS $BUILDDIR/SOURCES $BUILDDIR/SPECS $BUILDDIR/SRPMS
+#
+CFGFILES=`grep '^%config ' $SPECFILE | sed 's/%config /-e /'`
+if [[ -n "$CFGFILES" ]]; then
+  (cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME) | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | egrep -v '/$|^/SRC/|^/MAN/' | grep -v $CFGFILES >$FILESLIST
+elif [[ -n "$SOURCE" ]]; then
+  ( if [[ -n "$FUSER$FGROUP" ]]; then
+      echo "%defattr(-,${FUSER:--},${FGROUP:--})"
+      ( if cd $BD/$NAME; then
+          DIRS=`find * -type d -name "$DIRSEARCH*" | egrep -v '^SRC/|^/MAN/'`
+          if [[ -z "$DIRS" ]]; then
+            DIRS=`find * -type f | sed 's|[^/]*$||' | sort | head -1 | sed 's|/$||'`
+          fi
+          if [[ -n "$DIRS" ]]; then
+            find $DIRS -type d | sed 's|^\(.*\)$|%dir /\1|'
+          fi
+        fi
+      )
+    else
+      ( if cd $BD/$NAME; then
+          DIRS=`find * -type d -name "$DIRSEARCH*"`
+          if [[ -n "$DIRS" ]]; then
+            find $DIRS -type d | sed 's|^\(.*\)$|%dir /\1|'
+          fi
+        fi
+      )
+    fi
+    cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | egrep -v '/$|^/SRC/|^/MAN/'
+  ) >$FILESLIST
+fi
+#
+awk '/%files/,/^$/{if($NF != "%files" && $NF != "")print $NF}' "$SPECFILE" >$FILESLIST.v
+#
+if [[ -s $FILESLIST ]]; then
+  cat $FILESLIST | while read f g; do
+    if [[ ${f#%defattr} = $f ]]; then
+      if [[ -n "$g" ]]; then
+        m="$f "
+        f="$g"
+      else
+        m=""
+      fi
+      if ! grep -q "^$f\$" $FILESLIST.v; then
+        if stat -c '%A' "$BD/$NAME$f" | grep -q '^l'; then
+          echo "$f"
+        elif ! grep -q "^$f\$" $SYSDIRSLIST; then
+          echo "%attr(`stat -c '%a' "$BD/$NAME$f"`,${FUSER:--},${FGROUP:--}) $m$f"
+        fi
+      fi
+    else
+      echo "$f $g"
+    fi
+  done >$FILESLIST.a
+fi
+if [[ -d $BD/$NAME/SRC ]]; then
+  awk -v FUSER=${FUSER:--} -v FGROUP=${FGROUP:--} -F '[ \t]*:?[= ][ \t]*' '$NF > 1 && $1 ~ "^[ \t]*BINFILE[0-9]?$" {print "%attr(755,"FUSER","FGROUP") /usr/bin/" $2}' $BD/$NAME/SRC/*/Makefile | sort -u >>$FILESLIST.a
+fi
+if [[ -d $BD/$NAME/MAN ]]; then
+  find $BD/$NAME/MAN -type f | while read i; do
+    N=${i##*.}
+    L=${i#$BD/$NAME/MAN/}
+    if [[ $L == */* ]]; then
+      L="${L%%/*}/"
+    else
+      L=""
+    fi
+    echo "%attr(644,root,root) /usr/share/man/${L}man$N/${i##*/}.gz" >>$FILESLIST.a
+  done
+fi
+#
+if [[ -n "$DISTRO" ]]; then
+  DISTROSED="s/^License:/distribution: $DISTRO\\nLicense:/;"
+else
+  unset DISTROSED
+fi
+#
+###############################################################################
+# DEB
+###############################################################################
+if [[ -n "$DEB" ]]; then
+  DEBBUILD="$DEBIANBASE/${PKGNAME//_/-}-$VERSION.$RELEASE$DISTRV$APPLIANCE"
+  if [[ -d "$DEBBUILD" ]]; then
+    if [[ -d "$DEBBUILD".old ]]; then
+      rm -rf "$DEBBUILD".old
+    fi
+    mv "$DEBBUILD" "$DEBBUILD".old
+  fi
+  mkdir -p "$DEBBUILD"/debian
+  if [[ -n "$SOURCE" ]]; then
+    cp -a "$TMPDIR/$NAME"/* "$DEBBUILD"
+  fi
+###########################################################
+# MAKE.sh
+###########################################################
+  cat >"$DEBBUILD"/MAKE.sh <<EOF
+#!/bin/bash
+#
+# MAKE.sh
+################
+#
+if [[ -d SRC ]]; then
+  if cd SRC; then
+    for i in *; do
+      (cd \$i && $MAKEDEFINE PREFIX=\$DESTDIR/usr make \$1)
+    done
+  fi
+fi
+EOF
+  chmod 755 "$DEBBUILD"/MAKE.sh
+#
+###########################################################
+# Makefile
+###########################################################
+  if [[ -n "$SOURCE" ]]; then
+    cat >"$DEBBUILD"/Makefile <<EOF
+# $PKGNAME-$VERSION
+#
+# Copyright (C) 1999 - $(date '+%Y'), $PACKAGER
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+#****************************************************************
+#
+all:
+	DESTDIR=\$(DESTDIR) ./MAKE.sh
+#
+clean:
+	./MAKE.sh clean
+#
+distclean:
+	./MAKE.sh distclean
+#
+install:
+	mkdir -p \$(DESTDIR)/usr/bin
+	cp -a \`ls|egrep -v 'debian|SRC|Makefile|MAKE.sh'\` \$(DESTDIR)/
+	DESTDIR=\$(DESTDIR) ./MAKE.sh install
+EOF
+  else
+    cat >"$DEBBUILD"/Makefile <<EOF
+# $PKGNAME-$VERSION
+#
+# Copyright (C) 1999 - $(date '+%Y'), $PACKAGER
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+#****************************************************************
+#
+all:
+	echo "nothing to do"
+EOF
+fi
+#
+###########################################################
+# debian/control
+###########################################################
+  PROVIDES=$(awk -F ': *' '/^Provides:/{print $2}' $SPECFILE)
+  CONFLICTS=$(awk -F ': *' '/^Conflicts:/{print $2}' $SPECFILE)
+  SUMMARY=$(awk -F ': *' '/^Summary:/{print $2}' $SPECFILE)
+  DESCRIPTION="$(sed -n '/%description/,/^$/s/^\([^%]\)/ \1/p' $SPECFILE)"
+  DEPENDS=$(awk -F ': *' '/^#DEB#Requires:/ || /^Requires:/ {
+              gsub(".*Requires: *", "", $0)
+              n = split($0, a, " *, *")
+              for( i = 1; i <= n; i++ )
+              { printf(",")
+                o = split(a[i], c, " *\\| *")
+                for( j = 1 ; j <= o; j++ )
+                { if( j > 1 )
+                    printf(" |")
+                  m = split(c[j], b, " ")
+                  if( m > 1 )
+                    printf(" %s (%s %s)", b[1], b[2], b[3])
+                  else
+                    printf(" %s", b[1])
+                }
+              }
+            }' $SPECFILE)
+  DEBSECTION=$(awk -F ': *' '/#DEB#Section:/ {print $2}' $SPECFILE)
+  if [[ "$RPMS" = "noarch" ]]; then
+    DEBALL='all'
+    ARCHITECTURE='all'
+    SHLIBS=''
+  else
+    unset DEBALL
+    ARCHITECTURE='any'
+    SHLIBS='${shlibs:Depends}, '
+  fi
+  cat >"$DEBBUILD"/debian/control <<EOF
+Source: ${PKGNAME//_/-}
+Section: $DEBSECTION
+Priority: optional
+Maintainer: $PACKAGER
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.9.5
+Homepage: http://www.universal-logging-system.org/
+
+Package: ${PKGNAME//_/-}
+Provides: ${PROVIDES//_/-}
+Architecture: $ARCHITECTURE
+Depends: $SHLIBS\${misc:Depends}$DEPENDS
+Conflicts: ${CONFLICTS//_/-}
+Description: $SUMMARY
+$DESCRIPTION
+EOF
+#
+###########################################################
+# /debian/changelog
+###########################################################
+  echo "${PKGNAME//_/-} ($VERSION-$RELEASE) unstable; urgency=low" >"$DEBBUILD"/debian/changelog
+  sed "1,/%changelog/d;$MVBSED"'s/^\* *\(.*\)/* \1/;s/^- *\(.*\)/\1/' $SPECFILE | awk -v packager="$PACKAGER" '
+{ if( $1 == "*" )
+  { if( dat )
+    { print "\n -- " packager "  " dat
+dat = ""
+exit
+    }
+    d = sprintf("date -d \"%s %s %d %d\" \"+%%a, %%d %%b %%Y %%T %%z\"", $2, $3, $4, $5)
+    d | getline dat
+    close(d)
+    s = 0
+  }
+  else
+  { if( s )
+      print "    " $0
+    else
+    { print "\n  * " $0
+      s = 1
+    }
+  }
+}
+END { if( dat )
+        print "\n -- " packager "  " dat
+    }' >>"$DEBBUILD"/debian/changelog
+#
+###########################################################
+# /debian/compat
+###########################################################
+  echo '10' >"$DEBBUILD"/debian/compat
+#
+###########################################################
+# /debian/copyright
+###########################################################
+  cat >"$DEBBUILD"/debian/copyright <<EOF
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ${PKGNAME//_/-}
+Source: <url://example.com>
+
+Files: *
+Copyright: 1999 - $(date '+%Y'), $PACKAGER
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.
+# Please avoid to pick license terms that are more restrictive than the
+# packaged work, as it may make Debian's contributions unacceptable upstream.
+EOF
+#
+###########################################################
+# /debian/docs
+###########################################################
+  >"$DEBBUILD"/debian/docs
+#
+###########################################################
+# /debian/files
+###########################################################
+  cat >"$DEBBUILD"/debian/files <<EOF
+EOF
+#
+###########################################################
+# /debian/preinst
+###########################################################
+  sed -n '/^%pre$/,/^%/p' $SPECFILE | sed "/^%/d;$PRGSED" >"$DEBBUILD"/debian/preinst.prep
+  if grep -q '[^[:blank:]]' "$DEBBUILD"/debian/preinst.prep; then
+    echo '#!/bin/bash
+#
+# preinst
+#######################' >"$DEBBUILD"/debian/preinst
+    cat "$DEBBUILD"/debian/preinst.prep >>"$DEBBUILD"/debian/preinst
+  fi
+  rm "$DEBBUILD"/debian/preinst.prep
+#
+###########################################################
+# /debian/postinst
+###########################################################
+  sed -n '/^%post$/,/^%/p' $SPECFILE | sed "/^%/d;$PRGSED" >"$DEBBUILD"/debian/postinst.prep
+  if grep -q '[^[:blank:]]' "$DEBBUILD"/debian/postinst.prep; then
+    echo '#!/bin/bash
+#
+# postinst
+#######################' >"$DEBBUILD"/debian/postinst
+    cat "$DEBBUILD"/debian/postinst.prep >>"$DEBBUILD"/debian/postinst
+  fi
+  rm "$DEBBUILD"/debian/postinst.prep
+#
+###########################################################
+# /debian/prerm
+###########################################################
+  sed -n '/^%preun$/,/^%/p' $SPECFILE | sed "/^%/d;$PRGSED" >"$DEBBUILD"/debian/prerm.prep
+  if grep -q '[^[:blank:]]' "$DEBBUILD"/debian/prerm.prep; then
+    echo '#!/bin/bash
+#
+# prerm
+#######################' >"$DEBBUILD"/debian/prerm
+    cat "$DEBBUILD"/debian/prerm.prep >>"$DEBBUILD"/debian/prerm
+  fi
+  rm "$DEBBUILD"/debian/prerm.prep
+#
+###########################################################
+# /debian/postrm
+###########################################################
+  sed -n '/^%postun$/,/^%/p' $SPECFILE | sed "/^%/d;$PRGSED" >"$DEBBUILD"/debian/postrm.prep
+  if grep -q '[^[:blank:]]' "$DEBBUILD"/debian/postrm.prep; then
+    echo '#!/bin/bash
+#
+# postrm
+#######################' >"$DEBBUILD"/debian/postrm
+    cat "$DEBBUILD"/debian/postrm.prep >>"$DEBBUILD"/debian/postrm
+  fi
+  rm "$DEBBUILD"/debian/postrm.prep
+#
+###########################################################
+# /debian/rules
+###########################################################
+  if [[ -z "$DEBALL" ]]; then
+    DHEXT="--dpkg-gencontrol-params=-v$VERSION-$RELEASE$DISTRV$APPLIANCE"
+  else
+    DHEXT=''
+  fi
+  cat >"$DEBBUILD"/debian/rules <<EOF
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#DH_VERBOSE = 1
+
+# see EXAMPLES in dpkg-buildflags(1) and read /usr/share/dpkg/*
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+
+# main packaging script based on dh7 syntax
+%:
+	dh \$@ $DHEXT
+EOF
+  chmod 755 "$DEBBUILD"/debian/rules
+  #
+  cd "$DEBBUILD"
+  fakeroot debian/rules binary
+  if [[ -z "$DEBALL" ]]; then
+    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2${DISTRV}${APPLIANCE}_amd64.deb/" <<<${SPECFILENAME//_/-})
+    [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
+  else
+    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2_${DEBALL:-amd64}.deb/" <<<${SPECFILENAME//_/-})
+    [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
+  fi
+#
+###############################################################################
+# RPM
+###############################################################################
+else
+  sed "$PRGSED;${DISTROSED}${SOURCESED}s/^\\(Release: *\\)SETRELEASE/\\1$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE/
+/%files/r $FILESLIST.a" $SPECFILE >$BUILDDIR/SPECS/$SPEC
+  #
+  #
+  if [[ $SOURCEFLAG = 1 ]]; then
+    rpmbuild -bs $BUILDDIR/SPECS/$SPEC
+    cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$D.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.src.rpm
+  elif [[ $SOURCEFLAG = 2 ]]; then
+    rpmbuild -ba --target=$RPMS $BUILDDIR/SPECS/$SPEC
+    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
+    cp $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+    cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV.src.rpm
+    chmod og+r $PKGNAME-$VERSION-$RELEASE.src.rpm $PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+  else
+    rpmbuild -bb --target=$RPMS $BUILDDIR/SPECS/$SPEC
+    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
+    cp $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+    chmod og+r $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+  fi
+fi
+#
+rm -rf $TMPDIR

@@ -1,0 +1,581 @@
+# German translations for unix package.
+# Copyright (C) 2008 THE unix'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the unix package.
+# Henning Sander <unix2web@web.de>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unix2web\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-14 15:16+0100\n"
+"PO-Revision-Date: 2018-01-14 18:23+0100\n"
+"Last-Translator: Henning Sander <unix2web@web.de>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: u2w_compiler.c:118 u2w_compiler.c:123
+#, c-format
+msgid "Unable to open %s.\n"
+msgstr "Kann %s nicht öffnen.\n"
+
+#: u2w_dirlist.c:156 u2w_dirlist.c:161 u2w_dirlist.c:210
+msgid "Content from"
+msgstr "Inhalt von"
+
+#: u2w_form.c:994 u2w_form.c:1211 u2w_form.c:1216 u2w_form.c:1224
+#: u2w_form.c:1229
+msgid "Back"
+msgstr "Zurück"
+
+#: u2w_form.c:1036
+msgid "   Close   "
+msgstr " Schließen  "
+
+#: u2w_form.c:1050 u2w_menu.c:625 u2w_u2wput.c:776
+msgid "Main Menu"
+msgstr "Hauptmenü"
+
+#: u2w_form.c:1194 u2w_form.c:1198
+msgid "Abort"
+msgstr "Abbruch"
+
+#: u2w_form.c:1237 u2w_form.c:1242
+msgid "Close"
+msgstr "Schließen"
+
+#: u2w_form.c:1249 u2w_form.c:1253
+msgid "Clear"
+msgstr "Clear"
+
+#: u2w_hosts.c:297
+msgid "edit hosts.uaw file"
+msgstr "hosts.uaw Datei ändern"
+
+#: u2w_hosts.c:299
+msgid "edit .hosts file"
+msgstr ".hosts Datei ändern"
+
+#: u2w_hosts.c:308
+msgid "IP-address"
+msgstr "IP-Adresse"
+
+#: u2w_hosts.c:308 u2w_passwd.c:646
+msgid "delete"
+msgstr "löschen"
+
+#: u2w_hosts.c:344 u2w_passwd.c:733
+msgid "new entry"
+msgstr "Neuer Eintrag"
+
+#: u2w_maxdb.c:368 u2w_maxdb.c:482 u2w_maxdb.c:1135 u2w_maxdb.c:1234
+#: u2w_mysql.c:375 u2w_mysql.c:481 u2w_mysql.c:528 u2w_mysql.c:618
+#: u2w_mysql.c:1359 u2w_mysql.c:1447 u2w_pgsql.c:354 u2w_pgsql.c:460
+#: u2w_pgsql.c:1107 u2w_pgsql.c:1198 u2w_sql.c:719 u2w_sql.c:818
+#, c-format
+msgid "Unable to allocate memory.\n"
+msgstr "Kann keinen Speicher allozieren.\n"
+
+#: u2w_menu.c:579 u2w_menu.c:585 u2w_u2wput.c:769
+msgid "   Back    "
+msgstr "  Zurück   "
+
+#: u2w_multi.c:317
+msgid "Max filesize reached."
+msgstr "Maximale Dateigröße erreicht"
+
+#: u2w_multi.c:323
+msgid "Can't write to file."
+msgstr "Kann nicht in Datei schreiben."
+
+#: u2w_multi.c:341
+msgid "Can't open file."
+msgstr "Datei kann icht geöffnet werden."
+
+#: u2w_multi.c:350 u2w_multi.c:358
+msgid "Access denied."
+msgstr "Zugriff verweigert."
+
+#: u2w_multi.c:365
+msgid "Filename not allowed."
+msgstr "Dateiname nicht erlaubt."
+
+#: u2w_passwd.c:617
+msgid "ERROR on changing password file."
+msgstr "Passwortdatei konnte nicht geändert werden."
+
+#: u2w_passwd.c:635
+msgid "edit .passwd file"
+msgstr ".passwd Datei ändern"
+
+#: u2w_passwd.c:643
+msgid "user"
+msgstr "User"
+
+#: u2w_passwd.c:643
+msgid "password"
+msgstr "Passwort"
+
+#: u2w_passwd.c:644
+msgid "setuser"
+msgstr "Setuser"
+
+#: u2w_passwd.c:645
+msgid "userpath"
+msgstr "Userpfad"
+
+#: u2w_passwd.c:757
+#, c-format
+msgid "change password for %s."
+msgstr "Passwort für %s ändern."
+
+#: u2w_passwd.c:768
+msgid "old password"
+msgstr "altes Passwort"
+
+#: u2w_passwd.c:769 u2w_passwd.c:770
+msgid "new password"
+msgstr "neues Passwort"
+
+#: u2w_passwd.c:867
+msgid "wrong password."
+msgstr "falsches Passwort."
+
+#: u2w_passwd.c:874
+msgid "password wasn't retyped correctly."
+msgstr "Das Passwort wurde nicht richtig wiederholt."
+
+#: u2w_passwd.c:905
+msgid "changed password."
+msgstr "Passwort geändert."
+
+#: u2w_passwd.c:911
+msgid "ERROR on changing password."
+msgstr "Passwort konnte nicht geändert werden."
+
+#: u2w_put.c:519
+#, c-format
+msgid "File %s not found.\n"
+msgstr "Datei %s nicht gefunden.\n"
+
+#: u2w_u2w.c:259
+msgid "Private key does not match the certificate public key\n"
+msgstr "Private key does not match the certificate public key\n"
+
+#: u2w_u2w.c:275
+msgid "Failed to get EC curve."
+msgstr "EC-Curve konnte nicht bestimmt werden"
+
+#: u2w_u2w.c:283
+msgid "Failed to get DH params."
+msgstr "DH-Parameter konnten nicht bestimmt werden"
+
+#: u2w_u2w.c:288
+msgid "Failed to set DH."
+msgstr "DH konnte nicht gesetzt werden"
+
+#: u2w_u2w.c:373
+#, c-format
+msgid "Error on opening Pidfile %s.\n"
+msgstr "Kann Pid-Datei %s nicht öffnen.\n"
+
+#: u2w_u2w.c:400 u2w_u2w.c:405
+#, c-format
+msgid "Error on change user to %s.\n"
+msgstr "Fehler beim Wechseln des Users auf %s.\n"
+
+#: unix2web.c:336
+msgid "include-path for *.i2w files"
+msgstr "Include-Pfad für *.i2w Dateien"
+
+#: unix2web.c:338 unix2web.c:470
+msgid "switch logging on"
+msgstr "logging einschalten"
+
+#: unix2web.c:341 unix2web.c:473
+msgid "set loglevel to l"
+msgstr "Loglevel auf l"
+
+#: unix2web.c:344 unix2web.c:476
+msgid "write logging into path"
+msgstr "logging in Datei path schreiben"
+
+#: unix2web.c:347 unix2web.c:479
+msgid "write MARIADB-Errors into logfile/stderr"
+msgstr "MariaDB-Errors ins Logfile/stderr"
+
+#: unix2web.c:349
+msgid "change MARIADB-Port"
+msgstr "MariaDB-Port ändern"
+
+#: unix2web.c:353 unix2web.c:483
+msgid "write MySQL-Errors into logfile/stderr"
+msgstr "MySQL-Errors ins Logfile/stderr"
+
+#: unix2web.c:355
+msgid "change MySQL-Port"
+msgstr "MySQL-Port ändern"
+
+#: unix2web.c:359 unix2web.c:502
+msgid "write PostgreSQL-Errors into logfile/stderr"
+msgstr "PostgrSQL-Errors ins Logfile/stderr"
+
+#: unix2web.c:361
+msgid "change PostgreSQL-Port"
+msgstr "PostgreSQL-Port ändern"
+
+#: unix2web.c:364 unix2web.c:538
+msgid "show version"
+msgstr "Version anzeigen"
+
+#: unix2web.c:366 unix2web.c:542
+msgid "print executed lines"
+msgstr "ausgeführte Zeilen anzeigen"
+
+#: unix2web.c:368 unix2web.c:544
+msgid "browser/cmd variables only readable by %bpar/%cpar"
+msgstr "Parameter des Browser nur per %bpar/%cpar lesbar"
+
+#: unix2web.c:370 unix2web.c:554
+msgid "ignore empty pars on calling programs"
+msgstr "leere Parameter nicht an Programme übergeben"
+
+#: unix2web.c:373 unix2web.c:561
+msgid "set textdomain to td"
+msgstr "Textdomain auf td"
+
+#: unix2web.c:375 unix2web.c:563
+msgid "set textdomaindir to path"
+msgstr "Textdomaindir auf path"
+
+#: unix2web.c:378 unix2web.c:598
+msgid "define systemvars (-Xd <varname>=<value>)"
+msgstr "Systemvariablen definieren (-Xd <varname>=<wert>)"
+
+#: unix2web.c:380 unix2web.c:600
+msgid "read systemvars from file on startup"
+msgstr "Systemvariablen beim Start aus Datei file lesen"
+
+#: unix2web.c:382 unix2web.c:606
+msgid "show this help"
+msgstr "diese Kurzhilfe anzeigen"
+
+#: unix2web.c:385 unix2web.c:609
+msgid "logging of all functions"
+msgstr "alle Funktionen loggen"
+
+#: unix2web.c:387
+msgid "logging of all functions with seconds"
+msgstr "alle Funktionen mit Sekunden loggen"
+
+#: unix2web.c:389 unix2web.c:611
+msgid "logging of sended data"
+msgstr "gesendete Daten loggen"
+
+#: unix2web.c:391 unix2web.c:613
+msgid "logging of functions from sourcecode file dat.c"
+msgstr "Funktionen aus Quelldatei dat.c loggen"
+
+#: unix2web.c:393 unix2web.c:615
+msgid "verbose logging"
+msgstr "ausführliches Logging"
+
+#: unix2web.c:395 unix2web.c:617
+msgid "logging of readed data from browser"
+msgstr "gelesene Daten des Browsers loggen"
+
+#: unix2web.c:434
+#, c-format
+msgid "no access if file \"%s\" is missing"
+msgstr "kein Zugriff auf Verzeichnis, wenn Datei %s nicht vorhanden ist"
+
+#: unix2web.c:436
+msgid "set path for binaries"
+msgstr "Pfad für externe Binaries"
+
+#: unix2web.c:438
+msgid "show directory contents"
+msgstr "Directories werden mit Links angezeigt"
+
+#: unix2web.c:440
+msgid "path of errorpage"
+msgstr "Fehlerseite (statt \"Page not found\")"
+
+#: unix2web.c:442
+msgid "path of redirectpage on error"
+msgstr "Fehlerseite mit Redirect (statt \"Page not found\")"
+
+#: unix2web.c:444
+msgid "allow uploads with POST"
+msgstr "Uploads mit POST erlauben"
+
+#: unix2web.c:446
+msgid "uploads with POST only to directories with write permission"
+msgstr "Uploads mit POST nur zu Verzeichnissen mit Schreibrecht"
+
+#: unix2web.c:448
+msgid "on uploads with POST get filename from client"
+msgstr "bei Upload mit POST Dateiname des Clients übernehmen"
+
+#: unix2web.c:450
+msgid "path for uploads with POST"
+msgstr "Pfad für Uploads mit POST"
+
+#: unix2web.c:452
+msgid "don't delete temporary files after uploads with POST"
+msgstr "Dateien nach Uploads mit POST nicht automatisch löschen"
+
+#: unix2web.c:454
+msgid "maximum size of post files in bytes"
+msgstr "maximale Größe in Bytes von Post Dateien"
+
+#: unix2web.c:456
+msgid "allow uploads with PUT"
+msgstr "Uploads mit PUT erlauben"
+
+#: unix2web.c:458
+msgid "server root for PUT"
+msgstr "Server root für PUT"
+
+#: unix2web.c:460
+msgid "allow uploads with PUT without authorization"
+msgstr "Upload mit PUT auch ohne Anmeldung erlaubt"
+
+#: unix2web.c:462
+msgid "set path home as server root"
+msgstr "unter Pfad home liegen die Dateien"
+
+#: unix2web.c:464
+msgid "Include-path for *.i2w files"
+msgstr "Include-Pfad für *.i2w Dateien"
+
+#: unix2web.c:466
+msgid "don't interpret u2w-files"
+msgstr "u2w-Dateien werden nicht ausgewertet"
+
+#: unix2web.c:468
+msgid "allow Keep-Alive"
+msgstr "Keep-Alive erlauben"
+
+#: unix2web.c:486
+msgid "allow ?&edit"
+msgstr "?&edit erlauben"
+
+#: unix2web.c:488
+#, c-format
+msgid "accesscontrol with file \"%s\""
+msgstr "Zugriff wird über \"%\" Datei geregelt"
+
+#: unix2web.c:490
+#, c-format
+msgid "no access if hosts file \"%s\" is missing"
+msgstr "kein Zugriff, wenn Hosts-Datei \"%s\" nicht vorhanden ist"
+
+#: unix2web.c:492
+#, c-format
+msgid "path is hosts file for all directories without \"%s\" file"
+msgstr "path ist Hosts-Datei für alle Verzeichnisse ohne \"%s\" Datei"
+
+#: unix2web.c:495
+msgid "path is global hosts file for all directories"
+msgstr "path ist globale Hosts-Datei für alle Verzeichnisse"
+
+#: unix2web.c:497
+msgid "allow only this IP-addresses"
+msgstr "Zugriff nur von den angegebenen IP-Adressen"
+
+#: unix2web.c:499
+msgid "set listen port"
+msgstr "Listen-Port setzen"
+
+#: unix2web.c:505
+msgid "show this name as realm"
+msgstr "\"name\" im Anmeldefenster zeigen"
+
+#: unix2web.c:507
+msgid "set realm and use digest access authentication"
+msgstr "setzt Realm und Anmeldung auf \"digest access authentication\""
+
+#: unix2web.c:509
+#, c-format
+msgid "get user and passwords from file \"%s\""
+msgstr "User und Password aus Datei \"%s\" lesen"
+
+#: unix2web.c:511
+#, c-format
+msgid "no access if password file \"%s\" is missing"
+msgstr "kein Zugriff, wenn Passwort-Datei \"%s\" nicht vorhanden ist"
+
+#: unix2web.c:513
+#, c-format
+msgid "path is global password file for all directories without \"%s\" file"
+msgstr "path ist globale Passwort-Datei für alle Verzeichnisse ohne \"%s\" Datei"
+
+#: unix2web.c:516
+msgid "path is global password file including homedirectories"
+msgstr "path ist globale Passwort-Datei mit Home-Direktories"
+
+#: unix2web.c:518
+msgid "path is global passowrd file for all directories"
+msgstr "path ist globale Passwort-Datei für alle Verzeichnisse"
+
+#: unix2web.c:520
+msgid "user and password in base64"
+msgstr "User und Passwort B64 codiert angegeben"
+
+#: unix2web.c:522
+msgid "allow only this password"
+msgstr "Anmelde Passwort festlegen"
+
+#: unix2web.c:524
+msgid "allow only this user"
+msgstr "Anmelde User festlegen"
+
+#: unix2web.c:526
+msgid "set timeout in seconds"
+msgstr "Timeout der Verbindung auf sek Sekunden"
+
+#: unix2web.c:528
+msgid "set timeout in microseconds"
+msgstr "Timeout der Verbindung auf msek Mikrosekunden"
+
+#: unix2web.c:531
+msgid "defaultuser for webserver"
+msgstr "Defaultuser des Web-Servers"
+
+#: unix2web.c:533
+msgid "user for webserver"
+msgstr "Server läuft als user"
+
+#: unix2web.c:535
+msgid "defaultuser, change user after opening *.u2w file"
+msgstr "Defaultuser, User wechselt erst nach öffnen der *.u2w Datei"
+
+#: unix2web.c:540
+msgid "allow uploads of .?2w und .?3w files"
+msgstr "Uploads von .?2w und .?3w Dateien erlauben"
+
+#: unix2web.c:546
+msgid "set characterset in HTTP-header to chset"
+msgstr "setze characterset im HTTP-Header auf chset"
+
+#: unix2web.c:549
+msgid "make daemon"
+msgstr "dämonisieren"
+
+#: unix2web.c:551
+msgid "make daemon and wirte PID of process to path"
+msgstr "daemonisieren und PID des Prozessein in path schreiben"
+
+#: unix2web.c:556
+msgid "set backlog in listen to bcklg"
+msgstr "Backlog bei Listen auf bcklg setzen"
+
+#: unix2web.c:558
+msgid "send no HTTP-header"
+msgstr "keinen HTTP-Header senden"
+
+#: unix2web.c:566
+msgid "bind only on this IP-address"
+msgstr "nur an diese IP-Adresse binden"
+
+#: unix2web.c:568
+msgid "deny methode OPTIONS"
+msgstr "Methode OPTIONS nicht erlauben"
+
+#: unix2web.c:570
+msgid "force authorization"
+msgstr "immer Username und Passwort erfragen"
+
+#: unix2web.c:573
+msgid "allow /?&status[_flush] and select counter"
+msgstr "/?&status[_flush] und select counter erlauben"
+
+#: unix2web.c:577
+msgid "use HTTPS"
+msgstr "HTTPS verwenden"
+
+#: unix2web.c:579
+msgid "file with SSL-certificate"
+msgstr "Datei mit SSL-Certifikat"
+
+#: unix2web.c:581
+msgid "file with SSL-key"
+msgstr "Datei mit SSL-Key"
+
+#: unix2web.c:583
+msgid "file with SSL-CA"
+msgstr "Datei mit SSL-CA"
+
+#: unix2web.c:585
+msgid "file with SSL-Chain"
+msgstr "Datei mit SSL-CA"
+
+#: unix2web.c:587
+msgid "force client certificate"
+msgstr "Client Zertifikat ist notwendig"
+
+#: unix2web.c:589
+msgid "ask for client certificate"
+msgstr "Client Zertifikat anfordern"
+
+#: unix2web.c:592
+msgid "change directory after authorization"
+msgstr "nach Anmeldung automatisch ins User-Verzeichnis wechseln"
+
+#: unix2web.c:594
+msgid "home-directory for anonymous"
+msgstr "keine Anmeldung, dann ins Verzeichnis path wechseln"
+
+#: unix2web.c:596
+msgid "change into home-directory of user (forces -P)"
+msgstr "nach Anmeldung in Home-Verzeichnis des Anmelders wechseln (setzt -P)"
+
+#: unix2web.c:602
+msgid "execute prg on programstart"
+msgstr "Programm prg beim Starten ausführen"
+
+#: unix2web.c:604
+msgid "execute prg on programstop"
+msgstr "Programm prg beim Stoppen ausführen"
+
+#: unix2web.c:652
+#, c-format
+msgid "can't get current directory!\n"
+msgstr "aktuelles Verzeichnis kann nicht bestimmt werden!\n"
+
+#: unix2web.c:922
+#, c-format
+msgid "%s: bin-path too long.\n"
+msgstr "%s: Bin-Pfad ist zu lang.\n"
+
+#: unix2web.c:963
+#, c-format
+msgid "%s: unable to change to user %s.\n"
+msgstr "%s: Server kann nicht als %s laufen.\n"
+
+#: unix2web.c:975
+#, c-format
+msgid "%s: home-path too long.\n"
+msgstr "%s: Home-Pfad ist zu lang.\n"
+
+#: unix2web.c:1183
+#, c-format
+msgid "Error: Unknown option: %s.\n"
+msgstr "Fehler: Unbekannte Option: %s.\n"
+
+#: unix2web.c:1201
+msgid "Error: Option -rd without -sp.\n"
+msgstr "Fehler: Option -rd ohne -sp.\n"
+
+#: unix2web.c:1232
+#, c-format
+msgid "-Vh only without -s or -us/-uu!\n"
+msgstr "-Vh darf nur ohne -s und -us/-uu benutzt werden!\n"
+
+#: unix2web.c:1262
+msgid "Warning: mmap failed, no status counter available.\n"
+msgstr "Warnung: Für Status Counter konnte kein Speicher angefordert werden\n"

@@ -1,0 +1,13 @@
+###############################################
+#
+# defs.lst
+#
+# Defines zu Libraries
+#
+# DEFINE      Library       Sonst
+###############################################
+-DMYSQLCLIENT -lmysqlclient
+-DMARIADBCLIENT -lmariadb
+-DSQLITE3     -lsqlite3
+-DWITH_SSL    -lssl,-lcrypto
+-DHAS_PAM     -lpam         -lcrypt

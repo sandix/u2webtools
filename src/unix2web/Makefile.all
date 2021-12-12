@@ -1,0 +1,79 @@
+PREFIX ?= /usr
+
+CC := $(shell if which clang >/dev/null 2>&1 ; then echo clang; else echo gcc; fi)
+
+SYSCFLAG := $(shell ./getsystem.sh)
+
+ICPATHS := $(shell ./installedincludepaths.sh ${MAININCLUDE} ${TESTCFLAGS})
+
+ICLIBPATHS := $(shell ./installedlibpaths.sh ${ICPATHS})
+
+CICPATHS := $(shell ./gencpath.sh I ${ICPATHS})
+
+CICLIBPATHS := $(shell ./gencpath.sh L ${ICLIBPATHS})
+
+ICFLAGS := $(shell ./installedincludes.sh -I "${ICPATHS}" -L "${ICLIBPATHS}" ${STATIC} ${MAININCLUDE} ${TESTCFLAGS})
+
+ITLIBS := $(shell ./defs2libs.sh ${ICFLAGS})
+
+ILIBS := $(shell ./installedlibs.sh -L "${ICLIBPATHS}" ${STATIC} ${ITLIBS})
+
+LIBS := ${MINLIBS} ${ILIBS}
+
+ODIR := ${BINFILE}.$(shell ./objdirname.sh ${LIBS})${STATIC}
+
+CFLAGS := -O3 ${SYSCFLAG} ${MINCFLAGS} ${CICPATHS} ${ICFLAGS} ${DEBUG} ${WALL}
+
+BINDIR := ${ODIR}
+
+OBJDIR := ${ODIR}
+
+PRGOBJS = $(foreach v,$(PRGCS),$(OBJDIR)/$(basename $v).o)
+
+all:	${PRG}_dec.h ${PRG}_var.h ${BINDIR}/${BINFILE}
+
+headers:	${PRG}_dec.h ${PRG}_var.h
+
+version:	${PRG}_version.h
+
+${PRGOBJS}:	$(OBJDIR)/%.o: %.c ${PRGHS} ${PRG}_dec.h ${PRG}_var.h
+	${CC} ${CFLAGS} -c -o $@ $<
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+${OBJDIR}/${PRG}_version.o:	${PRG}_version.h
+
+${OBJDIR}/${PRG}.o:	${PRG}_pars.h
+
+${PRG}_version.h:	${PRGHS} $(PRGCS)
+	${AWK} -v D=`date '+%d.%m.%y'` -v Y=`date '+%Y'` -f version.awk ${PRG}_version.h >${PRG}_version.h.new
+	cat ${PRG}_version.h.new >${PRG}_version.h && rm ${PRG}_version.h.new
+
+${BINDIR}/${BINFILE}:	${OBJDIR} ${PRGOBJS}
+	${CC} ${CFLAGS} ${STATIC} ${CICLIBPATHS} ${PRGOBJS} -o ${BINDIR}/${BINFILE} ${LIBS}
+	@echo
+	@echo "Binfile: ${BINDIR}/${BINFILE}"
+	@echo "`${BINDIR}/${BINFILE} -v | fgrep 'Compiled with'`"
+	@echo
+
+install:	${BINDIR}/${BINFILE}
+	if [ -f ${PREFIX}/bin/${BINFILE} ] ; then diff -q ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} >/dev/null 2>&1 || (mv ${PREFIX}/bin/${BINFILE} ${PREFIX}/bin/${BINFILE}.old && cp ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} && rm ${PREFIX}/bin/${BINFILE}.old || mv ${PREFIX}/bin/${BINFILE}.old ${PREFIX}/bin/${BINFILE}); else cp ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} ; fi
+
+clean:
+	rm -f ${OBJDIR}/*.o ${PRG}_dec.h ${PRG}_var.h
+
+allclean:
+	rm -rf ${OBJDIR} ${PRG}_dec.h ${PRG}_dec_s.h ${PRG}_var.h
+
+proto:	${PRG}_dec.h
+
+var:	${PRG}_var.h
+
+${PRG}_dec.h:	${PRGCS}
+	${AWK} -f makeproto.awk *.c >${PRG}_dec.h
+	sed -f makefktlist.sed proto.lst | sort >${PRG}_dec_s.h
+	rm -f proto.lst
+
+${PRG}_var.h:	${PRG}.c ${PRGVARS}
+	${AWK} -f makevar.awk ${PRG}.c ${PRGVARS} >${PRG}_var.h

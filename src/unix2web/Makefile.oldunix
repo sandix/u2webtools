@@ -1,0 +1,14 @@
+###############################################
+# LINUX
+
+BINFILE ?= unix2webd
+
+MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -DOLDUNIX
+
+TESTCFLAGS := 
+
+STATIC ?= 
+
+MINLIBS := ${HOME}/lib/snprintf.o
+
+include Makefile.u2w

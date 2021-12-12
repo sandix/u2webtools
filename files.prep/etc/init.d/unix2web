@@ -1,0 +1,382 @@
+#!/bin/bash
+#
+#
+DEFUNIX2WEBBIN=/usr/bin/unix2webd
+UNIX2WEBCONFDIR=/etc/unix2web
+#
+PATH=/bin:/usr/bin:$PATH
+
+#BEGIN SYSTEMD#############################################################################
+# Infos fuer RedHat:
+# chkconfig: 
+# description: Start the unix2web Server
+
+# Infos fuer SUSE und DEBIAN
+### BEGIN INIT INFO
+# Provides:       unix2web
+# Required-Start: $local_fs $network $named
+# Required-Stop:  $local_fs $network $named
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Should-Start:
+# Should-Stop:
+# Description:    Don't use, use unix2web@* instead
+### END INIT INFO
+
+#
+if [[ "$1" = "-s" ]]
+ then
+  shift
+elif [[ "$1" = "enableall" ]]
+ then
+  for f in /etc/unix2web/*.conf
+   do
+    n=${f##*/}
+    systemctl enable unix2web@${n%.conf}
+  done
+  exit 0
+elif [[ -n "$2" ]]
+ then
+  if [[ "$2" == *@* ]]
+   then
+    systemctl $1 $2
+    exit $?
+  fi
+elif [[ "$1" = "start" ]]
+ then
+  for f in /etc/unix2web/*.conf
+   do
+    n=${f##*/}
+    systemctl enable unix2web@${n%.conf}
+  done
+  for s in $(systemctl --no-page -t service -a | sed -n 's/ *\(unix2web@[^.]*\).service.*/\1/p')
+   do
+    systemctl start $s
+  done
+  exit 0
+else
+  echo "redirecting to systemd"
+  systemctl $1 unix2web@* --all
+  exit $?
+fi
+#END SYSTEMD###############################################################################
+#BEGIN NOSYSTEMD###########################################################################
+# Infos fuer RedHat:
+# chkconfig: 35 95 05
+# description: Start the unix2web Server
+
+# Infos fuer SUSE und DEBIAN
+### BEGIN INIT INFO
+# Provides:       unix2web
+# Required-Start: $local_fs $network $named
+# Required-Stop:  $local_fs $network $named
+# Default-Start:  2 3 4 5
+# Default-Stop:   0 1 6
+# Description:    Start the unix2web Server
+### END INIT INFO
+#END NOSYSTEMD#############################################################################
+
+#
+if [[ "$1" != "status" ]]
+ then
+  if [[ -t 1 ]]
+   then
+    exec &> >(tee >(sed -n "s/^\(..\)/`date '+%FT%T%:z'` \1/p" >>/var/log/unix2web.log))
+  else
+    exec &> >(sed -n "s/^\(..\)/`date '+%FT%T%:z'` \1/p" >>/var/log/unix2web.log)
+  fi
+fi
+#
+if [[ -z "$2" ]]
+ then
+  if [[ ! -d $UNIX2WEBCONFDIR ]]
+   then
+    echo "$UNIX2WEBCONFDIR not found."
+    exit 0
+  elif [[ `ls $UNIX2WEBCONFDIR/*.conf 2>/dev/null | wc -l` -eq 0 ]]
+   then
+    echo "No services defined."
+    exit 0
+  fi
+fi
+#
+pidfile()
+{ PF="$(cd `dirname $1`; pwd -P)/`basename $1 .conf`.pid"
+  if [[ ${PF#/etc/unix2web/} != $PF ]]
+   then
+    PF=${PF/#\/etc\/unix2web*\//u2wpidfile_}
+  else
+    PF="u2wpidfile${PF//\//_}"
+  fi
+  if [[ -z "$SWITCHUSER" ]]
+   then
+    U2WPIDFILE="/var/run/$PF"
+  else
+    U2WPIDFILE="/var/tmp/$PF"
+  fi
+}
+#
+start()
+{ echo
+  echo "Config File: $1"
+  unset SWITCHUSER U2WDEFUSER U2WSETUSER U2WPORT U2WHOME U2WPARS U2WLANG U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WLANG" ]]
+   then
+    L=""
+  else
+    L="LANG=$U2WLANG "
+  fi
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      echo " already running"
+      return 0
+   fi
+  fi
+  if [[ "${U2WPORT:-0}" -gt 0 && -n "$U2WHOME" ]]
+   then
+    if [[ -n "$SWITCHUSER" ]]
+     then
+      U2WUSER="-us $SWITCHUSER"
+    elif [[ -n "$U2WDEFUSER" ]]
+     then
+      U2WUSER="-u $U2WDEFUSER"
+    elif [[ -n "$U2WSETUSER" ]]
+      then
+       U2WUSER="-us $U2WSETUSER"
+    fi
+    echo "$L${UNIX2WEBBIN:-$DEFUNIX2WEBBIN} -p $U2WPORT -Dp $U2WPIDFILE -h $U2WHOME $U2WUSER $U2WPARS"
+    eval $L${UNIX2WEBBIN:-$DEFUNIX2WEBBIN} -p $U2WPORT -Dp \"$U2WPIDFILE\" -h \"$U2WHOME\" $U2WUSER $U2WPARS
+    sleep 1
+    [[ -s "$U2WPIDFILE" && -d /proc/$(<"$U2WPIDFILE") ]] && return 0 || return 1
+  else
+    echo "Error: incomplete settings"
+    return 1
+  fi
+}
+
+stop-abort()
+{ echo
+  echo "Config File: $1"
+  unset SWITCHUSER U2WPORT U2WHOME U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      kill -QUIT $TPID
+      if pgrep -P $TPID >/dev/null
+       then
+        pkill -QUIT -P $TPID
+        echo "wating for childs to stop"
+        Z=0
+        while pgrep -P $TPID >/dev/null
+         do
+          Z=$(($Z + 1))
+          if [[ $Z -gt 3 ]]
+           then
+            pkill -P $TPID
+          fi
+          sleep 1
+        done
+      fi
+      return 0
+    else
+      return 0
+    fi
+  else
+    echo "Not running (Pidfile $U2WPIDFILE not found)."
+  fi
+  return 0
+}
+
+stop()
+{ echo
+  echo "Config File: $1"
+  unset SWITCHUSER U2WPORT U2WHOME U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      kill -QUIT $TPID
+      if pgrep -P $TPID >/dev/null
+       then
+        pkill -QUIT -P $TPID
+        echo "wating for childs to stop"
+        Z=0
+        while pgrep -P $TPID >/dev/null
+         do
+          Z=$(($Z + 1))
+          if [[ $Z -gt 10 ]]
+           then
+            pkill -P $TPID
+          fi
+          sleep 6
+        done
+      fi
+      return 0
+    else
+      return 0
+    fi
+  else
+    echo "Not running (Pidfile $U2WPIDFILE not found)."
+  fi
+  return 0
+}
+
+status()
+{ echo "Config File: $1"
+  unset SWITCHUSER U2WPORT U2WHOME U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      echo " running"
+      return 0
+    else
+      echo " dead"
+    fi
+  else
+    echo "Not running (Pidfile $U2WPIDFILE not found)."
+  fi
+  return 1
+}
+
+reload()
+{ echo
+  echo "Config File: $1"
+  unset SWITCHUSER U2WPORT U2WHOME U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      kill -HUP $TPID
+      return 0
+    fi
+  fi
+  return 1
+}
+
+restart()
+{ echo
+  echo "Config File: $1"
+  unset SWITCHUSER U2WPORT U2WHOME U2WPIDFILE UNIX2WEBBIN
+  . "$1"
+  if [[ -z "$U2WPIDFILE" ]]
+   then
+    pidfile $1
+  fi
+  if [[ -s "$U2WPIDFILE" ]]
+   then
+    TPID=$(<"$U2WPIDFILE")
+    if [[ -d "/proc/$TPID" ]] && sed 's/\x0/|/g' "/proc/$TPID/cmdline" | grep -q "${UNIX2WEBBIN:-$DEFUNIX2WEBBIN}|.*|$U2WPIDFILE|"
+     then
+      kill $TPID
+      while [[ -d "/proc/$TPID" ]]
+       do
+        if which usleep >/dev/null 2>&1
+         then
+          usleep 50000
+        else
+          sleep 1
+        fi
+      done
+    fi
+  fi
+  start "$1"
+}
+
+case "$1" in
+  start)
+	MSG="started";;
+  stop)
+	MSG="stopped";;
+  stop-abort)
+	MSG="stopped";;
+  restart)
+	MSG="restarted";;
+  reload)
+	MSG="reload";;
+  status)
+	MSG="";;
+   *)
+#SYSTEMD#        echo "Usage: $0 start|stop|stop-abort|reload|restart|status|enableall [<name>]"
+#NOSYSTEMD#        echo "Usage: $0 start|stop|stop-abort|reload|restart|status [<name>]"
+        exit 1;;
+esac
+
+rc_status=0
+if [[ -z "$2" ]]
+ then
+  echo "unix2web: ..."
+  for i in `ls $UNIX2WEBCONFDIR/*.conf`
+   do
+    $1 "$i"
+    RET=$?
+    if [[ $RET -gt 0 ]]
+     then
+      rc_status=$RET
+    fi
+  done
+else
+  if [[ -s "$2" ]]
+   then
+    $1 "$2"
+    RET=$?
+    if [[ $RET -gt 0 ]]
+     then
+      rc_status=$RET
+    fi
+  elif [[ -s "$UNIX2WEBCONFDIR/$2" ]]
+   then
+    $1 "$UNIX2WEBCONFDIR/$2"
+    rc_status=$?
+  elif [[ -s "$UNIX2WEBCONFDIR/$2.conf" ]]
+   then
+    $1 "$UNIX2WEBCONFDIR/$2.conf"
+    rc_status=$?
+  else
+    echo "ERROR: Configfile $2 not found"
+    exit 3
+  fi
+  if [[ -n "$MSG" ]]
+   then
+    if [[ $rc_status -gt 0 ]]
+     then
+      echo "not $MSG"
+    else
+      echo "$MSG"
+    fi
+  fi
+fi
+exit $rc_status
