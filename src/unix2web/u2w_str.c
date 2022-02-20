@@ -595,7 +595,7 @@ int get_command_z(char **s, char *cmd)
 { char *c;
 
   c = cmd;
-  while( **s && (isalpha(**s) || **s == '_' || **s == '/' )
+  while( **s && (isalnum(**s) || **s == '_' || **s == '/' )
          && (cmd - c) < MAX_PAR_NAME_LEN )
     *cmd++ = *(*s)++;
   *cmd = '\0';

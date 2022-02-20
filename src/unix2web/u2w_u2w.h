@@ -32,6 +32,7 @@
 #define PUTDATA      "putdata"        /* Pfad zu den PUT Daten                         */
 #define CLIENTIP     "clientip"       /* %clientip ist die Connect-IP-Adresse          */
                                       /* bei Zugriff über Proxy, dessen Adresse        */
+#define CLIENTIP6    "clientip6"      /* IP-V4 Adressen als IP-V6 Adressen liefern     */
 #define THISFILE     "this"           /* %this ist die aktuelle u2w-Datei              */
 #define MYHOST       "thishost"       /* %thishost ist mein Hostname                   */
 #define MYPAGE       "thispage"       /* %thispage ist die komplette Seitenanforderung */

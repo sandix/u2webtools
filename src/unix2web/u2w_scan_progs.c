@@ -541,6 +541,25 @@ int do_clientip(int pa, char **out, long n,
 
 
 /***************************************************************************************/
+/* int do_clientip6(int pa, char **out, long n,                                        */
+/*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*     do_clientip6 %clientip6                                                         */
+/***************************************************************************************/
+int do_clientip6(int pa, char **out, long n,
+                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{
+#ifdef WEBSERVER
+  strcpyn_z(out, clientip6, n);
+#endif
+  return false;
+}
+
+
+/***************************************************************************************/
 /* int do_var_ok(int pa, char **out, long n,                                           */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */

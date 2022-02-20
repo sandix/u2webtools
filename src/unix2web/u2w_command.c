@@ -278,6 +278,7 @@ scan_prog_type scan_progs[] =
   D40(PRINTUSER     , do_printuser       , 0,    0),
   D40(PRINTPWD      , do_printpwd        , 0,    0),
   D40(CLIENTIP      , do_clientip        , 0,    0),
+  D40(CLIENTIP6     , do_clientip6       , 0,    0),
   D40(VAR_OK        , do_var_ok          , 0,    0),
   D40(THISFILE      , do_thisfile        , 0,    0),
   D40(MYHOST        , do_myhost          , 0,    0),
