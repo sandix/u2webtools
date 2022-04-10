@@ -41,10 +41,10 @@ int anz_loop_stack;
 
 #ifdef WEBSERVER
 /***************************************************************************************/
-/* int do_mime(void)                                                                   */
+/* short do_mime(void)                                                                 */
 /*     do_mime Mimetype setzen                                                         */
 /***************************************************************************************/
-int do_mime(void)
+short do_mime(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -54,10 +54,10 @@ int do_mime(void)
 
 
 /***************************************************************************************/
-/* int do_setcookie(void)                                                              */
+/* short do_setcookie(void)                                                            */
 /*     do_setcoolie, String Set-Cookie: zu den http-headerzeilen hinzufügen            */
 /***************************************************************************************/
-int do_setcookie(void)
+short do_setcookie(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( anz_httpheadlines < MAX_ANZ_HTTPHEADLINES )
@@ -70,10 +70,10 @@ int do_setcookie(void)
 
 
 /***************************************************************************************/
-/* int do_charset(void)                                                                */
+/* short do_charset(void)                                                              */
 /*     do_charset, content-charset setzen                                              */
 /***************************************************************************************/
-int do_charset(void)
+short do_charset(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -83,10 +83,10 @@ int do_charset(void)
 
 
 /***************************************************************************************/
-/* int do_httpnum(void)                                                                */
+/* short do_httpnum(void)                                                              */
 /*     do_httpnum: HTTP Response-Code setzen                                           */
 /***************************************************************************************/
-int do_httpnum(void)
+short do_httpnum(void)
 { char out[MAX_ZEILENLAENGE], *o;                    /* Aufbau des Ergebnisses         */
 
   o = out;
@@ -97,10 +97,10 @@ int do_httpnum(void)
 
 
 /***************************************************************************************/
-/* int do_httpdesc(void)                                                               */
+/* short do_httpdesc(void)                                                             */
 /*     do_httpdesc HTTP Description setzen                                             */
 /***************************************************************************************/
-int do_httpdesc(void)
+short do_httpdesc(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -110,10 +110,10 @@ int do_httpdesc(void)
 
 
 /***************************************************************************************/
-/* int do_savename(void)                                                               */
+/* short do_savename(void)                                                             */
 /*     do_savename Savename fuer Download setzen                                       */
 /***************************************************************************************/
-int do_savename(void)
+short do_savename(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -123,10 +123,10 @@ int do_savename(void)
 
 
 /***************************************************************************************/
-/* int do_redirect(void)                                                               */
+/* short do_redirect(void)                                                             */
 /*     do_redirect                                                                     */
 /***************************************************************************************/
-int do_redirect(void)
+short do_redirect(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   char z1[MAX_ZEILENLAENGE];
   char z2[MAX_ZEILENLAENGE];
@@ -141,10 +141,10 @@ int do_redirect(void)
 
 #ifndef CYGWIN
 /***************************************************************************************/
-/* int do_set_user(void)                                                               */
+/* short do_set_user(void)                                                             */
 /*     do_set_user                                                                     */
 /***************************************************************************************/
-int do_set_user(void)
+short do_set_user(void)
 { if( !set_user_flag )
   { char newuser[USER_LENGTH];
 
@@ -161,10 +161,10 @@ int do_set_user(void)
 
 
 /***************************************************************************************/
-/* int do_authorize(void)                                                              */
+/* short do_authorize(void)                                                            */
 /*     do_authorize                                                                    */
 /***************************************************************************************/
-int do_authorize(void)
+short do_authorize(void)
 { LOG(40, "do_authorize, auth_mode: %d.\n", auth_mode);
 
   if( auth_mode != AUTH )                               /* User und PWD eingegeben?    */
@@ -178,10 +178,10 @@ int do_authorize(void)
 
 
 /***************************************************************************************/
-/* int do_page_not_found(void)                                                         */
+/* short do_page_not_found(void)                                                       */
 /*     do_page_not_found                                                               */
 /***************************************************************************************/
-int do_page_not_found(void)
+short do_page_not_found(void)
 { if( http_head_flag == 0 )
   { send_error_page(SEITE_NICHT_GEFUNDEN_NUM, SEITE_NICHT_GEFUNDEN_DESC, "",
                     SEITE_NICHT_GEFUNDEN_TEXT);
@@ -193,10 +193,10 @@ int do_page_not_found(void)
 
 
 /***************************************************************************************/
-/* int do_login(void)                                                                  */
+/* short do_login(void)                                                                */
 /*     do_login                                                                        */
 /***************************************************************************************/
-int do_login(void)
+short do_login(void)
 { if( http_head_flag == 0 )                              /* nur, wenn noch kein http   */
   { send_authorize(false);
     return 0;
@@ -207,10 +207,10 @@ int do_login(void)
 
 
 /***************************************************************************************/
-/* int do_include(void)                                                                */
+/* short do_include(void)                                                              */
 /*     do_include                                                                      */
 /***************************************************************************************/
-int do_include(void)
+short do_include(void)
 { char out[MAX_ZEILENLAENGE];
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -253,10 +253,10 @@ int do_include(void)
 
 
 /***************************************************************************************/
-/* int do_input(void)                                                                  */
+/* short do_input(void)                                                                */
 /*     do_input                                                                        */
 /***************************************************************************************/
-int do_input(void)
+short do_input(void)
 { if( include_counter < MAX_ANZ_INCLUDE )
   { ptr_stack[include_counter] = akt_ptr;
     file_flag_stack[include_counter] = file_flag;
@@ -282,10 +282,10 @@ int do_input(void)
 
 
 /***************************************************************************************/
-/* int do_systemcmd(void)                                                              */
+/* short do_systemcmd(void)                                                            */
 /*     do_systemcmd                                                                    */
 /***************************************************************************************/
-int do_systemcmd(void)
+short do_systemcmd(void)
 { LOG(4, "System, in: %s.\n", inz);
   appstr(zeile, &inz, MAX_ZEILENLAENGE);
   strcatn(zeile, " 2>/dev/null", MAX_ZEILENLAENGE);
@@ -297,10 +297,10 @@ int do_systemcmd(void)
 
 
 /***************************************************************************************/
-/* int do_continue(void)                                                               */
+/* short do_continue(void)                                                             */
 /*     do_continue                                                                     */
 /***************************************************************************************/
-int do_continue(void)
+short do_continue(void)
 { strcpyn_l(zeile, &inz, MAX_ZEILENLAENGE);
   if( is_elem(LOOP_STRINGS, zeile) )
   { if( skip_to_end_loop(inzeile, akt_ptr, zeile) > 0 )
@@ -321,10 +321,10 @@ int do_continue(void)
 
 
 /***************************************************************************************/
-/* int do_for(void)                                                                    */
+/* short do_for(void)                                                                  */
 /*     do_for                                                                          */
 /***************************************************************************************/
-int do_for(void)
+short do_for(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   char *q, *p;
 
@@ -381,10 +381,10 @@ int do_for(void)
 
 
 /***************************************************************************************/
-/* int do_foreach(void)                                                                */
+/* short do_foreach(void)                                                              */
 /*     do_foreach                                                                      */
 /***************************************************************************************/
-int do_foreach(void)
+short do_foreach(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   char *p;
 
@@ -433,10 +433,10 @@ int do_foreach(void)
 
 
 /***************************************************************************************/
-/* int do_end_for(void)                                                                */
+/* short do_end_for(void)                                                              */
 /*     do_end_for                                                                      */
 /***************************************************************************************/
-int do_end_for(void)
+short do_end_for(void)
 { if( anz_for_stack )
   { if( next_for_wert[anz_for_stack-1] )
     { set_parwert(for_names[anz_for_stack-1], next_for_wert[anz_for_stack-1]->wert,
@@ -457,10 +457,10 @@ int do_end_for(void)
 
 
 /***************************************************************************************/
-/* int do_while(void)                                                                  */
+/* short do_while(void)                                                                */
 /*     do_while                                                                        */
 /***************************************************************************************/
-int do_while(void)
+short do_while(void)
 { if( anz_while_stack < WHILE_STACK_SIZE && *inz )
   { if( test(inz) )
     {
@@ -480,10 +480,10 @@ int do_while(void)
 
 
 /***************************************************************************************/
-/* int do_end_while(void)                                                              */
+/* short do_end_while(void)                                                            */
 /*     do_end_while                                                                    */
 /***************************************************************************************/
-int do_end_while(void)
+short do_end_while(void)
 { LOG(9, "u2w_put, end_while, while_seek[%d]: %lx.\n",
       anz_while_stack-1, while_seek[anz_while_stack-1]);
   if( anz_while_stack )
@@ -498,10 +498,10 @@ int do_end_while(void)
 
 
 /***************************************************************************************/
-/* int do_break(void)                                                                  */
+/* short do_break(void)                                                                */
 /*     do_break                                                                        */
 /***************************************************************************************/
-int do_break(void)
+short do_break(void)
 { strcpyn_l(zeile, &inz, MAX_ZEILENLAENGE);
   if( is_elem(LOOP_STRINGS, zeile) )
   { int i;
@@ -554,10 +554,10 @@ int do_break(void)
 
 
 /***************************************************************************************/
-/* int do_switch(void)                                                                 */
+/* short do_switch(void)                                                               */
 /*     do_switch                                                                       */
 /***************************************************************************************/
-int do_switch(void)
+short do_switch(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   scan_to_teil(out, inz, MAX_ZEILENLAENGE);
@@ -567,20 +567,20 @@ int do_switch(void)
 
 
 /***************************************************************************************/
-/* int do_case_default(void)                                                           */
+/* short do_case_default(void)                                                         */
 /*     do_default                                                                      */
 /***************************************************************************************/
-int do_case_default(void)
+short do_case_default(void)
 { skip_to(inzeile, ATTRIB_STR END_SWITCH, akt_ptr);
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_if(void)                                                                     */
+/* short do_if(void)                                                                   */
 /*     do_if                                                                           */
 /***************************************************************************************/
-int do_if(void)
+short do_if(void)
 { if( !test(inz) )
     skip_to_fi_else(inzeile, akt_ptr);
   return -1;
@@ -588,40 +588,40 @@ int do_if(void)
 
 
 /***************************************************************************************/
-/* int do_else_elseif(void)                                                            */
+/* short do_else_elseif(void)                                                          */
 /*     do_else_elseif                                                                  */
 /***************************************************************************************/
-int do_else_elseif(void)
+short do_else_elseif(void)
 { skip_to_fi(inzeile, akt_ptr);
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_skip_empty_flag(void)                                                        */
+/* short do_skip_empty_flag(void)                                                      */
 /*     do_skip_empty_flag                                                              */
 /***************************************************************************************/
-int do_skip_empty_flag(void)
+short do_skip_empty_flag(void)
 { skip_empty_flag = true;
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_not_skip_empty_flag(void)                                                    */
+/* short do_not_skip_empty_flag(void)                                                  */
 /*     do_not_skip_empty_flag                                                          */
 /***************************************************************************************/
-int do_not_skip_empty_flag(void)
+short do_not_skip_empty_flag(void)
 { skip_empty_flag = false;
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_exit(void)                                                                   */
+/* short do_exit(void)                                                                 */
 /*     do_exit                                                                         */
 /***************************************************************************************/
-int do_exit(void)
+short do_exit(void)
 {
 #ifdef INTERPRETER
   char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
@@ -646,50 +646,50 @@ int do_exit(void)
 
 
 /***************************************************************************************/
-/* int do_return(void)                                                                 */
+/* short do_return(void)                                                               */
 /*     do_return                                                                       */
 /***************************************************************************************/
-int do_return(void)
+short do_return(void)
 { fseek(akt_ptr, 0, SEEK_END);
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_title(void)                                                                  */
+/* short do_title(void)                                                                */
 /*     do_title                                                                        */
 /***************************************************************************************/
-int do_title(void)
+short do_title(void)
 { scan_to(title, &inz, MAX_NAME_LEN, 0, "", '\0');
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_background(void)                                                             */
+/* short do_background(void)                                                           */
 /*     do_background                                                                   */
 /***************************************************************************************/
-int do_background(void)
+short do_background(void)
 { strcpyn(background, inz, MAX_NAME_LEN);     /* Hintergrundbild             */
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_bodypars(void)                                                               */
+/* short do_bodypars(void)                                                             */
 /*     do_background                                                                   */
 /***************************************************************************************/
-int do_bodypars(void)
+short do_bodypars(void)
 { strcpyn(bodypars, inz, MAX_NAME_LEN);                 /* Body-Parameter              */
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_endblock(void)                                                               */
+/* short do_endblock(void)                                                             */
 /*     do_endblock                                                                     */
 /***************************************************************************************/
-int do_endblock(void)
+short do_endblock(void)
 { LOG(3, "do_endblock, parflag: %d, tablelevel: %d, tablecols: %d, akt_tablecols: %d.\n",
       parflag, tablelevel, tablecols, akt_tablecols);
   if( parflag > 0 )                           /* %end nach %parameter?       */
@@ -747,10 +747,10 @@ int do_endblock(void)
 
 
 /***************************************************************************************/
-/* int do_endpar(void)                                                                 */
+/* short do_endpar(void)                                                               */
 /*     do_endpar                                                                       */
 /***************************************************************************************/
-int do_endpar(void)
+short do_endpar(void)
 { LOG(3, "do_endpar, parflag: %d, tablelevel: %d, tablecols: %d, akt_tablecols: %d.\n",
       parflag, tablelevel, tablecols, akt_tablecols);
   if( parflag > 0 )                           /* %end nach %parameter?       */
@@ -786,10 +786,10 @@ int do_endpar(void)
 
 
 /***************************************************************************************/
-/* int do_resultpage(void)                                                             */
+/* short do_resultpage(void)                                                           */
 /*     do_resultpage                                                                   */
 /***************************************************************************************/
-int do_resultpage(void)
+short do_resultpage(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -801,10 +801,10 @@ int do_resultpage(void)
 
 
 /***************************************************************************************/
-/* int do_parameter_ext(void)                                                          */
+/* short do_parameter_ext(void)                                                        */
 /*     do_parameter_ext                                                                */
 /***************************************************************************************/
-int do_parameter_ext(void)
+short do_parameter_ext(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -816,20 +816,20 @@ int do_parameter_ext(void)
 
 
 /***************************************************************************************/
-/* int do_no_newline(void)                                                             */
+/* short do_no_newline(void)                                                           */
 /*     do_no_newline                                                                   */
 /***************************************************************************************/
-int do_no_newline(void)
+short do_no_newline(void)
 { newlineflag = false;
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_not_no_newline(void)                                                         */
+/* short do_not_no_newline(void)                                                       */
 /*     do_not_no_newline                                                               */
 /***************************************************************************************/
-int do_not_no_newline(void)
+short do_not_no_newline(void)
 { char *p;
 
   if( akt_tablecols )
@@ -849,20 +849,20 @@ int do_not_no_newline(void)
 
 
 /***************************************************************************************/
-/* int do_table_autocol_on(void)                                                       */
+/* short do_table_autocol_on(void)                                                     */
 /*     Tabllen mit leerspalten auffüllen ein                                           */
 /***************************************************************************************/
-int do_table_autocol_on(void)
+short do_table_autocol_on(void)
 { table_autofill_cols = true;
   return -1;
 }
 
 
 /***************************************************************************************/
-/* int do_table_autocol_off(void)                                                      */
+/* short do_table_autocol_off(void)                                                    */
 /*     Tabllen mit leerspalten auffüllen aus                                           */
 /***************************************************************************************/
-int do_table_autocol_off(void)
+short do_table_autocol_off(void)
 { table_autofill_cols = false;
   return -1;
 }

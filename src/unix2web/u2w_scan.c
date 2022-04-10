@@ -12,7 +12,7 @@
 
 
 /***************************************************************************************/
-/* int scan_zeile(char *out, char **s, menutype menu, long n)                          */
+/* short scan_zeile(char *out, char **s, menutype menu, long n)                        */
 /*                char *out    : Ausgabe hier aufbauen                                 */
 /*                char **s     : gelesene Eingabezeile                                 */
 /*                menutype menu: auf Menueseiten gesetzt                               */
@@ -21,8 +21,8 @@
 /*     scan_zeile wertet die eingelesene Zeile s aus. Dazu werden Hyperlinks           */
 /*                und Kommandoaufrufe ausgewertet                                      */
 /***************************************************************************************/
-int scan_zeile(char *out, char **s, menutype menu, long n)
-{ int ret;                                           /* Ergebniswert                   */
+short scan_zeile(char *out, char **s, menutype menu, long n)
+{ short ret;                                         /* Ergebniswert                   */
   char *o;                                           /* zeigt auf das Ende der Ausgabe */
   char shell[MAX_ZEILENLAENGE];                      /* zum Aufbauen des Shellaufrufs  */
   char *p;
@@ -172,10 +172,9 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
       }
       else
       { unsigned int tblid, fktid;
-        int sf;
         char cmd[MAX_PAR_NAME_LEN];
 
-        sf = get_command_z(s, cmd);
+        get_command_z(s, cmd);
         if( *cmd && !get_u2w_hash(cmd, T_U2W_COMMAND_PROGS|T_SCAN_PROGS|T_SCAN_SEND_PROGS
                                        |T_SCAN_ONLY_SEND_PROGS|T_FORMAT|T_U2W_TABLE_PROGS,
                                   &tblid, &fktid) )
@@ -187,6 +186,7 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
             case T_U2W_COMMAND_PROGS:
               if( o != out )
               { *o = '\0';
+                last_char_sended = *(o-1);
                 dosend(out);
                 o = out;
               }
@@ -195,6 +195,7 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
             case T_U2W_TABLE_PROGS:
               if( o != out )
               { *o = '\0';
+                last_char_sended = *(o-1);
                 dosend(out);
                 o = out;
                 if( tablecols && last_char_sended != '\1' )
@@ -256,6 +257,7 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
             case T_SCAN_SEND_PROGS:
               if( o != out )
               { *o = '\0';
+                last_char_sended = *(o-1);
                 dosend(out);
                 o = out;
               }
@@ -266,6 +268,7 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
             case T_SCAN_ONLY_SEND_PROGS:
               if( o != out )
               { *o = '\0';
+                last_char_sended = *(o-1);
                 dosend(out);
                 o = out;
               }
@@ -274,6 +277,8 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
                     || ret;
               continue;
             case T_FORMAT:
+              if( **s == ' ' )
+                (*s)++;
               if( u2w_mode == U2W_MODE )
               { if( format_commands[fktid].numhtml[0] && isalnum(0|**s) )
                 { p = zeile;
@@ -294,8 +299,6 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
         }
         *o++ = ATTRIB_CHAR;
         strcpyn_z(&o, cmd, n-(o-out));
-        if( sf && n-(o-out) > 0 )
-          *o++ = ' ';
       }
     }
     else if( tablecols && **s == TABLE_SEP )
@@ -355,10 +358,11 @@ int scan_zeile(char *out, char **s, menutype menu, long n)
 /***************************************************************************************/
 void do_scan(char *in, menutype menu)
 { char out[MAX_ZEILENLAENGE];
-  int ret;
+  short ret;
   char *s;
 
-  LOG(1, "do_scan, akt_tablecols: %d, in: %.200s.\n", akt_tablecols, in);
+  LOG(1, "do_scan, akt_tablecols: %d, in: %.200s, last_char_sended: %x.\n",
+      akt_tablecols, in, (int)last_char_sended);
 
   if( tablecols )
   { if( tablecols < 0 )
@@ -405,14 +409,17 @@ void do_scan(char *in, menutype menu)
 
   s = in;
 
+  LOG(11, "do_scan, a - last_char_sended: %x.\n", (int)last_char_sended);
   do
   { ret = scan_zeile(out, &s, menu, MAX_ZEILENLAENGE);
     if( out[0] )
       dosend(out);                                   /* Zeile abschicken               */
     LOG(4, "do_scan, ret: %d, out: %.200s.\n", ret, out);
+    LOG(11, "do_scan, b - last_char_sended: %x.\n", (int)last_char_sended);
   } while( *s && !ret );
 
-  LOG(19, "do_scan, u2w_mode: %d.\n", u2w_mode);
+  LOG(19, "do_scan, c - u2w_mode: %d, newlineflag: %d.\n", u2w_mode, newlineflag);
+  LOG(19, "do_scan, d - in: %s, out: %s.\n", in, out);
   if( tablecols )
   { if( last_char_sended != '\1' )
     { if( tablecols < 0 )
@@ -594,6 +601,8 @@ void scan_to_teil(char *out, char *in, long n)
               do_scan_command(&o, &s, n-(o-out), scan_send_progs_out[fktid], QF_NONE);
               continue;
             case T_FORMAT:
+              if( *s == ' ' )
+                s++;
               strcpyn_z(&o, format_commands[fktid].tty, n-(o-out));
               *o = '\0';                             /* Zeilenende                     */
               return;
@@ -919,6 +928,8 @@ int scan_to_z(char **out, char **in, long n, int tablecols, char *endchars,
                                         || ret;
                                   continue;
                                 case T_FORMAT:
+                                  if( **in == ' ' )
+                                    (*in)++;
                                   ret = strcpyn_z(out, format_commands[fktid].tty, n-(*out-o)) || ret;
                                   continue;
                               }

@@ -10,7 +10,7 @@
 
 
 /***************************************************************************************/
-/* int u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],    */
+/* short u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -18,7 +18,7 @@
 /*             return: true bei Fehler                                                 */
 /*     u2w_list speichert mehrere Parameter aus Liste                                  */
 /***************************************************************************************/
-int u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -35,7 +35,7 @@ int u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
 
 
 /***************************************************************************************/
-/* int u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],   */
+/* short u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -43,7 +43,7 @@ int u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
 /*             return: true bei Fehler                                                 */
 /*     u2w_lista speichert mehrere Parameter aus Liste                                 */
 /***************************************************************************************/
-int u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -60,7 +60,7 @@ int u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 
 
 /***************************************************************************************/
-/* int u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],   */
+/* short u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -68,7 +68,7 @@ int u2w_lista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 /*             return: true bei Fehler                                                 */
 /*     u2w_listi speichert mehrere Parameter aus Liste                                 */
 /***************************************************************************************/
-int u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -85,7 +85,7 @@ int u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 
 
 /***************************************************************************************/
-/* int u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -93,7 +93,7 @@ int u2w_listi(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 /*             return: true bei Fehler                                                 */
 /*     u2w_listai speichert mehrere Parameter aus Liste                                */
 /***************************************************************************************/
-int u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -110,7 +110,7 @@ int u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],   */
+/* short u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -118,7 +118,7 @@ int u2w_listai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_listf speichert mehrere Parameter aus Liste                                 */
 /***************************************************************************************/
-int u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -135,7 +135,7 @@ int u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 
 
 /***************************************************************************************/
-/* int u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -143,7 +143,7 @@ int u2w_listf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 /*             return: true bei Fehler                                                 */
 /*     u2w_listaf speichert mehrere Parameter aus Liste                                */
 /***************************************************************************************/
-int u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -160,7 +160,7 @@ int u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],   */
+/* short u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -168,7 +168,7 @@ int u2w_listaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_lists speichert mehrere Parameter aus Liste                                 */
 /***************************************************************************************/
-int u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -185,7 +185,7 @@ int u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 
 
 /***************************************************************************************/
-/* int u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -193,7 +193,7 @@ int u2w_lists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 /*             return: true bei Fehler                                                 */
 /*     u2w_listas speichert mehrere Parameter aus Liste                                */
 /***************************************************************************************/
-int u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -210,7 +210,7 @@ int u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],   */
+/* short u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -218,7 +218,7 @@ int u2w_listas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_llist speichert mehrere lokale Parameter aus Liste                          */
 /***************************************************************************************/
-int u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -235,7 +235,7 @@ int u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 
 
 /***************************************************************************************/
-/* int u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -243,7 +243,7 @@ int u2w_llist(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]
 /*             return: true bei Fehler                                                 */
 /*     u2w_llista speichert mehrere lokale Parameter aus Liste                         */
 /***************************************************************************************/
-int u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -260,7 +260,7 @@ int u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_llisti(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_llisti(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -268,7 +268,7 @@ int u2w_llista(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_llisti speichert mehrere lokale Parameter aus Liste                         */
 /***************************************************************************************/
-int u2w_llisti(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llisti(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -285,7 +285,7 @@ int u2w_llisti(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_llistai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
+/* short u2w_llistai(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -293,7 +293,7 @@ int u2w_llisti(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_llistai speichert mehrere lokale Parameter aus Liste                        */
 /***************************************************************************************/
-int u2w_llistai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llistai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -310,7 +310,7 @@ int u2w_llistai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LE
 
 
 /***************************************************************************************/
-/* int u2w_llistf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_llistf(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -318,7 +318,7 @@ int u2w_llistai(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LE
 /*             return: true bei Fehler                                                 */
 /*     u2w_llistf speichert mehrere lokale Parameter aus Liste                         */
 /***************************************************************************************/
-int u2w_llistf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llistf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -335,7 +335,7 @@ int u2w_llistf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_llistaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
+/* short u2w_llistaf(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -343,7 +343,7 @@ int u2w_llistf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_llistaf speichert mehrere lokale Parameter aus Liste                        */
 /***************************************************************************************/
-int u2w_llistaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llistaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -360,7 +360,7 @@ int u2w_llistaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LE
 
 
 /***************************************************************************************/
-/* int u2w_llists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
+/* short u2w_llists(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -368,7 +368,7 @@ int u2w_llistaf(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LE
 /*             return: true bei Fehler                                                 */
 /*     u2w_llists speichert mehrere lokale Parameter aus Liste                         */
 /***************************************************************************************/
-int u2w_llists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -385,7 +385,7 @@ int u2w_llists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 
 
 /***************************************************************************************/
-/* int u2w_llistas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN], */
+/* short u2w_llistas(int pa, int lens[2],char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],*/
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])                       */
 /*             int lens: Anzahl der Elemente in parnames und list_pars                 */
 /*             char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN]: Parameternamen           */
@@ -393,7 +393,7 @@ int u2w_llists(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN
 /*             return: true bei Fehler                                                 */
 /*     u2w_llistas speichert mehrere lokale Parameter aus Liste                        */
 /***************************************************************************************/
-int u2w_llistas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
+short u2w_llistas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS])
 { int i;
 
@@ -410,13 +410,13 @@ int u2w_llistas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LE
 
 
 /***************************************************************************************/
-/* int u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])              */
+/* short u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_let speichert einen neuen Parameter in pars                                 */
 /***************************************************************************************/
-int u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
   return false;
@@ -424,13 +424,13 @@ int u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_let speichert einen neuen Parameter in pars                                 */
 /***************************************************************************************/
-int u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
   return false;
@@ -438,13 +438,13 @@ int u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])             */
+/* short u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_leti speichert einen neuen Integer Parameter in pars                        */
 /***************************************************************************************/
-int u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
   return false;
@@ -452,13 +452,13 @@ int u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])             */
+/* short u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_letf speichert einen neuen Double Parameter in pars                         */
 /***************************************************************************************/
-int u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
   return false;
@@ -466,13 +466,13 @@ int u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])             */
+/* short u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_lets speichert einen neuen String Parameter in pars                         */
 /***************************************************************************************/
-int u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
   return false;
@@ -480,13 +480,13 @@ int u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_let speichert einen neuen Parameter in pars                                 */
 /***************************************************************************************/
-int u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
   return false;
@@ -494,13 +494,13 @@ int u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_let speichert einen neuen Parameter in pars                                 */
 /***************************************************************************************/
-int u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
   return false;
@@ -508,13 +508,13 @@ int u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_let_pluss speichert einen zsätzlichen String Parameter in pars              */
 /***************************************************************************************/
-int u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
   return false;
@@ -522,13 +522,13 @@ int u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])             */
+/* short u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llet speichert einen neuen lokalen Parameter in pars                        */
 /***************************************************************************************/
-int u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
   return false;
@@ -536,13 +536,13 @@ int u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llet_plus speichert einen weitern lokalen Wert im Parameter pars            */
 /***************************************************************************************/
-int u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
   return false;
@@ -550,13 +550,13 @@ int u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_lleti speichert einen neuen lokalen Integer Parameter in pars               */
 /***************************************************************************************/
-int u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
   return false;
@@ -564,13 +564,13 @@ int u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_lletf speichert einen neuen lokalen Double Parameter in pars                */
 /***************************************************************************************/
-int u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
   return false;
@@ -578,13 +578,13 @@ int u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llets speichert einen neuen lokalen String Parameter in pars                */
 /***************************************************************************************/
-int u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   change_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
   return false;
@@ -592,13 +592,13 @@ int u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llet_plusi speichert einen weiteren lokalen Integer Wert zum Parameter pars */
 /***************************************************************************************/
-int u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
   return false;
@@ -606,13 +606,13 @@ int u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llet_plusf speichert einen weiteren lokalen Float Wert zum Parameter pars   */
 /***************************************************************************************/
-int u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
   return false;
@@ -620,13 +620,13 @@ int u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_llet_pluss speichert einen weiteren lokalen String Wert zum Parameter pars  */
 /***************************************************************************************/
-int u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   add_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
   return false;
@@ -634,26 +634,26 @@ int u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_eval(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])             */
+/* short u2w_eval(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_evel führt u2w-Kommand %eval aus                                            */
 /***************************************************************************************/
-int u2w_eval(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_eval(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   return false;
 }
 
 
 /***************************************************************************************/
-/* int u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_isset prüft, ob die Variable, auf die **s zeigt, gesetzt ist                */
 /***************************************************************************************/
-int u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( prg_pars[0][0] )
   { return NULL == parwert(prg_pars[0], HP_BROWSER_LEVEL);
@@ -663,13 +663,13 @@ int u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_setquote(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_setquote(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_setquote speichert zu quotenedes Zeichen für Parameter                      */
 /***************************************************************************************/
-int u2w_setquote(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_setquote(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa == P1 )
     strcpyn(globalquote, prg_pars[0], MAX_LEN_QUOTE);
@@ -681,14 +681,14 @@ int u2w_setquote(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int store_par2file(char *parname, int level, FILE *ptr)                             */
+/* short store_par2file(char *parname, int level, FILE *ptr)                           */
 /*              char parname: zu sichernder Parametername                              */
 /*              int level: -2: System, -1: Browser/CMD, 0: global, x: level <= x       */
 /*              int h: Filehandle, in das gesichert wird                               */
 /*              return: true bei Fehler                                                */
 /*     store_par2file schreibt Daten aus parname in Datei mit Stream ptr               */
 /***************************************************************************************/
-int store_par2file(char *parname, int level, FILE *ptr)
+short store_par2file(char *parname, int level, FILE *ptr)
 { wertetype *w;
   char *p, *q;
   size_t nb;
@@ -736,13 +736,13 @@ int store_par2file(char *parname, int level, FILE *ptr)
 
 
 /***************************************************************************************/
-/* int u2w_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_store speichert Variableninhalt in Datei                                    */
 /***************************************************************************************/
-int u2w_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { FILE *ptr;
   int ret;
 
@@ -758,13 +758,13 @@ int u2w_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bstore(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_bstore(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_bstore speichert Browser-Variableninhalt in Datei                           */
 /***************************************************************************************/
-int u2w_bstore(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bstore(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { FILE *ptr;
   int ret;
 
@@ -780,26 +780,26 @@ int u2w_bstore(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_delete(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_delete(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_delete Datei löschen                                                        */
 /***************************************************************************************/
-int u2w_delete(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_delete(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   return unlink(prg_pars[0]) != 0;
 }
 
 
 /***************************************************************************************/
-/* int u2w_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_write Parameterinhalt in Datei schreiben                                    */
 /***************************************************************************************/
-int u2w_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( pa & P2 )
@@ -824,13 +824,13 @@ int u2w_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_gwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_gwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_gwrite Global-Parameterinhalt in Datei schreiben                            */
 /***************************************************************************************/
-int u2w_gwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_gwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( pa & P2 )
@@ -855,13 +855,13 @@ int u2w_gwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_bwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_bwrite Browser-Parameterinhalt in Datei schreiben                           */
 /***************************************************************************************/
-int u2w_bwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( pa & P2 )
@@ -886,13 +886,13 @@ int u2w_bwrite(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_print(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_print(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_print Daten in Datei schreiben                                              */
 /***************************************************************************************/
-int u2w_print(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_print(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( pa & P2 )
@@ -917,13 +917,13 @@ int u2w_print(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_close(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_close(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_delete Datei löschen                                                        */
 /***************************************************************************************/
-int u2w_close(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_close(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
   int ret;
 
@@ -938,26 +938,26 @@ int u2w_close(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_rename(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_rename(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_rename Datei umbenennen                                                     */
 /***************************************************************************************/
-int u2w_rename(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_rename(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   return rename(prg_pars[0], prg_pars[1]);
 }
 
 
 /***************************************************************************************/
-/* int u2w_eof(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])              */
+/* short u2w_eof(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_eof Datei auf Dateiende testen                                              */
 /***************************************************************************************/
-int u2w_eof(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_eof(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( isdigit(prg_pars[0][0]) )
@@ -970,13 +970,13 @@ int u2w_eof(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_errorout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_errorout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_errorout auf stderr schreiben                                               */
 /***************************************************************************************/
-int u2w_errorout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_errorout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
 #ifndef INTERPRETER
 #ifdef HAS_DAEMON
@@ -989,13 +989,13 @@ int u2w_errorout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_setenv(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_setenv(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_setenv Environment-Variable setzen                                          */
 /***************************************************************************************/
-int u2w_setenv(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_setenv(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(1, "u2w_setenv, p1: %s.\n", prg_pars[0]);
 
@@ -1007,13 +1007,13 @@ int u2w_setenv(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_set(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])              */
+/* short u2w_set(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_set System-Variable setzen                                                  */
 /***************************************************************************************/
-int u2w_set(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_set(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(1, "u2w_set, p1: %s.\n", prg_pars[0]);
 
@@ -1046,13 +1046,13 @@ int u2w_set(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 #ifdef WITH_GETTEXT
 /***************************************************************************************/
-/* int u2w_setlang(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_setlang(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_setlang Environment-Variable LANG setzen und setlocale aufrufen             */
 /***************************************************************************************/
-int u2w_setlang(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_setlang(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { struct lconv *l;
   char *p;
 
@@ -1082,13 +1082,13 @@ int u2w_setlang(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bindtextdomain(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
+/* short u2w_bindtextdomain(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]) */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bindtextdomain Textdomain setzen und mit Directory verbinden                */
 /***************************************************************************************/
-int u2w_bindtextdomain(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bindtextdomain(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   u2wtextdomain = store_str(prg_pars[1]);
   if( pa & P2 )
@@ -1101,13 +1101,13 @@ int u2w_bindtextdomain(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
 
 
 /***************************************************************************************/
-/* int u2w_logging(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_logging(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_logout in Loggingdatei schreiben                                            */
 /***************************************************************************************/
-int u2w_logging(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_logging(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { if( pa & P2 )
   { if( pa & P3 )
     { if( pa & P4 )
@@ -1144,13 +1144,13 @@ int u2w_logging(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_sleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_sleep angegebene Sekunden schlafen                                          */
 /***************************************************************************************/
-int u2w_sleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   if( 0 < (i = atoi(prg_pars[0])) )
@@ -1161,13 +1161,13 @@ int u2w_sleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 #ifndef OLDUNIX
 /***************************************************************************************/
-/* int u2w_usleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])           */
+/* short u2w_usleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_sleep angegebene MikroSekunden schlafen                                     */
 /***************************************************************************************/
-int u2w_usleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_usleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { long l;
 
   if( 0 < (l = atol(prg_pars[0])) )
@@ -1178,13 +1178,13 @@ int u2w_usleep(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_partrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_partrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_partrim Parameter trimmen                                                   */
 /***************************************************************************************/
-int u2w_partrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_partrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], include_counter, 3);
@@ -1195,13 +1195,13 @@ int u2w_partrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_parltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_parltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_parltrim Parameter trimmen                                                  */
 /***************************************************************************************/
-int u2w_parltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_parltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], include_counter, 1);
@@ -1212,13 +1212,13 @@ int u2w_parltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_parrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_parrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_parrtrim Parameter trimmen                                                  */
 /***************************************************************************************/
-int u2w_parrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_parrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], include_counter, 2);
@@ -1229,13 +1229,13 @@ int u2w_parrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_gpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_gpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_gpartrim Parameter trimmen                                                  */
 /***************************************************************************************/
-int u2w_gpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_gpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_GLOBAL_LEVEL, 3);
@@ -1246,13 +1246,13 @@ int u2w_gpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_gparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_gparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_gparltrim Parameter trimmen                                                 */
 /***************************************************************************************/
-int u2w_gparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_gparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_GLOBAL_LEVEL, 1);
@@ -1263,13 +1263,13 @@ int u2w_gparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_gparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_gparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_gparrtrim Parameter trimmen                                                 */
 /***************************************************************************************/
-int u2w_gparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_gparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_GLOBAL_LEVEL, 2);
@@ -1280,13 +1280,13 @@ int u2w_gparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_bpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bpartrim Parameter trimmen                                                  */
 /***************************************************************************************/
-int u2w_bpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_BROWSER_LEVEL, 3);
@@ -1297,13 +1297,13 @@ int u2w_bpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_bparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bparltrim Parameter trimmen                                                 */
 /***************************************************************************************/
-int u2w_bparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_BROWSER_LEVEL, 1);
@@ -1314,13 +1314,13 @@ int u2w_bparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_bparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bparrtrim Parameter trimmen                                                 */
 /***************************************************************************************/
-int u2w_bparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_BROWSER_LEVEL, 2);
@@ -1331,13 +1331,13 @@ int u2w_bparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_cpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_cpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_cpartrim Parameter trimmen                                                  */
 /***************************************************************************************/
-int u2w_cpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_cpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_COOKIE_LEVEL, 3);
@@ -1348,13 +1348,13 @@ int u2w_cpartrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_cparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_cparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
-/*     u2w_cparltrim Parameter trimmen                                                */
+/*     u2w_cparltrim Parameter trimmen                                                 */
 /***************************************************************************************/
-int u2w_cparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_cparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_COOKIE_LEVEL, 1);
@@ -1365,13 +1365,13 @@ int u2w_cparltrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bcparrtrim Parameter trimmen                                                */
 /***************************************************************************************/
-int u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( pa & P2 )
     trim_parwert(prg_pars[0], prg_pars[1], HP_COOKIE_LEVEL, 2);
@@ -1382,7 +1382,7 @@ int u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
@@ -1393,7 +1393,7 @@ int u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
@@ -1406,26 +1406,26 @@ int u2w_cparrtrim(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 #ifdef WEBSERVER
 /***************************************************************************************/
-/* int u2w_check_cred(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_check_cred(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_check_cred Testen, ob User und Kennwort zusammenpassen (Unix-Anmeldung/PAM) */
 /***************************************************************************************/
-int u2w_check_cred(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_check_cred(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   return !test_pwd(prg_pars[0], prg_pars[1]);
 }
 
 
 /***************************************************************************************/
-/* int u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
+/* short u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_flush chunk-Puffer an den Browser schicken                                  */
 /***************************************************************************************/
-int u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   send_chunk();
   return false;
@@ -1433,13 +1433,13 @@ int u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_timeout Timeout setzen                                                      */
 /***************************************************************************************/
-int u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int i;
 
   i = (atol(prg_pars[0])+2) / 3;
@@ -1452,13 +1452,13 @@ int u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_css(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])              */
+/* short u2w_css(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])            */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_css set default classes                                                     */
 /***************************************************************************************/
-int u2w_css(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_css(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
 
   LOG(1, "u2w_css, element: %s, class: %s.\n", prg_pars[0], prg_pars[1]);
@@ -1478,13 +1478,13 @@ int u2w_css(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_delonexit(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_delonexit(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*              return: true bei Fehler                                                */
 /*     u2w_delonexit Datei zum Löschen beim Beenden eintragen                          */
 /***************************************************************************************/
-int u2w_delonexit(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_delonexit(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(1, "u2w_delonexit, p1: %s.\n", prg_pars[0]);
 

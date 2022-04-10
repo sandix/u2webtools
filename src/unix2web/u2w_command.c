@@ -611,12 +611,12 @@ format_command_type format_commands[] =
 
 
 /***************************************************************************************/
-/* int is_x2w_command_z(char **line, command_prog_type progs[])                        */
+/* short is_x2w_command_z(char **line, command_prog_type progs[])                      */
 /*                    char **line: Zeile von der Eingabe                               */
 /*                    return: true, es folgt u2w-Funktion                              */
 /*     is_x2w_command testet, ob eine u2w-Funktion folgt                               */
 /***************************************************************************************/
-int is_x2w_command_z(char **line, command_prog_type progs[])
+short is_x2w_command_z(char **line, command_prog_type progs[])
 { int i;
 
   for(i = 0; *progs[i].command; i++)
@@ -627,12 +627,12 @@ int is_x2w_command_z(char **line, command_prog_type progs[])
 }
 
 /***************************************************************************************/
-/* int is_x2w_list_command_z(char **line, command_prog_type progs[])                   */
+/* short is_x2w_list_command_z(char **line, command_prog_type progs[])                 */
 /*                    char **line: Zeile von der Eingabe                               */
 /*                    return: true, es folgt u2w-Funktion                              */
 /*     is_x2w_list_command testet, ob eine Listen ?2w-Funktion folgt                   */
 /***************************************************************************************/
-int is_x2w_list_command_z(char **line, command_list_prog_type progs[])
+short is_x2w_list_command_z(char **line, command_list_prog_type progs[])
 { int i;
 
   for(i = 0; *progs[i].command; i++)
@@ -644,12 +644,12 @@ int is_x2w_list_command_z(char **line, command_list_prog_type progs[])
 
 
 /***************************************************************************************/
-/* int do_x2w_command(char **s, command_prog_type prog)                                */
+/* short do_x2w_command(char **s, command_prog_type prog)                              */
 /*                     char **s : gelesene Eingabezeile                                */
 /*                     command_prog_type Aufzurufendes Programm                        */
 /*     do_x2w_command  Bestimmt Parameter und führt Funktion aus                       */
 /***************************************************************************************/
-int do_x2w_command(char **s, command_prog_type prog)
+short do_x2w_command(char **s, command_prog_type prog)
 { char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
   int pars;
 
@@ -664,12 +664,12 @@ int do_x2w_command(char **s, command_prog_type prog)
 
 
 /***************************************************************************************/
-/* int do_x2w_token_command(char **s, command_prog_token_type prog)                    */
+/* short do_x2w_token_command(char **s, command_prog_token_type prog)                  */
 /*                     char **s : gelesene Eingabezeile                                */
 /*                     command_prog_type Aufzurufendes Programm                        */
 /*     do_x2w_token_command  Bestimmt Parameter und führt Funktion mit token aus       */
 /***************************************************************************************/
-int do_x2w_token_command(char **s, command_prog_token_type prog)
+short do_x2w_token_command(char **s, command_prog_token_type prog)
 { char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
   int pars;
 
@@ -684,12 +684,12 @@ int do_x2w_token_command(char **s, command_prog_token_type prog)
 
 
 /***************************************************************************************/
-/* int do_x2w_list_command(char **s, command_list_prog_type prog)                      */
+/* short do_x2w_list_command(char **s, command_list_prog_type prog)                    */
 /*                     char **s : gelesene Eingabezeile                                */
 /*                     command_list_prog_type Aufzurufendes Programm                   */
 /*     do_x2w_list_command  Bestimmt Parameter und führt Funktion aus                  */
 /***************************************************************************************/
-int do_x2w_list_command(char **s, command_list_prog_type prog)
+short do_x2w_list_command(char **s, command_list_prog_type prog)
 { int lens[2];
   char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN];
   char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS];
@@ -710,13 +710,13 @@ int do_x2w_list_command(char **s, command_list_prog_type prog)
 
 
 /***************************************************************************************/
-/* int is_scan_command_z(char **line, scan_prog_type progs[])                          */
+/* short is_scan_command_z(char **line, scan_prog_type progs[])                        */
 /*                    char **line: Zeile von der Eingabe                               */
 /*                    scan_prog_type Programmliste                                     */
 /*                    return: nf, es folgt u2w-scan-Funktion                           */
 /*     is_scan_command testet, ob eine u2w-scan-Funktion folgt                         */
 /***************************************************************************************/
-int is_scan_command_z(char **line, scan_prog_type progs[])
+short is_scan_command_z(char **line, scan_prog_type progs[])
 { int i;
 
   LOG(3, "is_scan_command_z, line: %s.\n", *line);
@@ -731,13 +731,13 @@ int is_scan_command_z(char **line, scan_prog_type progs[])
 
 
 /***************************************************************************************/
-/* int is_scan_list_command_z(char **line, scan_list_prog_type progs[])                */
+/* short is_scan_list_command_z(char **line, scan_list_prog_type progs[])              */
 /*                    char **line: Zeile von der Eingabe                               */
 /*                    scan_prog_type Programmliste                                     */
 /*                    return: nf, es folgt u2w-scan-Funktion                           */
 /*     is_scan_list_command testet, ob eine u2w-list-scan-Funktion folgt               */
 /***************************************************************************************/
-int is_scan_list_command_z(char **line, scan_list_prog_type progs[])
+short is_scan_list_command_z(char **line, scan_list_prog_type progs[])
 { int i;
 
   LOG(3, "is_list_command_z, line: %s.\n", *line);
@@ -752,7 +752,7 @@ int is_scan_list_command_z(char **line, scan_list_prog_type progs[])
 
 
 /***************************************************************************************/
-/* int do_scan_command(char **o, char **s, long n, scan_prog_type prog,                */
+/* short do_scan_command(char **o, char **s, long n, scan_prog_type prog,              */
 /*                     int quote)                                                      */
 /*                     char **out: Ziel des Ergebnisses                                */
 /*                     char **in : gelesene Eingabezeile                               */
@@ -761,7 +761,7 @@ int is_scan_list_command_z(char **line, scan_list_prog_type progs[])
 /*                     int quote: Quotierung der Ausgabe für z. B. MySQL oder Shells   */
 /*     do_scan_command Bestimmt Parameter und führt Funktion aus                       */
 /***************************************************************************************/
-int do_scan_command(char **out, char **s, long n, scan_prog_type prog,
+short do_scan_command(char **out, char **s, long n, scan_prog_type prog,
                     int quote )
 { char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
   int pars;
@@ -777,7 +777,7 @@ int do_scan_command(char **out, char **s, long n, scan_prog_type prog,
 
 
 /***************************************************************************************/
-/* int do_scan_prog_send_command(char **o, char **s, long n, scan_prog_send_type prog, */
+/* short do_scan_prog_send_command(char **o, char **s, long n,scan_prog_send_type prog,*/
 /*                     int quote)                                                      */
 /*                     char **out: Ziel des Ergebnisses                                */
 /*                     char **in : gelesene Eingabezeile                               */
@@ -786,7 +786,7 @@ int do_scan_command(char **out, char **s, long n, scan_prog_type prog,
 /*                     int quote: Quotierung der Ausgabe für z. B. MySQL oder Shells   */
 /*     do_scan_command Bestimmt Parameter und führt Funktion aus                       */
 /***************************************************************************************/
-int do_scan_prog_send_command(char **out, char **s, long n, scan_prog_send_type prog,
+short do_scan_prog_send_command(char **out, char **s, long n, scan_prog_send_type prog,
                     int quote )
 { char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
   int pars;
@@ -802,7 +802,7 @@ int do_scan_prog_send_command(char **out, char **s, long n, scan_prog_send_type 
 
 
 /***************************************************************************************/
-/* int do_scan_list_command(int *listlen,                                              */
+/* short do_scan_list_command(int *listlen,                                            */
 /*                          char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],           */
 /*                          char **in, scan_list_prog_type prog)                       */
 /*                     int *listlen: Anzahl der Listenelemente                         */
@@ -811,7 +811,7 @@ int do_scan_prog_send_command(char **out, char **s, long n, scan_prog_send_type 
 /*                     scan_list_prog_type prog: Programm                              */
 /*     do_scan_list_command Bestimmt Parameter und führt Funktion aus                  */
 /***************************************************************************************/
-int do_scan_list_command(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_scan_list_command(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                          char **in, scan_list_prog_type prog)
 { char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
   int pars;
@@ -827,7 +827,7 @@ int do_scan_list_command(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST
 
 
 /***************************************************************************************/
-/* int get_pars(char **in, int maxpars,                                                */
+/* short get_pars(char **in, int maxpars,                                              */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],                     */
 /*              char quotes[MAX_ANZ_QUOTE_PARS])                                       */
 /*              char **in: Zeiger auf Eingabezeile                                     */
@@ -839,7 +839,7 @@ int do_scan_list_command(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST
 /*              "..." werden beachtet und Strings werden mit '\0' beendet.             */
 /*              *in Zeigt anschliessend auf Zeichen nach ')'                           */
 /***************************************************************************************/
-int get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
+short get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
              char quotes[MAX_ANZ_QUOTE_PARS])
 { char *p;
   int i, pars;
@@ -847,7 +847,10 @@ int get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG
   LOG(1, "get_pars, s: %s, maxpars: %d.\n", *in, maxpars);
 
   if( **in != '(' )
+  { if( **in == ' ' )
+      (*in)++;
     return P0;
+  }
   (*in)++;
 
   skip_blanks(*in);
@@ -909,7 +912,7 @@ int get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG
 
 
 /***************************************************************************************/
-/* int get_letpars(char **in, int maxpars,                                             */
+/* short get_letpars(char **in, int maxpars,                                           */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],                     */
 /*              char quotes[MAX_ANZ_QUOTE_PARS])                                       */
 /*              char **in: Zeiger auf Eingabezeile                                     */
@@ -921,7 +924,7 @@ int get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG
 /*              "..." werden beachtet und Strings werden mit '\0' beendet.             */
 /*              *in Zeigt anschliessend auf Zeichen nach ')'                           */
 /***************************************************************************************/
-int get_letpars(char **in, int maxpars,
+short get_letpars(char **in, int maxpars,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                 char quotes[MAX_ANZ_QUOTE_PARS])
 { char *p;
@@ -957,7 +960,7 @@ int get_letpars(char **in, int maxpars,
 
 
 /***************************************************************************************/
-/* int get_listpars(char **in, int maxpars,                                            */
+/* short get_listpars(char **in, int maxpars,                                          */
 /*              char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],                         */
 /*              char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],                       */
 /*              char quotes[MAX_ANZ_QUOTE_PARS])                                       */
@@ -970,7 +973,7 @@ int get_letpars(char **in, int maxpars,
 /*              "..." werden beachtet und Strings werden mit '\0' beendet.             */
 /*              *in Zeigt anschliessend auf Zeichen nach ')'                           */
 /***************************************************************************************/
-int get_listpars(char **in, int maxpars, int len[2],
+short get_listpars(char **in, int maxpars, int len[2],
                  char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
                  char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                  char quotes[2])
@@ -1011,7 +1014,7 @@ int get_listpars(char **in, int maxpars, int len[2],
 
 
 /***************************************************************************************/
-/* int get_evalpars(char **in, int n,                                                  */
+/* short get_evalpars(char **in, int n,                                                */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],                 */
 /*                  char quotes[MAX_ANZ_QUOTE_PARS])                                   */
 /*              char **in: Zeiger auf Eingabezeile                                     */
@@ -1023,7 +1026,7 @@ int get_listpars(char **in, int maxpars, int len[2],
 /*              "..." werden beachtet und Strings werden mit '\0' beendet.             */
 /*              *in Zeigt anschliessend auf Zeichen nach ')'                           */
 /***************************************************************************************/
-int get_evalpars(char **in, int n, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
+short get_evalpars(char **in, int n, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                  char quotes[MAX_ANZ_QUOTE_PARS])
 { char *p;
 
@@ -1036,7 +1039,7 @@ int get_evalpars(char **in, int n, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_P
 
 
 /***************************************************************************************/
-/* int get_formpars(char **in, int maxpars,                                            */
+/* short get_formpars(char **in, int maxpars,                                          */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],                 */
 /*                  char quotes[MAX_ANZ_QUOTE_PARS])                                   */
 /*              char **in: Zeiger auf Eingabezeile                                     */
@@ -1051,7 +1054,8 @@ int get_evalpars(char **in, int n, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_P
 /*              %p:<n>:<m>:<ro|d>:<title>:<class>:<add> <name> <options>, <def>; <text>*/
 /*                  5   6     7     8        9      A     1        4        2      3   */
 /***************************************************************************************/
-int get_formpars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
+short get_formpars(char **in, int maxpars,
+                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                  char quotes[MAX_ANZ_QUOTE_PARS])
 { char *p;
   int pars;
@@ -1062,6 +1066,8 @@ int get_formpars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN
   { par_old_format = false;
     return get_pars(in, maxpars, prg_pars, quotes);
   }
+  else if( **in == ' ' )
+    (*in)++;
 
   par_old_format = true;
   pars = 0;

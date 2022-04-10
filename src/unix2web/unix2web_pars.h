@@ -25,7 +25,7 @@
 #define OPT_UPLOAD_POST_MAXSIZE   'S' /* -fS maximale Groesse der Post Datei in Byte   */
 #define OPT_UPLOAD_PUT          'g'  /* Upload erlauben -gg ohne Anmeldung             */
 #define OPT_UPLOAD_PUT_PATH      'p' /* -gp pfad für Uploads mit PUT                   */
-#define OPT_EDIT                 'n' /* -gn, datei?&edit erlauben                      */
+#define OPT_UPLOAD_EDIT          'n' /* -gn, datei?&edit erlauben                      */
 #define OPT_HOME                'h'  /* Homeverzeichnis                                */
 #define OPT_HOME_HOST            'H' /* -hH Homepfad um host aus HTTP-header erweitern */
 #define OPT_HOST_UNKNOWN         'U' /* -hU name: name, wenn host fehlt oder ungültig  */

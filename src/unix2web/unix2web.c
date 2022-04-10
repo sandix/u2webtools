@@ -11,7 +11,7 @@
 /* Anfang globale Variablen */
 
 FILE *akt_ptr;                       /* aktueller ptr                                  */
-int include_counter = 0;
+short include_counter = 0;
 
 char *clientgetpath;                 /* angeforderter Pfad                             */
 char *clientgetfile;                 /* Angeforderte Datei ohne Pfad                   */
@@ -21,12 +21,12 @@ char *parameter_ext = "";            /* ggf. extension für <form>              
 char *rechtspage = "";               /* Ergebnisseite Rechts für Parameterseiten       */
 char *obenpage = "";                 /* Ergebnisseite Oben für Parameterseiten         */
 char *errorpage = NULL;              /* ggf. Seite für Fehlermeldungen                 */
-int error_redirect_flag = false;     /* Wenn 1, dann Redirect auf Fehlerseite          */
+short error_redirect_flag = false;   /* Wenn 1, dann Redirect auf Fehlerseite          */
 
-int kzaehler;                        /* zaehlt oeffnende (++) und                      */
+short kzaehler;                      /* zaehlt oeffnende (++) und                      */
                                      /* schliessende (--) < >       (u3w)              */
 
-int last_char_sended;                /* wird auf letztes Zeichen bei direkt sendenden  */
+short last_char_sended;              /* wird auf letztes Zeichen bei direkt sendenden  */
                                      /* Prozessen gesetzt (%mysqlread und #)           */
                                      /* '\1' entspricht '</td>'                        */
 
@@ -45,13 +45,13 @@ char headsize[MAX_SIZELENGTH] = {'\0'};  /* Hoehe HeadFrame                     
 
 char *methodstr = NULL;              /* HTTP-Methode bei -Xx allscript.??w             */
 char *putdata = NULL;                /* Pfad zu PUT-Daten bei -Xx allscript.??w        */
-int term_flag = 0;                   /* Auf true, wenn SIGTERM erhalten                */
+short term_flag = 0;                 /* Auf true, wenn SIGTERM erhalten                */
 char *servicestartjob = NULL;        /* Job to execute on service start                */
 char *servicestopjob = NULL;         /* Job to execute on service stop                 */
 char *executeall = NULL;             /* *.??w script for all requests                  */
 char *executepath[MAX_ANZ_EXECUTE_PATHS];  /* relativer Pfad                           */
 char *executex2w[MAX_ANZ_EXECUTE_PATHS];   /* *.??w script                             */
-int num_execute_paths = 0;           /* Anzahl in executepath / executex2w             */
+short num_execute_paths = 0;         /* Anzahl in executepath / executex2w             */
 char *inifile = NULL;                /* ini-file nach -Xi <file>                       */
 char *http_accept_language;          /* http_accept_language des Browsers              */
 
@@ -62,8 +62,8 @@ char upload_post_path[MAX_PATH_LEN] = {'u','p', 'l', 'o', 'a', 'd', '\0'};
                                      /* Upload Path Std-Einstellung                    */
 char auto_delete_files[MAX_ANZ_AUTO_DELETE_FILES][MAX_PATH_LEN]; /* Pfade der durch    */
                                      /* POST oder %delonexit() markierten Dateien      */
-int anz_auto_delete_files = 0;       /* Anzahl der durch POST gespeicherten Dateien    */
-int auto_delete_post_files = true;   /* Dateien, die durch POST gespeichert wurden     */
+short anz_auto_delete_files = 0;     /* Anzahl der durch POST gespeicherten Dateien    */
+short auto_delete_post_files = true; /* Dateien, die durch POST gespeichert wurden     */
                                      /* werden automatisch wieder gelöscht             */
 char *everybody_path = EVERYBODY_PATH;  /* Pfad bei -V ohne Anmeldung                  */
 char *restricted_ips = NULL;         /* Wenn angegeben, dann sind nur diese IPs erlaubt*/
@@ -73,7 +73,7 @@ char *mime = "";                     /* Mime-Type von %mime                     
 char *httpheadlines[MAX_ANZ_HTTPHEADLINES];  /* zusätzliche Zeilen im HTTP-Header      */
 short anz_httpheadlines = 0;         /* Anzahl in httpheadlines                        */
 char *charset = "";                  /* character-set von %charset                     */
-int httpnum = 0;                     /* HTTP-Response-Code                             */
+short httpnum = 0;                   /* HTTP-Response-Code                             */
 char *httpdesc = NULL;               /* HTTP-Response-Description                      */
 char *savename = "";                 /* Datei-Name für Content-Disposition             */
 char *content_type = "";             /* Content-Type                                   */
@@ -136,13 +136,13 @@ access_file_type password_file_mode = NOACCESSFILE;
                                      /* FIX64, fester User und Passwort Base64         */
 char passwd_path[MAX_LEN_FILENAME];  /* Pfad der passwd-Datei bei -sp <pwdpfad>        */
 
-int no_options_flag = false;         /* true, OPTIONS ist nicht erlaubt                */
-int no_trace_flag = false;           /* true, TRACE nicht erlaubt                      */
+short no_options_flag = false;       /* true, OPTIONS ist nicht erlaubt                */
+short no_trace_flag = false;         /* true, TRACE nicht erlaubt                      */
 
 
 auth_type auth_mode;                 /* NONE: user+pwd nicht angegeben,                */
                                      /* AUTH: user+pwd angegeben, BAD: user+pwd falsch */
-int sec_flag = false;                /* true, user+pwd müssen angegeben sein           */
+short sec_flag = false;              /* true, user+pwd müssen angegeben sein           */
 
 set_user_type set_user_mode = NOSETUSER;  /* NOSETUSER, Prozess wechselt User nicht    */
                                      /* STARTSETUSER, User sofort wechseln             */
@@ -178,12 +178,12 @@ char *query_string;                  /* zum Aufbauen des QUERY_STRING fuer cgis 
 long long unsigned connectioncounter = 0;
 #ifdef WITH_MMAP
 counter_type *status_counter;        /* Globales Arry mit Statuswerten (mmap)          */
-int unsigned status_mode = 0;        /* Umfang der Counter                             */
+short unsigned status_mode = 0;      /* Umfang der Counter                             */
 int parentpid;
 #endif
 
 #ifdef HAS_DAEMON
-int daemonflag = NOLOG;              /* true, wenn daemonisiert werden soll            */
+short daemonflag = NOLOG;            /* true, wenn daemonisiert werden soll            */
 char *pidfile = NULL;                /* if set, write Process-PID to "pidfile"         */
 #endif
 
@@ -282,7 +282,7 @@ char globalquote[MAX_LEN_QUOTE] = {'\0'};
                                      /* Zeichen, die mit erstem Zeichen gequotet werden*/
 
 #ifdef WITH_HTTPS
-int ssl_mode = SSL_MODE_OFF;         /* std. SSL aus                                   */
+short ssl_mode = SSL_MODE_OFF;       /* std. SSL aus                                   */
 char *ssl_key_file = SSL_KEY_FILE;   /* SSL-Key-File                                   */
 char *ssl_cert_file = SSL_CERT_FILE; /* SSL-Cert-File                                  */
 char *ssl_ca_file = NULL;            /* SSL-CA-File                                    */
@@ -312,7 +312,7 @@ char *qf_strings[] = {
 char logfiles[MAX_LEN_LOGFILES] = {'\0'};
                                      /* durch ' ' getrennte Liste mit den Logfilenamen */
 short all_log_flag = false;          /* true, alle Logs werden ausgegeben              */
-int loglevel = 1;                    /* Loglevel                                       */
+short loglevel = 1;                  /* Loglevel                                       */
 int linenumber;
 int line_number_stack[MAX_ANZ_INCLUDE];
 char *curfile_stack[MAX_ANZ_INCLUDE];
@@ -432,14 +432,14 @@ fputs("\n -A       ", stdout);
           fputs(_("logging of all functions"), stdout);
 fputs("\n -At      ", stdout);
           fputs(_("logging of all functions with seconds"), stdout);
-fputs("\n -T       ", stdout);
-          fputs(_("logging of sended data"), stdout);
 fputs("\n -F dat.c ", stdout);
           fputs(_("logging of functions from sourcecode file dat.c"), stdout);
 fputs("\n -M       ", stdout);
           fputs(_("verbose logging"), stdout);
+fputs("\n -O       ", stdout);
+          fputs(_("logging of sended data"), stdout);
 fputs("\n -R       ", stdout);
-          fputs(_("logging of readed data from browser"), stdout);
+          fputs(_("logging of readed data from commandline"), stdout);
 #endif
       fputs("\n", stdout);
 }
@@ -452,7 +452,7 @@ fputs("\n -R       ", stdout);
   if( msg )
     printf(msg, msgpar);
   printf("usage: %9s [-a] [-b path] [-bb] [-d] [-e path|-er path]\n", p);
-  fputs(    "                 [-f] [-fc] [-fD] [-fp path] [-fP] [-fS size] [-g|-gg [-gf path]]\n"
+  fputs(    "                 [-f] [-fc] [-fD] [-fp path] [-fP] [-fS size] [-g|-gg [-gf path]] [-gn]\n"
             "                 [-h home] [-hH] [-hU name] [-i path] [j] [-k] [-l|-lp path] [-lc] [-lE]\n"
             "                 "
 #ifdef MAYDBCLIENT
@@ -516,6 +516,8 @@ fputs("\n -gf path ", stdout);
           fputs(_("server root for PUT"), stdout);
 fputs("\n -gg      ", stdout);
           fputs(_("allow uploads with PUT without authorization"), stdout);
+fputs("\n -gn      ", stdout);
+          fputs(_("allow ?&edit"), stdout);
 fputs("\n -h home  ", stdout);
           fputs(_("set path home as server root"), stdout);
 fputs("\n -hH      ", stdout);
@@ -563,9 +565,14 @@ fputs("\n -mp port ", stdout);
 fputs("\n -mr secs ", stdout);
           fputs(_("set MySQL reconnection timeout"), stdout);
 #endif
+#ifdef SQLITE3
+fputs("\n -ne      ", stdout);
+          fputs(_("write Sqlite3 errors into logfile/stderr"), stdout);
+fputs("\n -np path ", stdout);
+          fputs(_("set Sqlite3 database file"), stdout);
+                              "[-ne] [-nd path] "
 #endif
-fputs("\n -n       ", stdout);
-          fputs(_("allow ?&edit"), stdout);
+#endif
 fputs("\n -o       ", stdout);
           printf(_("accesscontrol with file \"%s\""), HOSTS_FILE);
 fputs("\n -of      ", stdout);
@@ -701,12 +708,12 @@ fputs("\n -?       ", stdout);
 #ifdef DEBUG
 fputs("\n -A       ", stdout);
           fputs(_("logging of all functions"), stdout);
-fputs("\n -O       ", stdout);
-          fputs(_("logging of sended data"), stdout);
 fputs("\n -F dat.c ", stdout);
           fputs(_("logging of functions from sourcecode file dat.c"), stdout);
 fputs("\n -M       ", stdout);
           fputs(_("verbose logging"), stdout);
+fputs("\n -O       ", stdout);
+          fputs(_("logging of sended data"), stdout);
 fputs("\n -R       ", stdout);
           fputs(_("logging of readed data from browser"), stdout);
 #endif
@@ -821,8 +828,6 @@ int main(int argc, char **argv)
       case OPT_ACCESS_FILE:
                          access_file_flag = true; /* -a keine .access Datei, kein      */
                          break;                /* Zugriff auf Verzeichnis              */
-      case OPT_EDIT:     edit_flag = 1;        /* -n, ?&edit erlaubt                   */
-                         break;
       case OPT_ERRORPAGE:
                          if( argv[options][2] == OPT_ERROR_REDIRECT )
                            error_redirect_flag = true;
@@ -920,6 +925,8 @@ int main(int argc, char **argv)
                            }
                            set_put_home = argv[options];
                          }
+                         else if( argv[options][2] == OPT_UPLOAD_EDIT )
+                           edit_flag = 1;        /* -gn, ?&edit erlaubt                   */
                          break;
       case OPT_UPLOAD_X2W:
                          upload_x2w_flag = true;
@@ -1254,7 +1261,7 @@ int main(int argc, char **argv)
                            { usage(argv[0], _("Error: option %s, missing value.\n"), argv[options-1]);
                              return 3;
                            }
-                           sscanf(argv[options], "%d", &loglevel);
+                           sscanf(argv[options], "%hd", &loglevel);
                            break;
                          }
 #endif
@@ -1371,7 +1378,8 @@ int main(int argc, char **argv)
 
   time(&starttime);
 
-  LOG(200, "main, nach getopts, logflag: %d\n", logflag);
+  LOG(200, "main, nach getopts, logflag: %ld\n", logflag);
+
 
 #ifdef WITH_GETTEXT
   if( u2wtextdomain && *u2wtextdomain )
@@ -1475,7 +1483,7 @@ int main(int argc, char **argv)
   LOG(200, "main, vor init_u2w_hash\n");
 
   init_u2w_hash();
-  LOG(200, "main, nach init_u2w_hash, logflag: %d, all_log_flag: %d\n", logflag, all_log_flag);
+  LOG(200, "main, nach init_u2w_hash, logflag: %ld, all_log_flag: %d\n", logflag, all_log_flag);
 
   unix2web(port, backlog);
 

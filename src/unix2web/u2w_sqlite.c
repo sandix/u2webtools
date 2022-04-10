@@ -19,9 +19,14 @@ sqlite3 *sql3db;
 
 #ifdef SQLITE3
 
-#ifndef _LARGEFILE64_SOURCE
-#define open64(...) open(__VA_ARGS__)
+#ifdef _LARGEFILE64_SOURCE
+#ifdef CYGWIN
 #define stat64(a,b) stat(a,b)
+#define open64(...) open(__VA_ARGS__)
+#endif
+#else
+#define stat64(a,b) stat(a,b)
+#define open64(...) open(__VA_ARGS__)
 #endif
 
 int sql3_write_flag = false;
@@ -80,13 +85,13 @@ void sql3_free_res(void)
 
 
 /***************************************************************************************/
-/* int sql3_open(char *dbpath, int errorflag)                                          */
+/* short sql3_open(char *dbpath, int errorflag)                                        */
 /*             char *dbpath: Pfad zur slite3 DB Datei                                  */
 /*             int errorflag: bei true werden Fehlermeldungen auf stderr ausgegeben    */
 /*             return: true bei Fehler                                                 */
 /*     sql3_open öffnet eine sqlite3 DB Datei                                          */
 /***************************************************************************************/
-int sql3_open(char *path, int errorflag)
+short sql3_open(char *path, int errorflag)
 { static char cursql3path[MAX_PATH_LEN];
 
   LOG(1, "sql3_open, path: %s.\n", path);
@@ -116,26 +121,26 @@ int sql3_open(char *path, int errorflag)
 
 
 /***************************************************************************************/
-/* int u2w_sql3_open(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_sql3_open(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_open öffnet eine sqlite3 Datei                                         */
 /***************************************************************************************/
-int u2w_sql3_open(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_open(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { return sql3_open(prg_pars[0], false);
 }
 
 
 /***************************************************************************************/
-/* int u2w_sql3_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_sql3_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_query Stellt Anfrage an sqlite3-Datenbank, Ergebnisse können dann mit  */
 /*                 u2w_sql3_next_line gelesen und mit sql3_get_value gelesen werden    */
 /***************************************************************************************/
-int u2w_sql3_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_sql3_query.\n");
@@ -177,13 +182,13 @@ int u2w_sql3_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sql3_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_sql3_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_write Stellt Anfrage an sql3-Datenbank, für insert und update          */
 /***************************************************************************************/
-int u2w_sql3_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *err_msg = NULL;
 
   LOG(1, "u2w_sql3_write, query: %s.\n", prg_pars[0]);
@@ -208,13 +213,13 @@ int u2w_sql3_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sql3_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_sql3_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_test Stellt Anfrage an sql3-Datenbank, und liefert nur Wahrheitswert   */
 /***************************************************************************************/
-int u2w_sql3_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *err_msg = NULL;
 
   LOG(1, "u2w_sql3_test, query: %s.\n", prg_pars[0]);
@@ -235,20 +240,24 @@ int u2w_sql3_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 #define SQL3_BUFFERSIZE 10000000
 
 /***************************************************************************************/
-/* int u2w_sql3_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_sql3_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_store Datei als blob in Datenbank speichern - Update                   */
 /***************************************************************************************/
-int u2w_sql3_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *buffer, *p;
   long nb, i;
   int hd_in, ret;
   int mode = 0;
   char *err_msg = NULL;
 #ifdef _LARGEFILE64_SOURCE
+#ifdef CYGWIN
+  struct stat stat_buf;                              /* fuer stat-Aufruf               */
+#else
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
+#endif
 #else
   struct stat stat_buf;                              /* fuer stat-Aufruf               */
 #endif
@@ -387,19 +396,23 @@ int u2w_sql3_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sql3_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_sql3_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_storev Datei als blob in @-Variable speichern                          */
 /***************************************************************************************/
-int u2w_sql3_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *buffer, *p;
   long nb, i;
   int hd_in, ret;
   char *err_msg = NULL;
 #ifdef _LARGEFILE64_SOURCE
+#ifdef CYGWIN
+  struct stat stat_buf;                              /* fuer stat-Aufruf               */
+#else
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
+#endif
 #else
   struct stat stat_buf;                              /* fuer stat-Aufruf               */
 #endif
@@ -520,13 +533,13 @@ int u2w_sql3_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sql3_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])         */
+/* short u2w_sql3_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_out Query ausführen und Ergebnis in Datei schreiben                    */
 /***************************************************************************************/
-int u2w_sql3_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(3, "u2w_sql3_out, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
       pa & P3 ? prg_pars[2] : "");
@@ -537,13 +550,13 @@ int u2w_sql3_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_get_line bereitet eine Zeile zum lesen vor                             */
 /***************************************************************************************/
-int u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_sql3_get_line.\n");
@@ -576,7 +589,7 @@ int u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int do_sql3_list_get_line(int *listlen,                                             */
+/* short do_sql3_list_get_line(int *listlen,                                           */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -585,7 +598,7 @@ int u2w_sql3_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_list_get_line Eine Zeile in Liste                                       */
 /***************************************************************************************/
-int do_sql3_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_sql3_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn, i;
 
@@ -629,13 +642,13 @@ int do_sql3_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIS
 
 
 /***************************************************************************************/
-/* int u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
+/* short u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_sql3_isvalue testet, ob noch ein Wert für sql3readvalue vorliegt            */
 /***************************************************************************************/
-int u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_sql3_isvalue.\n");
@@ -656,7 +669,7 @@ int u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int do_sql3_writeline(int pa, char **out, long n,                                   */
+/* short do_sql3_writeline(int pa, char **out, long n,                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -664,7 +677,7 @@ int u2w_sql3_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_sql3_writeline fügt Zeile des letzten sql3_getline ein                      */
 /***************************************************************************************/
-int do_sql3_writeline(int pa, char **out, long n,
+short do_sql3_writeline(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   char *oo;
@@ -717,7 +730,7 @@ int do_sql3_writeline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_readwriteline(int pa, char **out, long n,                               */
+/* short do_sql3_readwriteline(int pa, char **out, long n,                             */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -725,7 +738,7 @@ int do_sql3_writeline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_readwriteline fügt eine Zeile der letzten sql3_query ein                */
 /***************************************************************************************/
-int do_sql3_readwriteline(int pa, char **out, long n,
+short do_sql3_readwriteline(int pa, char **out, long n,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !u2w_sql3_get_line(pa, prg_pars) )
@@ -736,7 +749,7 @@ int do_sql3_readwriteline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_num_fields(int pa, char **out, long n,                                  */
+/* short do_sql3_num_fields(int pa, char **out, long n,                                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -744,7 +757,7 @@ int do_sql3_readwriteline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_num_fields ergibt Anzahl Spalten der sql3-Abfrage                       */
 /***************************************************************************************/
-int do_sql3_num_fields(int pa, char **out, long n,
+short do_sql3_num_fields(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -767,7 +780,7 @@ int do_sql3_num_fields(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_value(int pa, char **out, long n,                                       */
+/* short do_sql3_value(int pa, char **out, long n,                                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -775,7 +788,7 @@ int do_sql3_num_fields(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_value fügt einen Wert einer Zeile ein                                   */
 /***************************************************************************************/
-int do_sql3_value(int pa, char **out, long n,
+short do_sql3_value(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -831,7 +844,7 @@ int do_sql3_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_rawvalue(int pa, char **out, long n,                                    */
+/* short do_sql3_rawvalue(int pa, char **out, long n,                                  */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -839,7 +852,7 @@ int do_sql3_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_rawvalue fügt einen Wert einer Zeile ein ohne HTML Konvertierung        */
 /***************************************************************************************/
-int do_sql3_rawvalue(int pa, char **out, long n,
+short do_sql3_rawvalue(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -887,7 +900,7 @@ int do_sql3_rawvalue(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_read_value(int pa, char **out, long n,                                  */
+/* short do_sql3_read_value(int pa, char **out, long n,                                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -895,7 +908,7 @@ int do_sql3_rawvalue(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_read_value fügt näcshten Wert einer Zeile ein                           */
 /***************************************************************************************/
-int do_sql3_read_value(int pa, char **out, long n,
+short do_sql3_read_value(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -931,7 +944,7 @@ int do_sql3_read_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_id(int pa, char **out, long n,                                          */
+/* short do_sql3_id(int pa, char **out, long n,                                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -939,7 +952,7 @@ int do_sql3_read_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3 fügt letzte ID (nach insert) ein                                        */
 /***************************************************************************************/
-int do_sql3_id(int pa, char **out, long n,
+short do_sql3_id(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( !sql3_id_flag )
     return true;
@@ -949,7 +962,7 @@ int do_sql3_id(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_read_send(int pa,                                                       */
+/* short do_sql3_read_send(int pa,                                                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -957,7 +970,7 @@ int do_sql3_id(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_read_tc Query ausführen und Ergebnis einfügen tablecols beachten        */
 /***************************************************************************************/
-int do_sql3_read_send(int pa,
+short do_sql3_read_send(int pa,
                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_sql3_read_send, pa: %d, %s, %s, quote: %d, last_char_sended: %d.\n", pa,
@@ -972,7 +985,7 @@ int do_sql3_read_send(int pa,
 
 
 /***************************************************************************************/
-/* int do_sql3_read(int pa, char **out, long n,                                        */
+/* short do_sql3_read(int pa, char **out, long n,                                      */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -980,7 +993,7 @@ int do_sql3_read_send(int pa,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_read_ntc Query ausführen und Ergebnis einfügen tablecols nicht beachten */
 /***************************************************************************************/
-int do_sql3_read(int pa, char **out, long n,
+short do_sql3_read(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_sql3_read, pa: %d, %s, %s, quote: %d.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1001,7 +1014,7 @@ int do_sql3_read(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_read_raw_send(int pa,                                                   */
+/* short do_sql3_read_raw_send(int pa,                                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1010,7 +1023,7 @@ int do_sql3_read(int pa, char **out, long n,
 /*     do_sql3_read_raw_tc Query ausführen und Ergebnis ohne HTML-Quoting ausgeben     */
 /*                          tablecols beachten                                         */
 /***************************************************************************************/
-int do_sql3_read_raw_send(int pa,
+short do_sql3_read_raw_send(int pa,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_sql3_read_tc, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1025,7 +1038,7 @@ int do_sql3_read_raw_send(int pa,
 
 
 /***************************************************************************************/
-/* int do_sql3_read_raw(int pa, char **out, long n,                                    */
+/* short do_sql3_read_raw(int pa, char **out, long n,                                  */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1034,7 +1047,7 @@ int do_sql3_read_raw_send(int pa,
 /*     do_sql3_read_raw_ntc Query ausführen und Ergebnis ohne HTML-Quoting ausgeben    */
 /*                          tablecols nicht beachten                                   */
 /***************************************************************************************/
-int do_sql3_read_raw(int pa, char **out, long n,
+short do_sql3_read_raw(int pa, char **out, long n,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_sql3_read, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1050,7 +1063,7 @@ int do_sql3_read_raw(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_list_read(int *listlen,                                                 */
+/* short do_sql3_list_read(int *listlen,                                               */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -1059,7 +1072,7 @@ int do_sql3_read_raw(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_list_read Query ausführen und Ergebnis in Liste                         */
 /***************************************************************************************/
-int do_sql3_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_sql3_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { sqlite3_stmt *sql3res;
   int i;
@@ -1094,7 +1107,7 @@ int do_sql3_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PA
 
 
 /***************************************************************************************/
-/* int do_sql3_idvalue(int pa, char **out, long n,                                     */
+/* short do_sql3_idvalue(int pa, char **out, long n,                                   */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1102,7 +1115,7 @@ int do_sql3_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PA
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_idvalue Einen Wert einer Tabelle bestimemn                              */
 /***************************************************************************************/
-int do_sql3_idvalue(int pa, char **out, long n,
+short do_sql3_idvalue(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[1024];
 
@@ -1121,7 +1134,7 @@ int do_sql3_idvalue(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_ins(int pa, char **out, long n,                                         */
+/* short do_sql3_ins(int pa, char **out, long n,                                       */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1130,7 +1143,7 @@ int do_sql3_idvalue(int pa, char **out, long n,
 /*     do_sql3_ins testen, ob Datensatz, der beschrieben wird vohanden ist, dann       */
 /*                ID zurück, sonst neuen Datensatz erzeugen und neue ID zurück         */
 /***************************************************************************************/
-int do_sql3_ins(int pa, char **out, long n,
+short do_sql3_ins(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char *p, *q;
@@ -1183,7 +1196,7 @@ int do_sql3_ins(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_changes(int pa, char **out, long n,                                     */
+/* short do_sql3_changes(int pa, char **out, long n,                                   */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1191,7 +1204,7 @@ int do_sql3_ins(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sql3_changes fügt Anzahl der geänderten Zeilen des letzten sqlitewrite ein   */
 /***************************************************************************************/
-int do_sql3_changes(int pa, char **out, long n,
+short do_sql3_changes(int pa, char **out, long n,
                     char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { LOG(1, "do_sql3_changes, sql3_write_flag: %d.\n", sql3_write_flag);
 
@@ -1204,7 +1217,7 @@ int do_sql3_changes(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_sql3_store_ins(int pa, char **out, long n,                                   */
+/* short do_sql3_store_ins(int pa, char **out, long n,                                 */
 /*                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)*/
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1213,15 +1226,20 @@ int do_sql3_changes(int pa, char **out, long n,
 /*              return: true bei Fehler                                                */
 /*     do_sql3_store_ins Datei als blob in Datenbank speichern - neuen Datensatz       */
 /***************************************************************************************/
-int do_sql3_store_ins(int pa, char **out, long n,
+short do_sql3_store_ins(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *buffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   sqlite3_int64 newid;
   char *err_msg = NULL;
 #ifdef _LARGEFILE64_SOURCE
+#ifdef CYGWIN
+  struct stat stat_buf;                              /* fuer stat-Aufruf               */
+#else
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
+#endif
 #else
   struct stat stat_buf;                              /* fuer stat-Aufruf               */
 #endif
@@ -1353,7 +1371,7 @@ int do_sql3_store_ins(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int sql3_2s(char *query, char **o, long n, int error_flag,                          */
+/* short sql3_2s(char *query, char **o, long n, int error_flag,                        */
 /*             char *ssep, char *zsep, int quote)                                      */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
@@ -1364,11 +1382,12 @@ int do_sql3_store_ins(int pa, char **out, long n,
 /*             return     : true bei kein Wert                                         */
 /*     sql3_2s fuehrt query aus und schreibt die Ausgabe nach o                        */
 /***************************************************************************************/
-int sql3_2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
+short sql3_2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
             int quote)
 { sqlite3_stmt *sql3res;
   char *oo;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "sql3_2s, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1424,7 +1443,7 @@ int sql3_2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 
 
 /***************************************************************************************/
-/* int sql3_2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)    */
+/* short sql3_2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)  */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1433,10 +1452,11 @@ int sql3_2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 /*             return     : true bei kein Wert                                         */
 /*     sql3_2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int sql3_2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
+short sql3_2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
 { char o[MAX_ZEILENLAENGE];
   sqlite3_stmt *sql3res;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "sql3_2net, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1495,17 +1515,18 @@ int sql3_2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
 
 
 /***************************************************************************************/
-/* int sql3_2net_tbl(char *query, int error_flag, int htmlflag)                        */
+/* short sql3_2net_tbl(char *query, int error_flag, int htmlflag)                      */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
 /*             int htmlflag: 1 - HTML-Sonderzeichen umwandeln                          */
 /*             return     : true bei kein Wert                                         */
 /*     sql3_2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int sql3_2net_tbl(char *query, int error_flag, int htmlflag)
+short sql3_2net_tbl(char *query, int error_flag, int htmlflag)
 { char o[MAX_ZEILENLAENGE];
   sqlite3_stmt *sql3res;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
   char trclass[MAX_LEN_CLASSNAME+10], tdclass[MAX_LEN_CLASSNAME+10];
   char *tbl_row_end, *tbl_row_start, *tbl_cell_end, *tbl_cell_start;
@@ -1633,7 +1654,7 @@ int sql3_2net_tbl(char *query, int error_flag, int htmlflag)
 
 
 /***************************************************************************************/
-/* int sql3_2dat(char *query, char *path, char *ssep, char *zsep)                      */
+/* short sql3_2dat(char *query, char *path, char *ssep, char *zsep)                    */
 /*             char *query: SQL-query                                                  */
 /*             char *path: Datei für die Ausgabe                                       */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1641,9 +1662,10 @@ int sql3_2net_tbl(char *query, int error_flag, int htmlflag)
 /*             return     : true bei kein Wert                                         */
 /*     sql3_2dat fuehrt query aus und schreibt Ausgabe in Datei path                   */
 /***************************************************************************************/
-int sql3_2dat(char *query, char *path, char *ssep, char *zend)
+short sql3_2dat(char *query, char *path, char *ssep, char *zend)
 { sqlite3_stmt *sql3res;
-  int i, ret;
+  int i;
+  short ret;
   int hd_out;
 
   LOG(1, "sql3_2dat, query: %s, path: %s, ssep: %s, zend: %s.\n", query, path,
@@ -1701,7 +1723,7 @@ int sql3_2dat(char *query, char *path, char *ssep, char *zend)
 
 
 /***************************************************************************************/
-/* int sql3insert2s(char *query, char **o, long n, int error_flag)                     */
+/* short sql3insert2s(char *query, char **o, long n, int error_flag)                   */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
 /*             long n     : Platz in b                                                 */
@@ -1709,7 +1731,7 @@ int sql3_2dat(char *query, char *path, char *ssep, char *zend)
 /*             return     : true bei Fehler                                            */
 /*     sql3insert2s führt query aus und schreibt eingefügte ID nach o                  */
 /***************************************************************************************/
-int sql3insert2s(char *query, char **o, long n, int error_flag)
+short sql3insert2s(char *query, char **o, long n, int error_flag)
 { char *err_msg = NULL;
 
   LOG(1, "sql3insert2s, query: %s.\n", query);

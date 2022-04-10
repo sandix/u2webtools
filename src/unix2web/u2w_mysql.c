@@ -9,11 +9,11 @@
 
 /* Anfang globale Variablen */
 #ifdef MAYDBCLIENT
-int mysql_error_log_flag = false;    /* true: MySQL-Error ins Logfile/stderr           */
-int mysql_error_out_flag = false;    /* true: MySQL-Error an stdout / HTML             */
-int mysql_connect_flag = false;
+short mysql_error_log_flag = false;    /* true: MySQL-Error ins Logfile/stderr         */
+short mysql_error_out_flag = false;    /* true: MySQL-Error an stdout / HTML           */
+short mysql_connect_flag = false;
 #ifdef MAYDBRECONNECT
-int mysql_reconnect_secs = 0;
+short mysql_reconnect_secs = 0;
 #else
 #define MYSQL_QUERY(mh, q) mysql_query(mh, q)
 #endif
@@ -30,16 +30,16 @@ int mysqlport = STD_MYSQLPORT;
 #define stat64(a,b) stat(a,b)
 #endif
 
-int mysql_query_flag = false;
-int mysql_id_flag = false;
+short mysql_query_flag = 0;             // 0: no query, 1: query, 2: query with call
+short mysql_id_flag = false;
 
 #define MAX_P_QUERIES 5
 MYSQL_RES *mres[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int mysql_res_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int mysql_line_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int mysql_next_value[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short mysql_res_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short mysql_line_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short mysql_next_value[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 MYSQL_ROW mrow[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-unsigned int mnf[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+unsigned short mnf[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 unsigned long *mlengths[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 
 
@@ -62,7 +62,7 @@ unsigned long *mlengths[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 MYSQL *mysql_connect(char *server, char *user, char *pwd, char *db, int port, char *cs)
 { MYSQL *mh;
 
-  mysql_query_flag = false;
+  mysql_query_flag = 0;
 
   if( NULL != (mh = calloc(1, sizeof(MYSQL))) )
   { mysql_init(mh);
@@ -112,12 +112,25 @@ MYSQL_RES *sql_mysql_query(MYSQL *mh, char *query)
     return true;
   }
   else
-  { mysql_query_flag = true;
+  { mysql_query_flag = 1;
     return mysql_store_result(mh);
   }
 }
 #endif  /* #ifdef DBCLIENT */
 /***************************************************************************************/
+
+
+/***************************************************************************************/
+/* mysql_clean_multistatements                                                         */
+/*      ggf. multistatements lesen                                                     */
+/***************************************************************************************/
+#define MYSQL_CLEAN_MULTISTATEMENTS if( mysql_query_flag == 2 )\
+  { while( !mysql_next_result(&mh) )\
+    { MYSQL_RES *mr;\
+      if( (mr = mysql_store_result(&mh)) ) mysql_free_result(mr);\
+  } }\
+  mysql_query_flag = 0
+
 
 
 /***************************************************************************************/
@@ -168,13 +181,13 @@ void mysql_free_res(void)
 
 
 /***************************************************************************************/
-/* int u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_port Port für MySQL-Server ändern                                     */
 /***************************************************************************************/
-int u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( isdigit(prg_pars[0][0]) )
   { mysqlport = atoi(prg_pars[0]);
@@ -185,13 +198,13 @@ int u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_connect öffnet eine Verbindung zum MySQL-Server                       */
 /***************************************************************************************/
-int u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { static char cursqlserver[128], cursqluser[128], cursqlpwd[128], cursqldb[128];
 
   LOG(1, "u2w_mysql_connect.\n");
@@ -208,7 +221,7 @@ int u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
     else
     { mysql_free_res();
       mysql_close(&mh);
-      mysql_query_flag = false;
+      mysql_query_flag = 0;
     }
   }
 
@@ -244,14 +257,14 @@ int u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_query Stellt Anfrage an Mysql-Datenbank, Ergebnisse können dann mit   */
 /*                 u2w_mysql_next_line gelesen und mit mysql_get_value gelesen werden  */
 /***************************************************************************************/
-int u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_mysql_query.\n");
@@ -270,10 +283,13 @@ int u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   else
     cn = include_counter;
 
-  if( mysql_res_flag[cn] )
-  { mysql_res_flag[cn] = mysql_line_flag[cn] = false;
-    mysql_free_result(mres[cn]);
-    mnf[cn] = 0;
+  if( mysql_query_flag )
+  { if( mysql_res_flag[cn] )
+    { mysql_res_flag[cn] = mysql_line_flag[cn] = false;
+      mysql_free_result(mres[cn]);
+      mnf[cn] = 0;
+    }
+    MYSQL_CLEAN_MULTISTATEMENTS;
   }
 
   LOG(3, "u2w_mysql_query, query: %s.\n", prg_pars[0]);
@@ -287,7 +303,10 @@ int u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
     return true;
   }
   else
-  { mysql_query_flag = true;
+  { if( str_lcasestarts(prg_pars[0], "call ") )
+      mysql_query_flag = 2;
+    else
+      mysql_query_flag = 1;
     if( (mres[cn] = mysql_store_result(&mh)) )
     { mysql_res_flag[cn] = true;
       mnf[cn] = mysql_num_fields(mres[cn]);
@@ -301,18 +320,20 @@ int u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_write Stellt Anfrage an Mysql-Datenbank, für insert und update        */
 /***************************************************************************************/
-int u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(1, "u2w_mysql_write, query: %s.\n", prg_pars[0]);
 
   if( !mysql_connect_flag )
     return true;
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, prg_pars[0]) )
   { if( mysql_error_log_flag )
@@ -323,7 +344,7 @@ int u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
     return true;
   }
   else
-  { mysql_query_flag = true;
+  { mysql_query_flag = 1;
     mysql_id_flag = true;
     return false;
   }
@@ -331,13 +352,13 @@ int u2w_mysql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_test Stellt Anfrage an Mysql-Datenbank, und liefert nur Wahrheitswert */
 /***************************************************************************************/
-int u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { MYSQL_RES *lmres;
 
   LOG(1, "u2w_mysql_test, query: %s.\n", prg_pars[0]);
@@ -345,10 +366,12 @@ int u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   if( !mysql_connect_flag )
     return true;
 
+  MYSQL_CLEAN_MULTISTATEMENTS;
+
   if( MYSQL_QUERY(&mh, prg_pars[0]) )
     return true;
   else
-  { mysql_query_flag = true;
+  { mysql_query_flag = 1;
     if( (lmres = mysql_store_result(&mh)) )
       mysql_free_result(lmres);
     mysql_id_flag = true;
@@ -361,17 +384,17 @@ int u2w_mysql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 #define MYSQL_PUFFERSIZE 10000000
 
 /***************************************************************************************/
-/* int u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_store Datei als blob in Datenbank speichern - Update                  */
 /***************************************************************************************/
-int u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *puffer, *p;
   long nb, i;
   int hd_in, ret;
-  int mode = 0;
+  short mode = 0;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
 #else
@@ -383,6 +406,8 @@ int u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
   if( !mysql_connect_flag )
     return true;
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( pa & P5 )
   { switch( prg_pars[4][0] )
@@ -396,7 +421,7 @@ int u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   { if( 0 <= (hd_in = open64(prg_pars[0], O_RDONLY)) )  /* Datei oeffnen               */
     { LOG(3, "u2w_mysql_store, dateigroesse: %ld.\n", stat_buf.st_size);
       if( stat_buf.st_size > 8*1024*1024 )
-      { int concatflag;
+      { short concatflag;
 
         LOG(5, "u2w_mysql_store, grosse Datei.\n");
         if( NULL == (puffer = malloc(MYSQL_PUFFERSIZE)) )
@@ -531,13 +556,13 @@ int u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
+/* short u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_storev Datei als blob in @-Variable speichern                         */
 /***************************************************************************************/
-int u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *puffer, *p;
   long nb, i;
   int hd_in, ret;
@@ -553,12 +578,14 @@ int u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   if( !mysql_connect_flag )
     return true;
 
+  MYSQL_CLEAN_MULTISTATEMENTS;
+
   if( (!stat64(prg_pars[0], &stat_buf)               /* Ist Datei vorhanden?           */
        && (S_IFREG & stat_buf.st_mode) == S_IFREG))  /* und normale Datei              */
   { if( 0 <= (hd_in = open64(prg_pars[0], O_RDONLY)) )  /* Datei oeffnen               */
     { LOG(3, "u2w_mysql_store, dateigroesse: %ld.\n", stat_buf.st_size);
       if( stat_buf.st_size > 8*1024*1024 )
-      { int concatflag;
+      { short concatflag;
 
         LOG(5, "u2w_mysql_storev, grosse Datei.\n");
         if( NULL == (puffer = malloc(MYSQL_PUFFERSIZE)) )
@@ -677,13 +704,13 @@ int u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_mysql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_out Query ausführen und Ergebnis in Datei schreiben                   */
 /***************************************************************************************/
-int u2w_mysql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(3, "u2w_mysql_out, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
       pa & P3 ? prg_pars[2] : "");
@@ -694,13 +721,13 @@ int u2w_mysql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
+/* short u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]) */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_get_line bereitet eine Zeile zum lesen vor                            */
 /***************************************************************************************/
-int u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_mysql_get_line.\n");
@@ -717,7 +744,25 @@ int u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
     cn = include_counter;
 
   if( mysql_res_flag[cn] && mres[cn] )
-  { if( (mrow[cn] = mysql_fetch_row(mres[cn])) )
+  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 2 )
+    { if( mysql_next_result(&mh) )
+      { mysql_query_flag = 0;
+        break;
+      }
+      else
+      { mysql_free_result(mres[cn]);
+        if( (mres[cn] = mysql_store_result(&mh)) )
+        { mnf[cn] = mysql_num_fields(mres[cn]);
+          if( (mrow[cn] = mysql_fetch_row(mres[cn])) )
+            break;
+        }
+        else
+        { mysql_res_flag[cn] = mysql_line_flag[cn] = false;
+          mnf[cn] = 0;
+        }
+      }
+    }
+    if( mrow[cn] )
     { mlengths[cn] = mysql_fetch_lengths(mres[cn]);
       mysql_line_flag[cn] = true;
       mysql_next_value[cn] = 0;
@@ -736,7 +781,7 @@ int u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
 
 
 /***************************************************************************************/
-/* int do_mysql_list_get_line(int *listlen,                                            */
+/* short do_mysql_list_get_line(int *listlen,                                          */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -745,7 +790,7 @@ int u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_list_get_line Eine Zeile in Liste                                      */
 /***************************************************************************************/
-int do_mysql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_mysql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn, i;
 
@@ -763,7 +808,25 @@ int do_mysql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LI
     cn = include_counter;
 
   if( mysql_res_flag[cn] && mres[cn] )
-  { if( (mrow[cn] = mysql_fetch_row(mres[cn])) )
+  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 2 )
+    { if( mysql_next_result(&mh) )
+      { mysql_query_flag = 0;
+        break;
+      }
+      else
+      { mysql_free_result(mres[cn]);
+        if( (mres[cn] = mysql_store_result(&mh)) )
+        { mnf[cn] = mysql_num_fields(mres[cn]);
+          if( (mrow[cn] = mysql_fetch_row(mres[cn])) )
+            break;
+        }
+        else
+        { mysql_res_flag[cn] = mysql_line_flag[cn] = false;
+          mnf[cn] = 0;
+        }
+      }
+    }
+    if( mrow[cn] )
     { mlengths[cn] = mysql_fetch_lengths(mres[cn]);
       mysql_line_flag[cn] = true;
       mysql_next_value[cn] = 0;
@@ -792,13 +855,13 @@ int do_mysql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LI
 
 
 /***************************************************************************************/
-/* int u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_isvalue testet, ob noch ein Wert für mysqlreadvalue vorliegt          */
 /***************************************************************************************/
-int u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_mysql_isvalue.\n");
@@ -819,7 +882,7 @@ int u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int do_mysql_writeline(int pa, char **out, long n,                                  */
+/* short do_mysql_writeline(int pa, char **out, long n,                                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -827,7 +890,7 @@ int u2w_mysql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_mysql_writeline fügt Zeile des letzten mysql_getline ein                    */
 /***************************************************************************************/
-int do_mysql_writeline(int pa, char **out, long n,
+short do_mysql_writeline(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   char *oo;
@@ -878,7 +941,7 @@ int do_mysql_writeline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_readwriteline(int pa, char **out, long n,                              */
+/* short do_mysql_readwriteline(int pa, char **out, long n,                            */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -886,7 +949,7 @@ int do_mysql_writeline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_readwriteline fügt eine Zeile der letzten mysql_query ein              */
 /***************************************************************************************/
-int do_mysql_readwriteline(int pa, char **out, long n,
+short do_mysql_readwriteline(int pa, char **out, long n,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !u2w_mysql_get_line(pa, prg_pars) )
@@ -897,7 +960,7 @@ int do_mysql_readwriteline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_num_fields(int pa, char **out, long n,                                 */
+/* short do_mysql_num_fields(int pa, char **out, long n,                               */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -905,7 +968,7 @@ int do_mysql_readwriteline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_num_fields ergibt Anzahl Spalten der Mysql-Abfrage                     */
 /***************************************************************************************/
-int do_mysql_num_fields(int pa, char **out, long n,
+short do_mysql_num_fields(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -928,7 +991,7 @@ int do_mysql_num_fields(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_value(int pa, char **out, long n,                                      */
+/* short do_mysql_value(int pa, char **out, long n,                                    */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -936,7 +999,7 @@ int do_mysql_num_fields(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_value fügt einen Wert einer Zeile ein                                  */
 /***************************************************************************************/
-int do_mysql_value(int pa, char **out, long n,
+short do_mysql_value(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -986,7 +1049,7 @@ int do_mysql_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_rawvalue(int pa, char **out, long n,                                   */
+/* short do_mysql_rawvalue(int pa, char **out, long n,                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -994,7 +1057,7 @@ int do_mysql_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_rawvalue fügt einen Wert einer Zeile ein ohne HTML Konvertierung       */
 /***************************************************************************************/
-int do_mysql_rawvalue(int pa, char **out, long n,
+short do_mysql_rawvalue(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -1039,7 +1102,7 @@ int do_mysql_rawvalue(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_read_value(int pa, char **out, long n,                                 */
+/* short do_mysql_read_value(int pa, char **out, long n,                               */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1047,7 +1110,7 @@ int do_mysql_rawvalue(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_read_value fügt näcshten Wert einer Zeile ein                          */
 /***************************************************************************************/
-int do_mysql_read_value(int pa, char **out, long n,
+short do_mysql_read_value(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -1082,7 +1145,7 @@ int do_mysql_read_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_id(int pa, char **out, long n,                                         */
+/* short do_mysql_id(int pa, char **out, long n,                                       */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1090,7 +1153,7 @@ int do_mysql_read_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql fügt letzte ID (nach insert) ein                                       */
 /***************************************************************************************/
-int do_mysql_id(int pa, char **out, long n,
+short do_mysql_id(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( !mysql_id_flag )
     return true;
@@ -1100,7 +1163,7 @@ int do_mysql_id(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_read_send(int pa,                                                      */
+/* short do_mysql_read_send(int pa,                                                    */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1108,7 +1171,7 @@ int do_mysql_id(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_read_tc Query ausführen und Ergebnis einfügen tablecols beachten       */
 /***************************************************************************************/
-int do_mysql_read_send(int pa,
+short do_mysql_read_send(int pa,
                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_mysql_read_send, pa: %d, %s, %s, quote: %d, last_char_sended: %d.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1123,7 +1186,7 @@ int do_mysql_read_send(int pa,
 
 
 /***************************************************************************************/
-/* int do_mysql_read(int pa, char **out, long n,                                       */
+/* short do_mysql_read(int pa, char **out, long n,                                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1131,7 +1194,7 @@ int do_mysql_read_send(int pa,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_read_ntc Query ausführen und Ergebnis einfügen tablecols nicht beachten*/
 /***************************************************************************************/
-int do_mysql_read(int pa, char **out, long n,
+short do_mysql_read(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_mysql_read, pa: %d, %s, %s, quote: %d.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1152,7 +1215,7 @@ int do_mysql_read(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_read_raw_send(int pa,                                                  */
+/* short do_mysql_read_raw_send(int pa,                                                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1161,7 +1224,7 @@ int do_mysql_read(int pa, char **out, long n,
 /*     do_mysql_read_raw_tc Query ausführen und Ergebnis ohne HTML-Quoting ausgeben    */
 /*                          tablecols beachten                                         */
 /***************************************************************************************/
-int do_mysql_read_raw_send(int pa,
+short do_mysql_read_raw_send(int pa,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_mysql_read_tc, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1176,7 +1239,7 @@ int do_mysql_read_raw_send(int pa,
 
 
 /***************************************************************************************/
-/* int do_mysql_read_raw(int pa, char **out, long n,                                   */
+/* short do_mysql_read_raw(int pa, char **out, long n,                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1185,7 +1248,7 @@ int do_mysql_read_raw_send(int pa,
 /*     do_mysql_read_raw_ntc Query ausführen und Ergebnis ohne HTML-Quoting ausgeben   */
 /*                          tablecols nicht beachten                                   */
 /***************************************************************************************/
-int do_mysql_read_raw(int pa, char **out, long n,
+short do_mysql_read_raw(int pa, char **out, long n,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_mysql_read, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -1201,7 +1264,7 @@ int do_mysql_read_raw(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_list_read(int *listlen,                                                */
+/* short do_mysql_list_read(int *listlen,                                              */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -1210,7 +1273,7 @@ int do_mysql_read_raw(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_list_read Query ausführen und Ergebnis in Liste                        */
 /***************************************************************************************/
-int do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { MYSQL_RES *mres;
   MYSQL_ROW mrow;
@@ -1222,6 +1285,8 @@ int do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, prg_pars[0]) )
   { if( mysql_error_log_flag )
@@ -1246,6 +1311,12 @@ int do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
         }
       }
       mysql_free_result(mres);
+      if( str_lcasestarts(prg_pars[0], "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
       return false;
     }
     else
@@ -1255,7 +1326,7 @@ int do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 
 
 /***************************************************************************************/
-/* int do_mysql_wert(int pa, char **out, long n,                                       */
+/* short do_mysql_wert(int pa, char **out, long n,                                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1263,7 +1334,7 @@ int do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_wert Einen Wert einer Tabelle bestimemn                                */
 /***************************************************************************************/
-int do_mysql_wert(int pa, char **out, long n,
+short do_mysql_wert(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[1024];
 
@@ -1282,7 +1353,7 @@ int do_mysql_wert(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_ins(int pa, char **out, long n,                                        */
+/* short do_mysql_ins(int pa, char **out, long n,                                      */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1291,7 +1362,7 @@ int do_mysql_wert(int pa, char **out, long n,
 /*     do_mysql_ins testen, ob Datensatz, der beschrieben wird vohanden ist, dann      */
 /*                ID zurück, sonst neuen Datensatz erzeugen und neue ID zurück         */
 /***************************************************************************************/
-int do_mysql_ins(int pa, char **out, long n,
+short do_mysql_ins(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char *p, *q;
@@ -1344,7 +1415,7 @@ int do_mysql_ins(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_enums(int pa, char **out, long n,                                      */
+/* short do_mysql_enums(int pa, char **out, long n,                                    */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1352,7 +1423,7 @@ int do_mysql_ins(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mysql_enums Möglichkeiten eines ENUMs oder SETs bestimmen                    */
 /***************************************************************************************/
-int do_mysql_enums(int pa, char **out, long n,
+short do_mysql_enums(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char qresult[MAX_ZEILENLAENGE], *qr;
@@ -1387,7 +1458,7 @@ int do_mysql_enums(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_num_rows(int pa, char **out, long n,                                   */
+/* short do_mysql_num_rows(int pa, char **out, long n,                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1396,7 +1467,7 @@ int do_mysql_enums(int pa, char **out, long n,
 /*     do_mysql_num_rows fügt Anzahl der geänderten/selektierten Zeilen der letzten    */
 /*              mysql_query ein                                                        */
 /***************************************************************************************/
-int do_mysql_num_rows(int pa, char **out, long n,
+short do_mysql_num_rows(int pa, char **out, long n,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !mysql_query_flag )
@@ -1408,7 +1479,7 @@ int do_mysql_num_rows(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mysql_store_ins(int pa, char **out, long n,                                  */
+/* short do_mysql_store_ins(int pa, char **out, long n,                                */
 /*                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)*/
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1417,11 +1488,12 @@ int do_mysql_num_rows(int pa, char **out, long n,
 /*              return: true bei Fehler                                                */
 /*     do_mysql_store_ins Datei als blob in Datenbank speichern - neuen Datensatz      */
 /***************************************************************************************/
-int do_mysql_store_ins(int pa, char **out, long n,
+short do_mysql_store_ins(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *puffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   my_ulonglong newid;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
@@ -1434,6 +1506,8 @@ int do_mysql_store_ins(int pa, char **out, long n,
 
   if( !mysql_connect_flag )
     return true;
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   newid = 0;
   ret = false;
@@ -1556,7 +1630,7 @@ int do_mysql_store_ins(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int mysql2s(char *query, char **o, long n, int error_flag,                          */
+/* short mysql2s(char *query, char **o, long n, int error_flag,                        */
 /*             char *ssep, char *zsep, int quote)                                      */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
@@ -1567,14 +1641,15 @@ int do_mysql_store_ins(int pa, char **out, long n,
 /*             return     : true bei kein Wert                                         */
 /*     mysql2s fuehrt query aus und schreibt die Ausgabe nach o                        */
 /***************************************************************************************/
-int mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
+short mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
             int quote)
 { MYSQL_RES *mres;
   MYSQL_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
   char *oo;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "mysql2s, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1594,6 +1669,8 @@ int mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -1626,6 +1703,12 @@ int mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
         }
       }
       mysql_free_result(mres);
+      if( str_lcasestarts(query, "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
     }
     else
     { if( error_flag && mysql_errno(&mh) )
@@ -1640,7 +1723,7 @@ int mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 
 
 /***************************************************************************************/
-/* int mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)    */
+/* short mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)  */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1649,13 +1732,14 @@ int mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 /*             return     : true bei kein Wert                                         */
 /*     mysql2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
+short mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
 { char o[MAX_ZEILENLAENGE];
   MYSQL_RES *mres;
   MYSQL_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "mysql2net, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1672,6 +1756,8 @@ int mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -1710,6 +1796,12 @@ int mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
           }
         }
       }
+      if( str_lcasestarts(query, "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
       mysql_free_result(mres);
     }
     else
@@ -1726,20 +1818,21 @@ int mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlflag)
 
 
 /***************************************************************************************/
-/* int mysql2net_tbl(char *query, int error_flag, int htmlflag)                        */
+/* short mysql2net_tbl(char *query, int error_flag, int htmlflag)                      */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
 /*             int htmlflag: 1 - HTML-Sonderzeichen umwandeln                          */
 /*             return     : true bei kein Wert                                         */
 /*     mysql2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int mysql2net_tbl(char *query, int error_flag, int htmlflag)
+short mysql2net_tbl(char *query, int error_flag, int htmlflag)
 { char o[MAX_ZEILENLAENGE];
   MYSQL_RES *mres;
   MYSQL_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
   char trclass[MAX_LEN_CLASSNAME+10], tdclass[MAX_LEN_CLASSNAME+10];
   char *tbl_row_end, *tbl_row_start, *tbl_cell_end, *tbl_cell_start;
@@ -1787,6 +1880,8 @@ int mysql2net_tbl(char *query, int error_flag, int htmlflag)
   }
 
   ret = false;
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -1866,6 +1961,12 @@ int mysql2net_tbl(char *query, int error_flag, int htmlflag)
           }
         }
       }
+      if( str_lcasestarts(query, "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
       mysql_free_result(mres);
     }
     else
@@ -1882,7 +1983,7 @@ int mysql2net_tbl(char *query, int error_flag, int htmlflag)
 
 
 /***************************************************************************************/
-/* int mysql2dat(char *query, char *path, char *ssep, char *zsep)                      */
+/* short mysql2dat(char *query, char *path, char *ssep, char *zsep)                    */
 /*             char *query: SQL-query                                                  */
 /*             char *path: Datei für die Ausgabe                                       */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1890,12 +1991,13 @@ int mysql2net_tbl(char *query, int error_flag, int htmlflag)
 /*             return     : true bei kein Wert                                         */
 /*     mysql2dat fuehrt query aus und schreibt Ausgabe in Datei path                   */
 /***************************************************************************************/
-int mysql2dat(char *query, char *path, char *ssep, char *zend)
+short mysql2dat(char *query, char *path, char *ssep, char *zend)
 { MYSQL_RES *mres;
   MYSQL_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int i, ret;
+  int i;
+  short ret;
   int hd_out;
 
   LOG(1, "mysql2dat, query: %s, path: %s, ssep: %s, zend: %s.\n", query, path,
@@ -1911,6 +2013,8 @@ int mysql2dat(char *query, char *path, char *ssep, char *zend)
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -1951,6 +2055,12 @@ int mysql2dat(char *query, char *path, char *ssep, char *zend)
       else
         ret = true;
       mysql_free_result(mres);
+      if( str_lcasestarts(query, "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
       return ret;
     }
     else
@@ -1960,20 +2070,22 @@ int mysql2dat(char *query, char *path, char *ssep, char *zend)
 
 
 /***************************************************************************************/
-/* int mysqlinsert2s(char *query, char **o, long n, int error_flag)                    */
+/* short mysqlinsert2s(char *query, char **o, long n, int error_flag)                  */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
 /*             long n     : Platz in b                                                 */
-/*             int error_flag: true, Fehler ausgeben                                   */
+/*             short error_flag: true, Fehler ausgeben                                 */
 /*             return     : true bei Fehler                                            */
 /*     mysqlinsert2s führt query aus und schreibt eingefügte ID nach o                 */
 /***************************************************************************************/
-int mysqlinsert2s(char *query, char **o, long n, int error_flag)
+short mysqlinsert2s(char *query, char **o, long n, short error_flag)
 {
   LOG(1, "mysqlinsert2s, query: %s.\n", query);
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -1995,7 +2107,7 @@ int mysqlinsert2s(char *query, char **o, long n, int error_flag)
 
 #ifdef NEW_VERSION
 /***************************************************************************************/
-/* int mysql2p(char *query, char *ssep, char *zsep, char *p)                           */
+/* short mysql2p(char *query, char *ssep, char *zsep, char *p)                         */
 /*             char *query: SQL-query                                                  */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
 /*             char *zsep  : Trennzeichen zwischen einzelnen Zeilen                    */
@@ -2003,12 +2115,12 @@ int mysqlinsert2s(char *query, char **o, long n, int error_flag)
 /*             return     : true bei kein Wert                                         */
 /*     mysql2p fuehrt query aus und schreibt die Ausgabe in einer pipe an *p           */
 /***************************************************************************************/
-int mysql2p(char *query, char *ssep, char *zsep, char *p)
+short mysql2p(char *query, char *ssep, char *zsep, char *p)
 { MYSQL_RES *mres;
   MYSQL_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int ret;
+  short ret;
 
   LOG(1, "mysql2p, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
       zsep ? zsep : "NULL");
@@ -2023,6 +2135,8 @@ int mysql2p(char *query, char *ssep, char *zsep, char *p)
 
   if( !mysql_connect_flag )                      /* Aktive MySQL-Verbindung?           */
     return true;                                 /* nein, dann keine Ausgabe           */
+
+  MYSQL_CLEAN_MULTISTATEMENTS;
 
   if( MYSQL_QUERY(&mh, query) )
   { if( mysql_error_log_flag )
@@ -2050,6 +2164,12 @@ int mysql2p(char *query, char *ssep, char *zsep, char *p)
         }
       }
       mysql_free_result(mres);
+      if( str_lcasestarts(query, "call ") )
+      { while( !mysql_next_result(&mh) )
+        { if( (mres = mysql_store_result(&mh)) )
+            mysql_free_result(mres);
+        }
+      }
     }
     else
     { ret = true;

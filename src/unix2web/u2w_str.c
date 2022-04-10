@@ -138,14 +138,14 @@ char *strcpyn_str_s(char *out, char *in, char *ez, long n)
 
 
 /***************************************************************************************/
-/* int strcpyn_z(char **out, char *in, long n)                                         */
+/* short strcpyn_z(char **out, char *in, long n)                                       */
 /*                char **out: Ausgabezeile                                             */
 /*                char *in  : Eingabezeile                                             */
 /*                long n    : Maximal n Zeichen                                        */
 /*    return: 0, wenn in **out genug Platz, sonst != 0                                 */
 /*      strcpyn_z kopiert in nach out                                                  */
 /***************************************************************************************/
-int strcpyn_z(char **out, char *in, long n)
+short strcpyn_z(char **out, char *in, long n)
 {
   while( *in && n-- > 0 )
     *(*out)++ = *in++;
@@ -154,14 +154,14 @@ int strcpyn_z(char **out, char *in, long n)
 
 
 /***************************************************************************************/
-/* int strcpyn_shell_z(char **out, char *in, long n)                                   */
+/* short strcpyn_shell_z(char **out, char *in, long n)                                 */
 /*                char **out: Ausgabezeile                                             */
 /*                char *in  : Eingabezeile                                             */
 /*                long n    : Maximal n Zeichen                                        */
 /*    return: 0, wenn in **out genug Platz, sonst != 0                                 */
 /*      strcpyn_shell_z kopiert in nach out, ' werden durch '"'"' ersetzt              */
 /***************************************************************************************/
-int strcpyn_shell_z(char **out, char *in, long n)
+short strcpyn_shell_z(char **out, char *in, long n)
 { 
   while( *in && n-- > 0 )
   { if( *in == '\'' )
@@ -180,14 +180,14 @@ int strcpyn_shell_z(char **out, char *in, long n)
 
 
 /***************************************************************************************/
-/* int strqcpyn_z(char **out, char *in, long n, char *quote)                           */
+/* short strqcpyn_z(char **out, char *in, long n, char *quote)                         */
 /*                char **out: Ausgabezeile                                             */
 /*                char *in  : Eingabezeile                                             */
 /*                long n    : Maximal n Zeichen                                        */
 /*    return: 0, wenn in **out genug Platz, sonst != 0                                 */
 /*      strqcpyn_z kopiert in nach out und Quotet Zeichen aus quote                    */
 /***************************************************************************************/
-int strqcpyn_z(char **out, char *in, long n, char *quote)
+short strqcpyn_z(char **out, char *in, long n, char *quote)
 {
   if( *quote )
   { while( *in && --n > 0 )
@@ -258,14 +258,14 @@ void strcpynm(char *out, const char *in, long n, long m)
 
 #ifdef MAYDBCLIENT
 /***************************************************************************************/
-/* int w_mysql_cpyn_z(char **out, wertetype *w, long n)                                */
+/* short w_mysql_cpyn_z(char **out, wertetype *w, long n)                              */
 /*                char **out: Ausgabezeile                                             */
 /*                wertetype *w: Wert, der eingefügt werden soll                        */
 /*                long n    : Maximal n Zeichen                                        */
 /*     return: 0, wenn in **out genug Platz, sonst != 0                                */
 /*      w_mysql_cpyn_z kopiert Wert nach out und Quotet Zeichen für Mysql              */
 /***************************************************************************************/
-int w_mysql_cpyn_z(char **out, wert *w, long n)
+short w_mysql_cpyn_z(char **out, wert *w, long n)
 { long nb;
   char z[128];
   char *in, *q, *o;
@@ -322,14 +322,14 @@ int w_mysql_cpyn_z(char **out, wert *w, long n)
 
 #ifdef SQLITE3
 /***************************************************************************************/
-/* int w_sqlite3_cpyn_z(char **out, wertetype *w, long n)                              */
+/* short w_sqlite3_cpyn_z(char **out, wertetype *w, long n)                            */
 /*                char **out: Ausgabezeile                                             */
 /*                wertetype *w: Wert, der eingefügt werden soll                        */
 /*                long n    : Maximal n Zeichen                                        */
 /*     return: 0, wenn in **out genug Platz, sonst != 0                                */
 /*      w_sqlite3_cpyn_z kopiert Wert nach out und Quotet Zeichen für Sqlite3          */
 /***************************************************************************************/
-int w_sqlite3_cpyn_z(char **out, wert *w, long n)
+short w_sqlite3_cpyn_z(char **out, wert *w, long n)
 { long nb;
   char z[128];
   char *in, *q, *o;
@@ -395,14 +395,14 @@ void strqcpyn(char *out, char *in, long n, char *quote)
 
 
 /***************************************************************************************/
-/* int strskip_z(char **in, char *such)                                                */
+/* short strskip_z(char **in, char *such)                                              */
 /*               char **in : Eingabezeile                                              */
 /*               char *such: wird uebersprungen                                        */
 /*               return    : true, wenn such uebersprungen, false, wenn such nicht     */
 /*                           komplett gefunden                                         */
 /*     strskip_z ueberspringt such und Leerzeichen und Tabs                            */
 /***************************************************************************************/
-int strskip_z(char **in, char *such)
+short strskip_z(char **in, char *such)
 { skip_blanks(*in);
   while( **in && **in == *such )
   { (*in)++;
@@ -465,13 +465,13 @@ char *strcasestr_hs(char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int strcaseeq(const char *s, const char *t)                                         */
+/* short strcaseeq(const char *s, const char *t)                                         */
 /*               const char *s: String, zum Vergleichen                                */
 /*               const char *t: String, zum Vergleichen                                */
 /*               return       : true, t und s sind gleich                              */
 /*     strcaseeq vergelicht s mit t ohne auf Gross/Klein zu achten                     */
 /***************************************************************************************/
-int strcaseeq(const char *s, const char *t)
+short strcaseeq(const char *s, const char *t)
 {
   if( s )
   { while( *s && *t )
@@ -487,13 +487,13 @@ int strcaseeq(const char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int is_elem(char *s, const char *t)                                                 */
+/* short is_elem(char *s, const char *t)                                               */
 /*             char *s      : String, in dem gesucht wird                              */
 /*             const char *t: String, der gesucht werden soll                          */
 /*             return       : true, String wurde gefunden                              */
 /*     is_elem sucht den String t in s als ganzes wort                                 */
 /***************************************************************************************/
-int is_elem(char *s, const char *t)
+short is_elem(char *s, const char *t)
 { char elem[PARLEN];
 
   while( *s )
@@ -508,13 +508,13 @@ int is_elem(char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int is_command(const char *s, const char *t)                                        */
+/* short is_command(const char *s, const char *t)                                      */
 /*                const char *s: String, der getestet wird                             */
 /*                const char *t: String, mit dem verglichen wird                       */
 /*                return       : true, t ist erstes Wort von s                         */
 /*     is_command testet, ob t erstes Wort von s ist, in s folgen nur Sonderzeichen    */
 /***************************************************************************************/
-int is_command(const char *s, const char *t)
+short is_command(const char *s, const char *t)
 { while( *t )
   { if( *t++ != *s++ )
       return false;
@@ -524,13 +524,13 @@ int is_command(const char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int path_starts(const char *s, const char *t)                                       */
+/* short path_starts(const char *s, const char *t)                                     */
 /*                const char *s: String, der getestet wird                             */
 /*                const char *t: String, mit dem verglichen wird                       */
 /*                return       : true, s ist subpath von t                             */
 /*     path_starts testet, ob s ein subpath von t  oder gleich t ist                   */
 /***************************************************************************************/
-int path_starts(const char *s, const char *t)
+short path_starts(const char *s, const char *t)
 { while( *t )
   { if( *t++ != *s++ )
       return false;
@@ -540,14 +540,14 @@ int path_starts(const char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int is_function_z(char **s, const char *t)                                          */
+/* short is_function_z(char **s, const char *t)                                        */
 /*                  char **s: String, der getestet wird                                */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist erstes Wort von s                       */
 /*     is_function_z testet, ob t erstes Wort von s ist, in s folgen nur Sonderzeichen */
 /*                  bei Erfolg zeigt *s auf erstes Zeichen nach t                      */
 /***************************************************************************************/
-int is_function_z(char **s, const char *t)
+short is_function_z(char **s, const char *t)
 { char *ss;
 
   ss = *s;
@@ -567,14 +567,14 @@ int is_function_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int is_command_z(char **s, const char *t)                                           */
+/* short is_command_z(char **s, const char *t)                                         */
 /*                  char **s: String, der getestet wird                                */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist erstes Wort von s                       */
 /*     is_command_z testet, ob t erstes Wort von s ist, in s folgen nur Sonderzeichen  */
 /*                  bei Erfolg zeigt *s auf erstes nicht Leerzeichen nach t            */
 /***************************************************************************************/
-int is_command_z(char **s, const char *t)
+short is_command_z(char **s, const char *t)
 { if( is_function_z(s, t) )
   { while( **s == ' ' )
       (*s)++;
@@ -586,12 +586,12 @@ int is_command_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int get_command_z(char **s, char *cmd)                                              */
+/* short get_command_z(char **s, char *cmd)                                            */
 /*                  char **s: String, der gelesen wird                                 */
 /*                  char *cmd: Platz fuer gefundenes Kommando                          */
 /*      get_command_z Befehl einlesen - alle Zeichen a-zA-Z_                           */
 /***************************************************************************************/
-int get_command_z(char **s, char *cmd)
+short get_command_z(char **s, char *cmd)
 { char *c;
 
   c = cmd;
@@ -599,24 +599,19 @@ int get_command_z(char **s, char *cmd)
          && (cmd - c) < MAX_PAR_NAME_LEN )
     *cmd++ = *(*s)++;
   *cmd = '\0';
-  if( **s == ' ' )
-  { (*s)++;
-    return true;
-  }
-  else
-    return false;
+  return false;
 }
 
 
 /***************************************************************************************/
-/* int is_befehl_z(char **s, const char *t)                                            */
+/* short is_befehl_z(char **s, const char *t)                                          */
 /*                  char **s: String, der getestet wird                                */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist erstes Wort von s                       */
 /*     is_befehl_z  testet, ob t erstes Wort von s ist, in s folgen nur Sonderzeichen  */
 /*                  bei Erfolg zeigt *s auf erstes Sonderzeichen                       */
 /***************************************************************************************/
-int is_befehl_z(char **s, const char *t)
+short is_befehl_z(char **s, const char *t)
 { char *ss;
 
   ss = *s;
@@ -637,13 +632,13 @@ int is_befehl_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int is_num_befehl_z(char **s, const char *t)                                        */
+/* short is_num_befehl_z(char **s, const char *t)                                      */
 /*                  char **s: String, der getestet wird                                */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist erstes Wort von s                       */
 /*     is_num_befehl_z  testet, ob t erstes Wort von s ist, in s folgen Ziffern        */
 /***************************************************************************************/
-int is_num_befehl_z(char **s, const char *t)
+short is_num_befehl_z(char **s, const char *t)
 { char *ss;
 
   ss = *s;
@@ -661,14 +656,14 @@ int is_num_befehl_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int str_starts_z(char **s, const char *t)                                           */
+/* short str_starts_z(char **s, const char *t)                                         */
 /*                  char **s     : String, der getestet wird                           */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist Anfang von s                            */
 /*     str_starts_z testet, ob t am Anfang von s steht, bei Erfolg zeigt *s auf erstes */
 /*                  Zeichen hinter String aus t                                        */
 /***************************************************************************************/
-int str_starts_z(char **s, const char *t)
+short str_starts_z(char **s, const char *t)
 { char *ss;
 
   ss = *s;
@@ -682,7 +677,7 @@ int str_starts_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int str_lcasestarts_z(char **s, const char *t)                                      */
+/* short str_lcasestarts_z(char **s, const char *t)                                    */
 /*                  char **s     : String, der getestet wird                           */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t ist Anfang von s                            */
@@ -690,7 +685,7 @@ int str_starts_z(char **s, const char *t)
 /*                  konvertiert, so dass t in Lowercase sein muss. Bei Erfolg zeigt *s */
 /*                  auf erstes Zeichen hinter String aus t                             */
 /***************************************************************************************/
-int str_lcasestarts_z(char **s, const char *t)
+short str_lcasestarts_z(char **s, const char *t)
 { char *ss;
 
   ss = *s;
@@ -704,7 +699,7 @@ int str_lcasestarts_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int str_lcasecmp_z(char **s, const char *t)                                         */
+/* short str_lcasecmp_z(char **s, const char *t)                                       */
 /*                  char **s     : String, der getestet wird                           */
 /*                  const char *t: String, mit dem verglichen wird                     */
 /*                  return       : true, t steht in s und in s folgen nur Sonderzeichen*/
@@ -712,7 +707,7 @@ int str_lcasestarts_z(char **s, const char *t)
 /*                  konvertiert, so dass t in Lowercase sein muss. *s zeigt auf        */
 /*                  erstes nicht passendes Zeichen Zeichen hinter String aus t         */
 /***************************************************************************************/
-int str_lcasecmp_z(char **s, const char *t)
+short str_lcasecmp_z(char **s, const char *t)
 { while( *t )
   { if( tolower(*(*s)++) != *t++ )
       return false;
@@ -722,13 +717,13 @@ int str_lcasecmp_z(char **s, const char *t)
 
 
 /***************************************************************************************/
-/* int str_starts(const char *s, const char *t)                                        */
+/* short str_starts(const char *s, const char *t)                                      */
 /*                const char *s: String, der getestet wird                             */
 /*                const char *t: String, mit dem verglichen wird                       */
 /*                return       : true, t ist Anfang von s                              */
 /*     str_starts testet, ob t am Anfang von s steht                                   */
 /***************************************************************************************/
-int str_starts(const char *s, const char *t)
+short str_starts(const char *s, const char *t)
 { while( *t )
   { if( *t++ != *s++ )
       return false;
@@ -738,7 +733,23 @@ int str_starts(const char *s, const char *t)
 
 
 /***************************************************************************************/
-/* int str_starts_conc(const char *s1, const char *s1e, const char *s2, const char *t) */
+/* short str_lcasestarts(const char *s, const char *t)                                 */
+/*                const char *s: String, der getestet wird                             */
+/*                const char *t: String, mit dem verglichen wird                       */
+/*                return       : true, t ist Anfang von s                              */
+/*     str_lcasestarts testet, ob t am Anfang von s steht, ignore case                 */
+/***************************************************************************************/
+short str_lcasestarts(const char *s, const char *t)
+{ while( *t )
+  { if( *t++ != tolower(*s++) )
+      return false;
+  }
+  return true;
+}
+
+
+/***************************************************************************************/
+/* short str_starts_conc(const char *s1, const char *s1e, const char *s2,const char *t)*/
 /*                const char *s1: Stringanfang                                         */
 /*                const char *s1e: Ende String1,                                       */
 /*                const char *s2: Stringende, der getestet wird                        */
@@ -746,7 +757,7 @@ int str_starts(const char *s, const char *t)
 /*                return       : true, t ist Anfang von concat(s1,s2)                  */
 /*     str_starts testet, ob t am Anfang von s1s2 steht                                */
 /***************************************************************************************/
-int str_starts_conc(const char *s1, const char *s1e, const char *s2, const char *t)
+short str_starts_conc(const char *s1, const char *s1e, const char *s2, const char *t)
 { while( *t && s1 < s1e )
   { if( *t++ != *s1++ )
       return false;
@@ -760,13 +771,13 @@ int str_starts_conc(const char *s1, const char *s1e, const char *s2, const char 
 
 
 /***************************************************************************************/
-/* int test_ext(const char *s, const char *e)                                          */
+/* short test_ext(const char *s, const char *e)                                        */
 /*              const char *s: String, der getestet wird                               */
 /*              const char *e: extension, mit der verglichen wird                      */
 /*              return       : true, s endet mit t                                     */
 /*     test_ext testet, ob s die Extension e hat                                       */
 /***************************************************************************************/
-int test_ext(const char *s, const char *e)
+short test_ext(const char *s, const char *e)
 { if( strlen(s) < strlen(e) )
     return false;
   s += strlen(s) - strlen(e);

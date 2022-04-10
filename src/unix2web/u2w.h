@@ -515,7 +515,7 @@ struct hu2w_struct { char *command;                 /* Kommandostring           
 typedef struct hu2w_struct hu2wtype;
 
 typedef struct { char *command;                     /* Kommandostring                  */
-                 int (*do_fkt)(void);               /* Aufzurufende Funktion           */
+                 short (*do_fkt)(void);             /* Aufzurufende Funktion           */
                  char flags;                        /* Flags                           */
                } u2w_put_command_type;
 #define PCFILEFLAG  1  /* u2w_put_command_type.flags | 1: cmd nur bei Dateien erlaubt  */
@@ -577,9 +577,9 @@ typedef enum { CSS_LINK, CSS_TABLE, CSS_TABLEHEAD, CSS_TABLEBODY, CSS_HTML, CSS_
 #endif  /* #else #ifdef DEBUG */
 
 typedef struct { char *command;
-                 int (*do_fkt)(int pa,
+                 short (*do_fkt)(int pa,
                                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]);
-                 int (*get_pars_fkt)(char **s, int n,
+                 short (*get_pars_fkt)(char **s, int n,
                                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                                      char quoteflags[MAX_ANZ_QUOTE_PARS]);
                  int minpars;
@@ -588,10 +588,10 @@ typedef struct { char *command;
                } command_prog_type;
 
 typedef struct { char *command;
-                 int (*do_fkt)(int pa,
+                 short (*do_fkt)(int pa,
                                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                                char token);
-                 int (*get_pars_fkt)(char **s, int n,
+                 short (*get_pars_fkt)(char **s, int n,
                                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                                      char quoteflags[MAX_ANZ_QUOTE_PARS]);
                  int minpars;
@@ -601,10 +601,10 @@ typedef struct { char *command;
                } command_prog_token_type;
 
 typedef struct { char *command;
-                 int (*do_list_fkt)(int pa, int lens[2],
+                 short (*do_list_fkt)(int pa, int lens[2],
                                     char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
                                     char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS]);
-                 int (*get_list_pars_fkt)(char **s, int n, int lens[2],
+                 short (*get_list_pars_fkt)(char **s, int n, int lens[2],
                                     char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],
                                     char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                                     char quoteflags[2]);
@@ -614,7 +614,7 @@ typedef struct { char *command;
                } command_list_prog_type;
 
 typedef struct { char *command;
-                 int (*do_fkt)(int optpars, char **out, long n,
+                 short (*do_fkt)(int optpars, char **out, long n,
                                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                                int quote);
                  int minpars;
@@ -623,7 +623,7 @@ typedef struct { char *command;
                } scan_prog_type;
 
 typedef struct { char *command;
-                 int (*do_fkt)(int optpars,
+                 short (*do_fkt)(int optpars,
                                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
                                int quote);
                  int minpars;
@@ -632,7 +632,7 @@ typedef struct { char *command;
                } scan_prog_send_type;
 
 typedef struct { char *command;
-                 int (*do_fkt)(int *listlen,
+                 short (*do_fkt)(int *listlen,
                                char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                                int optpars,
                                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]);

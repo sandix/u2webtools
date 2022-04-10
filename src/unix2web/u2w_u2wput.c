@@ -386,6 +386,8 @@ int u2w_put(FILE *ptr)
               cmd, tblid, fktid);
           switch(tblid)
           { case T_U2W_PUT_PRE_HEADER:
+              if( *inz == ' ' )
+                inz++;
               if( u2w_put_pre_http_commands[fktid].do_fkt )
               { if( 0 <= (cflag = (*(u2w_put_pre_http_commands[fktid].do_fkt))()) )
                   return cflag;
@@ -425,7 +427,9 @@ int u2w_put(FILE *ptr)
           /*****************************************************************************/
 
           if( tblid == T_U2W_PUT_HTTP_HEADER )
-          { if( u2w_put_http_header_commands[fktid].do_fkt )
+          { if( *inz == ' ' )
+              inz++;
+            if( u2w_put_http_header_commands[fktid].do_fkt )
             { if( 0 <= (cflag = (*(u2w_put_http_header_commands[fktid].do_fkt))()) )
                 return cflag;
             }
@@ -458,7 +462,9 @@ int u2w_put(FILE *ptr)
           /*****************************************************************************/
 
           if( tblid == T_U2W_PUT_HEADER )
-          { if( u2w_put_header_commands[fktid].do_fkt )
+          { if( *inz == ' ' )
+              inz++;
+            if( u2w_put_header_commands[fktid].do_fkt )
             { if( 0 <= (cflag = (*(u2w_put_header_commands[fktid].do_fkt))()) )
                 return cflag;
             }
@@ -496,6 +502,8 @@ int u2w_put(FILE *ptr)
                 return true;
               continue;
             case T_U2W_TABLE_PROGS:
+              if( *inz == ' ' )
+                inz++;
               if( do_x2w_command(&inz, u2w_table_progs[fktid]) )
                 return true;
               last_char_sended = '\1';
@@ -512,6 +520,8 @@ int u2w_put(FILE *ptr)
 
                       p = inz;
                       get_command_z(&p, cmd);
+                      if( *p == ' ' )
+                        p++;
                       get_u2w_hash(cmd, T_U2W_TABLE_PROGS, &tblid, &fktid);
                     }
                   }
@@ -545,6 +555,8 @@ int u2w_put(FILE *ptr)
 #endif  /* #ifdef WEBSERVER */
 
             case T_U2W_PUT:
+              if( *inz == ' ' )
+                inz++;
               if( u2w_put_commands[fktid].do_fkt )
               { if( 0 <= (cflag = (*(u2w_put_commands[fktid].do_fkt))()) )
                   return cflag;
@@ -596,7 +608,9 @@ int u2w_put(FILE *ptr)
             switch(tblid)
             { case T_U2W_PUT_PRE_HEADER:
                 if( u2w_put_pre_http_commands[fktid].do_fkt )
-                { if( 0 <= (cflag = (*(u2w_put_pre_http_commands[fktid].do_fkt))()) )
+                { if( *inz == ' ' )
+                    inz++;
+                  if( 0 <= (cflag = (*(u2w_put_pre_http_commands[fktid].do_fkt))()) )
                     return cflag;
                 }
                 LOG(35, "u2w_put, nach case T_U2W_PUT_PRE_HEADER\n");
@@ -635,7 +649,9 @@ int u2w_put(FILE *ptr)
             /***************************************************************************/
 
             if( tblid == T_U2W_PUT_HTTP_HEADER )
-            { if( u2w_put_http_header_commands[fktid].do_fkt )
+            { if( *inz == ' ' )
+                inz++;
+              if( u2w_put_http_header_commands[fktid].do_fkt )
               { if( 0 <= (cflag = (*(u2w_put_http_header_commands[fktid].do_fkt))()) )
                   return cflag;
               }
@@ -667,7 +683,9 @@ int u2w_put(FILE *ptr)
             /***************************************************************************/
 
             if( tblid == T_U2W_PUT_HEADER )
-            { if( u2w_put_header_commands[fktid].do_fkt )
+            { if( *inz == ' ' )
+                inz++;
+              if( u2w_put_header_commands[fktid].do_fkt )
               { if( 0 <= (cflag = (*(u2w_put_header_commands[fktid].do_fkt))()) )
                   return cflag;
               }
@@ -721,6 +739,8 @@ int u2w_put(FILE *ptr)
 
                         p = inz+1;
                         get_command_z(&p, cmd);
+                        if( *p == ' ' )
+                          p++;
                         if( get_u2w_hash(cmd, T_U2W_TABLE_PROGS, &tblid, &fktid) )
                           tblid = 0;
                       }
@@ -755,6 +775,8 @@ int u2w_put(FILE *ptr)
 #endif  /* #ifdef WEBSERVER */
 
               case T_U2W_PUT:
+                if( *inz == ' ' )
+                  inz++;
                 if( u2w_put_commands[fktid].do_fkt )
                 { if( 0 <= (cflag = (*(u2w_put_commands[fktid].do_fkt))()) )
                     return cflag;

@@ -11,9 +11,9 @@
 
 /* Anfang globale Variablen */
 #ifdef POSTGRESQLCLIENT
-int pgsql_error_log_flag = false;    /* true: PGSQL-Error ins Logfile/stderr           */
-int pgsql_error_out_flag = false;    /* true: PGSQL-Error an stdout / HTML             */
-int pgsql_connect_flag = false;
+short pgsql_error_log_flag = false;    /* true: PGSQL-Error ins Logfile/stderr         */
+short pgsql_error_out_flag = false;    /* true: PGSQL-Error an stdout / HTML           */
+short pgsql_connect_flag = false;
 PGconn *ph;
 int pgsqlport = STD_PGSQLPORT;
 #endif
@@ -22,16 +22,16 @@ int pgsqlport = STD_PGSQLPORT;
 
 #ifdef POSTGRESQLCLIENT
 
-int pgsql_write_flag = false;
-int pgsql_id_flag = false;
+short pgsql_write_flag = false;
+short pgsql_id_flag = false;
 char pgsql_num_rows[32];
 unsigned long long pgsql_insert_id;
 
 #define MAX_PP_QUERIES 5
 PGresult *pres[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
-int pgsql_res_flag[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
-int pgsql_line[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
-int pgsql_next_value[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
+short pgsql_res_flag[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
+short pgsql_line[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
+short pgsql_next_value[MAX_ANZ_INCLUDE+MAX_PP_QUERIES];
 
 
 /***************************************************************************************/
@@ -137,13 +137,13 @@ void pgsql_free_res(void)
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_pgsql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_port Port für PGSQL-Server ändern                                     */
 /***************************************************************************************/
-int u2w_pgsql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( isdigit(prg_pars[0][0]) )
   { pgsqlport = atoi(prg_pars[0]);
@@ -154,13 +154,13 @@ int u2w_pgsql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_pgsql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_connect öffnet eine Verbindung zum PGSQL-Server                       */
 /***************************************************************************************/
-int u2w_pgsql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { static char cursqlserver[128], cursqluser[128], cursqlpwd[128], cursqldb[128];
 
   LOG(1, "u2w_pgsql_connect.\n");
@@ -199,14 +199,14 @@ int u2w_pgsql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_pgsql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_query Stellt Anfrage an PGsql-Datenbank, Ergebnisse können dann mit   */
 /*                 u2w_pgsql_next_line gelesen und mit pgsql_get_value gelesen werden  */
 /***************************************************************************************/
-int u2w_pgsql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_pgsql_query.\n");
@@ -243,13 +243,13 @@ int u2w_pgsql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_pgsql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_write Stellt Anfrage an PGsql-Datenbank, für insert und update        */
 /***************************************************************************************/
-int u2w_pgsql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { PGresult *pres;
 
   LOG(1, "u2w_pgsql_write, query: %s.\n", prg_pars[0]);
@@ -275,13 +275,13 @@ int u2w_pgsql_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_pgsql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_test Stellt Anfrage an PGsql-Datenbank, und liefert nur Wahrheitswert */
 /***************************************************************************************/
-int u2w_pgsql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { PGresult *lpres;
 
   LOG(1, "u2w_pgsql_test, query: %s.\n", prg_pars[0]);
@@ -311,16 +311,17 @@ int u2w_pgsql_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 #ifdef NOCHNICHTFERTIG
 
 /***************************************************************************************/
-/* int u2w_pgsql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_pgsql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_store Datei als blob in Datenbank speichern - Update                  */
 /***************************************************************************************/
-int u2w_pgsql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *puffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   int mode = 0;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
@@ -469,13 +470,13 @@ int u2w_pgsql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 #endif  /* NOCHNICHTFERTIG */
 
 /***************************************************************************************/
-/* int u2w_pgsql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_pgsql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_out Query ausführen und Ergebnis in Datei schreiben                   */
 /***************************************************************************************/
-int u2w_pgsql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(3, "u2w_pgsql_out, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
       pa & P3 ? prg_pars[2] : "");
@@ -486,13 +487,13 @@ int u2w_pgsql_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
+/* short u2w_pgsql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]) */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_get_line bereitet eine Zeile zum lesen vor                            */
 /***************************************************************************************/
-int u2w_pgsql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_pgsql_get_line.\n");
@@ -573,13 +574,13 @@ int do_pgsql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LI
 
 
 /***************************************************************************************/
-/* int u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_pgsql_isvalue testet, ob noch ein Wert für pgsqlreadvalue vorliegt          */
 /***************************************************************************************/
-int u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_pgsql_isvalue.\n");
@@ -601,7 +602,7 @@ int u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int do_pgsql_writeline(int pa, char **out, long n,                                  */
+/* short do_pgsql_writeline(int pa, char **out, long n,                                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -609,7 +610,7 @@ int u2w_pgsql_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_pgsql_writeline fügt Zeile des letzten pgsql_getline ein                    */
 /***************************************************************************************/
-int do_pgsql_writeline(int pa, char **out, long n,
+short do_pgsql_writeline(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   char *oo;
@@ -662,7 +663,7 @@ int do_pgsql_writeline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_readwriteline(int pa, char **out, long n,                              */
+/* short do_pgsql_readwriteline(int pa, char **out, long n,                            */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -670,7 +671,7 @@ int do_pgsql_writeline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_readwriteline fügt eine Zeile der letzten pgsql_query ein              */
 /***************************************************************************************/
-int do_pgsql_readwriteline(int pa, char **out, long n,
+short do_pgsql_readwriteline(int pa, char **out, long n,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !u2w_pgsql_get_line(pa, prg_pars) )
@@ -681,7 +682,7 @@ int do_pgsql_readwriteline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_num_fields(int pa, char **out, long n,                                 */
+/* short do_pgsql_num_fields(int pa, char **out, long n,                               */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -689,7 +690,7 @@ int do_pgsql_readwriteline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_num_fields ergibt Anzahl Spalten der PGsql-Abfrage                     */
 /***************************************************************************************/
-int do_pgsql_num_fields(int pa, char **out, long n,
+short do_pgsql_num_fields(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -712,7 +713,7 @@ int do_pgsql_num_fields(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_value(int pa, char **out, long n,                                      */
+/* short do_pgsql_value(int pa, char **out, long n,                                    */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -720,7 +721,7 @@ int do_pgsql_num_fields(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_value fügt einen Wert einer Zeile ein                                  */
 /***************************************************************************************/
-int do_pgsql_value(int pa, char **out, long n,
+short do_pgsql_value(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -768,7 +769,7 @@ int do_pgsql_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_read_value(int pa, char **out, long n,                                 */
+/* short do_pgsql_read_value(int pa, char **out, long n,                               */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -776,7 +777,7 @@ int do_pgsql_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_read_value fügt näcshten Wert einer Zeile ein                          */
 /***************************************************************************************/
-int do_pgsql_read_value(int pa, char **out, long n,
+short do_pgsql_read_value(int pa, char **out, long n,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -813,7 +814,7 @@ int do_pgsql_read_value(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_id(int pa, char **out, long n,                                         */
+/* short do_pgsql_id(int pa, char **out, long n,                                       */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -821,7 +822,7 @@ int do_pgsql_read_value(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_id fügt letzte ID (nach insert) ein                                    */
 /***************************************************************************************/
-int do_pgsql_id(int pa, char **out, long n,
+short do_pgsql_id(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( !pgsql_id_flag )
     return true;
@@ -831,7 +832,7 @@ int do_pgsql_id(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_read(int pa, char **out, long n,                                       */
+/* short do_pgsql_read(int pa, char **out, long n,                                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -839,7 +840,7 @@ int do_pgsql_id(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_read Query ausführen und Ergebnis einfügen                             */
 /***************************************************************************************/
-int do_pgsql_read(int pa, char **out, long n,
+short do_pgsql_read(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_pgsql_read, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -855,7 +856,7 @@ int do_pgsql_read(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_list_read(int *listlen,                                                */
+/* short do_pgsql_list_read(int *listlen,                                              */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -864,7 +865,7 @@ int do_pgsql_read(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_list_read Query ausführen und Ergebnis in Liste                        */
 /***************************************************************************************/
-int do_pgsql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_pgsql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { PGresult *pres;
   unsigned int nf;
@@ -900,7 +901,7 @@ int do_pgsql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 
 
 /***************************************************************************************/
-/* int do_pgsql_idvalue(int pa, char **out, long n,                                    */
+/* short do_pgsql_idvalue(int pa, char **out, long n,                                  */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -908,7 +909,7 @@ int do_pgsql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_idvalue Einen Wert einer Tabelle bestimemn                             */
 /***************************************************************************************/
-int do_pgsql_idvalue(int pa, char **out, long n,
+short do_pgsql_idvalue(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[1024];
 
@@ -927,7 +928,7 @@ int do_pgsql_idvalue(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_ins(int pa, char **out, long n,                                        */
+/* short do_pgsql_ins(int pa, char **out, long n,                                      */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -936,7 +937,7 @@ int do_pgsql_idvalue(int pa, char **out, long n,
 /*     do_pgsql_ins testen, ob Datensatz, der beschrieben wird vohanden ist, dann      */
 /*                ID zurück, sonst neuen Datensatz erzeugen und neue ID zurück         */
 /***************************************************************************************/
-int do_pgsql_ins(int pa, char **out, long n,
+short do_pgsql_ins(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE], iquery[MAX_ZEILENLAENGE];
   char *p, *q;
@@ -990,7 +991,7 @@ int do_pgsql_ins(int pa, char **out, long n,
 
 #ifdef NOCH_NICHT_IMPLEMENTIERT
 /***************************************************************************************/
-/* int do_pgsql_enums(int pa, char **out, long n,                                      */
+/* short do_pgsql_enums(int pa, char **out, long n,                                    */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -998,7 +999,7 @@ int do_pgsql_ins(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_pgsql_enums Möglichkeiten eines ENUMs oder SETs bestimmen                    */
 /***************************************************************************************/
-int do_pgsql_enums(int pa, char **out, long n,
+short do_pgsql_enums(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char qresult[MAX_ZEILENLAENGE], *qr;
@@ -1034,7 +1035,7 @@ int do_pgsql_enums(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_pgsql_num_rows(int pa, char **out, long n,                                   */
+/* short do_pgsql_num_rows(int pa, char **out, long n,                                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1043,7 +1044,7 @@ int do_pgsql_enums(int pa, char **out, long n,
 /*     do_pgsql_num_rows fügt Anzahl der geänderten/selektierten Zeilen der letzten    */
 /*              pgsql_query ein                                                        */
 /***************************************************************************************/
-int do_pgsql_num_rows(int pa, char **out, long n,
+short do_pgsql_num_rows(int pa, char **out, long n,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -1057,7 +1058,7 @@ int do_pgsql_num_rows(int pa, char **out, long n,
 
 #ifdef NOCH_NICHT_IMPLEMENTIERT
 /***************************************************************************************/
-/* int do_pgsql_store_ins(int pa, char **out, long n,                                  */
+/* short do_pgsql_store_ins(int pa, char **out, long n,                                */
 /*                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)*/
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1066,11 +1067,12 @@ int do_pgsql_num_rows(int pa, char **out, long n,
 /*              return: true bei Fehler                                                */
 /*     do_pgsql_store_ins Datei als blob in Datenbank speichern - neuen Datensatz      */
 /***************************************************************************************/
-int do_pgsql_store_ins(int pa, char **out, long n, int tabelrows,
+short do_pgsql_store_ins(int pa, char **out, long n, int tabelrows,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *puffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   my_ulonglong newid;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
@@ -1197,7 +1199,7 @@ int do_pgsql_store_ins(int pa, char **out, long n, int tabelrows,
 
 
 /***************************************************************************************/
-/* int pgsql2s(char *query, char **o, long n, int error_flag,                          */
+/* short pgsql2s(char *query, char **o, long n, int error_flag,                        */
 /*             char *ssep, char *zsep, int tablecols, int quote)                       */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
@@ -1209,12 +1211,13 @@ int do_pgsql_store_ins(int pa, char **out, long n, int tabelrows,
 /*             return     : true bei kein Wert                                         */
 /*     pgsql2s fuehrt query aus und schreibt die Ausgabe nach o                        */
 /***************************************************************************************/
-int pgsql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
+short pgsql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
              int tablecols, int quote)
 { PGresult *pres;
   unsigned int nf;
   char *oo;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "pgsql2s, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1278,7 +1281,7 @@ int pgsql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 
 
 /***************************************************************************************/
-/* int pgsql2net(char *query, int error_flag,                                          */
+/* short pgsql2net(char *query, int error_flag,                                        */
 /*             char *ssep, char *zsep, int tablecols)                                  */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
@@ -1288,12 +1291,13 @@ int pgsql2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 /*             return     : true bei kein Wert                                         */
 /*     pgsql2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int pgsql2net(char *query, int error_flag, char *ssep, char *zsep,
+short pgsql2net(char *query, int error_flag, char *ssep, char *zsep,
              int tablecols)
 { char o[MAX_ZEILENLAENGE];
   PGresult *pres;
   unsigned int nf;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "pgsql2net, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1357,7 +1361,7 @@ int pgsql2net(char *query, int error_flag, char *ssep, char *zsep,
 
 
 /***************************************************************************************/
-/* int pgsql2dat(char *query, char *path, char *ssep, char *zsep)                      */
+/* short pgsql2dat(char *query, char *path, char *ssep, char *zsep)                    */
 /*             char *query: SQL-query                                                  */
 /*             char *path: Datei für die Ausgabe                                       */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1366,10 +1370,11 @@ int pgsql2net(char *query, int error_flag, char *ssep, char *zsep,
 /*             return     : true bei kein Wert                                         */
 /*     pgsql2dat fuehrt query aus und schreibt Ausgabe in Datei path                   */
 /***************************************************************************************/
-int pgsql2dat(char *query, char *path, char *ssep, char *zsep)
+short pgsql2dat(char *query, char *path, char *ssep, char *zsep)
 { PGresult *pres;
   unsigned int nf;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
   int hd_out;
 #ifndef _LARGEFILE64_SOURCE
@@ -1434,7 +1439,7 @@ int pgsql2dat(char *query, char *path, char *ssep, char *zsep)
 
 #ifdef NEW_VERSION
 /***************************************************************************************/
-/* int pgsql2p(char *query, char *ssep, char *zsep, char *p)                           */
+/* short pgsql2p(char *query, char *ssep, char *zsep, char *p)                         */
 /*             char *query: SQL-query                                                  */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
 /*             char *zsep  : Trennzeichen zwischen einzelnen Zeilen                    */
@@ -1442,11 +1447,11 @@ int pgsql2dat(char *query, char *path, char *ssep, char *zsep)
 /*             return     : true bei kein Wert                                         */
 /*     pgsql2p fuehrt query aus und schreibt die Ausgabe in einer pipe an *p           */
 /***************************************************************************************/
-int pgsql2p(char *query, char *ssep, char *zsep, char *p)
+short pgsql2p(char *query, char *ssep, char *zsep, char *p)
 { PGSQL_RES *mres;
   PGSQL_ROW mrow;
   unsigned int nf;
-  int ret;
+  short ret;
 
   LOG(1, "pgsql2p, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
       zsep ? zsep : "NULL");

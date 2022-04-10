@@ -40,11 +40,11 @@ void conv_get(char *s)
 
 
 /***************************************************************************************/
-/* int get_parwerte(char *par)                                                         */
+/* short get_parwerte(char *par)                                                       */
 /*                  char *par      : Parameter vom Browser erhalten                    */
 /*     get_parwerte Speichert die Parameter mit ihren Werten in pars[]                 */
 /***************************************************************************************/
-int get_parwerte(char *par)
+short get_parwerte(char *par)
 { char *p;                                               /* zeigt auf par              */
   char name[MAX_PAR_NAME_LEN];                           /* Name eines Parameters      */
   char wert[PARLEN];                                     /* Wert eines Parameters      */
@@ -77,13 +77,13 @@ int get_parwerte(char *par)
 #else  /* WEBSERVER */
 
 /***************************************************************************************/
-/* int get_parwerte(int options, int argc, char **argv)                                */
+/* short get_parwerte(int options, int argc, char **argv)                              */
 /*                  int options: Anzahl bereits ausgewerteter Optionen                 */
 /*                  int argc: argc von main                                            */
 /*                  char **argv: argv von main                                         */
 /*     get_parwerte Speichert die Parameter mit ihren Werten in pars[]                 */
 /***************************************************************************************/
-int get_parwerte(int options, int argc, char **argv)
+short get_parwerte(int options, int argc, char **argv)
 { char *p;                                               /* zeigt auf *argv            */
   char name[MAX_PAR_NAME_LEN];                           /* Name eines Parameters      */
 
@@ -106,11 +106,11 @@ int get_parwerte(int options, int argc, char **argv)
 
 
 /***************************************************************************************/
-/* int set_initpar(char *arg)                                                          */
+/* short set_initpar(char *arg)                                                        */
 /*                 char *arg: arg hinter -Xd                                           */
 /*     set_initpar Speichert die Parameter mit ihren Werten in initpars[]              */
 /***************************************************************************************/
-int set_initpar(char *arg)
+short set_initpar(char *arg)
 { char *p;                                               /* zeigt auf *argv            */
   char name[MAX_PAR_NAME_LEN];                           /* Name eines Parameters      */
 
@@ -278,7 +278,7 @@ wert getfirstparwert(char **in)
 
 
 /***************************************************************************************/
-/* int wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,             */
+/* short wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,           */
 /*               int quote_mode, char *sep, unsigned int flags)                        */
 /*               char **p      : zum Aufbauen des Parameters                           */
 /*               wertetype *w  : Zeiger auf Wert(e)                                    */
@@ -293,7 +293,7 @@ wert getfirstparwert(char **in)
 /*   return 1: wenn n ueberschritten wird, bzw. 2, wenn (flags&1)                      */
 /*      wpar_sep Werte zu w ausgeben                                                   */
 /***************************************************************************************/
-int wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,
+short wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,
               int quote_mode, char *sep, unsigned int flags)
 { char *pp;
   char *q;
@@ -384,7 +384,7 @@ int wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,
 
 
 /***************************************************************************************/
-/* int wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)     */
+/* short wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)   */
 /*               char **p      : zum Aufbauen des Parameters                           */
 /*               wert *w       : Zeiger auf Wert                                       */
 /*               char *quote   : ggf. Quotingzeichen                                   */
@@ -393,7 +393,7 @@ int wpar_sep(char **p, wertetype *w, char *quote, size_t n, char trenn,
 /*               int quote_mode: Quotingmodus                                          */
 /*      wipar Werte ausgeben                                                           */
 /***************************************************************************************/
-int wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)
+short wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)
 { char *pp;
   char *q;
 
@@ -448,7 +448,7 @@ int wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)
 
 
 /***************************************************************************************/
-/* int getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,       */
+/* short getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,     */
 /*                 char *sep, short level, unsigned int flags)                         */
 /*             char **p       : zum Aufbauen des Parameters                            */
 /*             char *parname  : Parametername                                          */
@@ -464,7 +464,7 @@ int wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode)
 /*    return: 1, wenn n ueberschritten wird, bzw. 2, wenn (flags&1)                    */
 /*      getpar_sep Bestimmt alle Werte zum Parameter parname                           */
 /***************************************************************************************/
-int getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,
+short getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,
                 char *sep, short level, unsigned int flags)
 { hparstype *hp;
 
@@ -488,7 +488,7 @@ int getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,
 
 
 /***************************************************************************************/
-/* int getipar(char **p, char *parname, size_t n, char trenn, int quote_mode)          */
+/* short getipar(char **p, char *parname, size_t n, char trenn, int quote_mode)        */
 /*             char **p       : zum Aufbauen des Parameters                            */
 /*             char *parname  : Parametername                                          */
 /*             size_t n       : noch n Zeichen Platz in p                              */
@@ -497,7 +497,7 @@ int getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,
 /*    return: 1, wenn zu wenig n ueberschritten wird                                   */
 /*      getipar_sep Bestimmt Wert zum INIT-Parameter parname                           */
 /***************************************************************************************/
-int getipar(char **p, char *parname, size_t n, char trenn, int quote_mode)
+short getipar(char **p, char *parname, size_t n, char trenn, int quote_mode)
 { hiparstype *hip;
 
   LOG(1, "getipar, parname: %s, quote_mode: %d.\n", parname, quote_mode);
@@ -550,7 +550,7 @@ void countpar(char **p, char *parname, size_t n, short level)
 
 
 /***************************************************************************************/
-/* int getpar(char **p, char **s, size_t n, char trenn, int quote_mode)                */
+/* short getpar(char **p, char **s, size_t n, char trenn, int quote_mode)              */
 /*             char **p       : zum Aufbauen des Parameters                            */
 /*             char **s       : *s zeigt auf den gelesenen String                      */
 /*             size_t n       : noch n Zeichen Platz in p                              */
@@ -559,7 +559,7 @@ void countpar(char **p, char *parname, size_t n, short level)
 /*    return: 0, wenn in **p genug Platz, sonst != 0                                   */
 /*      getpar Bestimmt den Wert zum Parameter, auf den *s zeigt                       */
 /***************************************************************************************/
-int getpar(char **p, char **s, size_t n, char trenn, int quote_mode)
+short getpar(char **p, char **s, size_t n, char trenn, int quote_mode)
 { char parname[PARLEN];
   char *pp;
 
@@ -640,12 +640,12 @@ wertetype *firstwert(char *p, short level)
 
 
 /***************************************************************************************/
-/* int set_par_quote(char *name, char *quote)                                          */
+/* short set_par_quote(char *name, char *quote)                                        */
 /*                 char *name : Name des Parameters                                    */
 /*                 char *quote: Quoting das gesetzt werden soll                        */
 /*     set_par_quote setzt für Parameter name die Quotingzeichen                       */
 /***************************************************************************************/
-int set_par_quote(char *name, char *quote)
+short set_par_quote(char *name, char *quote)
 { hparstype *hp;
 
   LOG(1, "set_par_quote, name: %s, quote: %s.\n", name, quote);
@@ -663,7 +663,7 @@ int set_par_quote(char *name, char *quote)
 
 
 /***************************************************************************************/
-/* int u2w_queryvars(int pa, char **out, long n,                                       */
+/* short u2w_queryvars(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -671,7 +671,7 @@ int set_par_quote(char *name, char *quote)
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*     u2w_queryvars belegte Variablen aus P1 zu <var1>=$>var1>&<varn>=$<varn> wandeln */
 /***************************************************************************************/
-int u2w_queryvars(int pa, char **out, long n,
+short u2w_queryvars(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *o, *p, *q, *z, sep;
   char first;
@@ -762,13 +762,13 @@ int u2w_queryvars(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bglobal Browser/CMD-Line Parameter zu globalen kopieren optional trimmen    */
 /***************************************************************************************/
-int u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *p, *z, sep;
   int trimflag;
   hparstype *hp;
@@ -832,14 +832,14 @@ int u2w_bglobal(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_bpardef Browser/CMD-Line Parameter default-Wert festlegen und optional      */
 /*                 zu globalen kopieren und trimmen                                    */
 /***************************************************************************************/
-int u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int trimflag;
   hparstype *hp;
   wertetype *w;
@@ -895,12 +895,12 @@ int u2w_bpardef(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 #ifdef WEBSERVER
 /***************************************************************************************/
-/* int u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*                  int pa: Bitflag mit gesetzten Parameterfeldern                     */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_hiddenvars %hiddenvars: hidden Parameter nach Liste                         */
 /***************************************************************************************/
-int u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
+short u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
 { char *p, *z, sep;
   int aflag;
   hparstype *hp;

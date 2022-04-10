@@ -11,12 +11,12 @@
 
 #ifdef WEBSERVER
 /***************************************************************************************/
-/* int u2w_par_var(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
+/* short u2w_par_var(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*                  int pa: Bitflag mit gesetzten Parameterfeldern                     */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_par_var %var: hidden Parameter                                              */
 /***************************************************************************************/
-int u2w_par_var(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
+short u2w_par_var(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
 {
   if( tablelevel )
     return newhiddenvar(prg_pars[0], prg_pars[1]);
@@ -27,12 +27,12 @@ int u2w_par_var(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char 
 
 
 /***************************************************************************************/
-/* int u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*                  int pa: Bitflag mit gesetzten Parameterfeldern                     */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_par_varif %varif: hidden Parameter, wenn Wert gesetzt                       */
 /***************************************************************************************/
-int u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
+short u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
 {
   if( *prg_pars[1] )
   { if( tablelevel )
@@ -47,7 +47,7 @@ int u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], cha
 
 
 /***************************************************************************************/
-/* int u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_hiddenvars(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*                  int pa: Bitflag mit gesetzten Parameterfeldern                     */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_hiddenvars %hiddenvars: hidden Parameter nach Liste                         */
@@ -58,14 +58,14 @@ int u2w_par_varif(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], cha
 
 
 /***************************************************************************************/
-/* int u2w_button(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],         */
+/* short u2w_button(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],       */
 /*                char token)                                                          */
 /*                  int pars: Bitflag mit gesetzten Parameterfeldern                   */
 /*                  char prg_pars: Parameter                                           */
 /*                  char token: wird hier ignoriert                                    */
 /*     u2w_button liest Block hinter %button                                           */
 /***************************************************************************************/
-int u2w_button(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
+short u2w_button(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
 { if( pars & P5 )
   { snprintf(zeile, MAX_ZEILENLAENGE, " target=\"%s\"", conv_target(prg_pars[4]));
     return send_link_button(prg_pars[0], prg_pars[2], zeile, "");
@@ -76,12 +76,12 @@ int u2w_button(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char
 
 
 /***************************************************************************************/
-/* int u2w_colspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_colspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*                  int pars: Bitflag mit gesetzten Parameterfeldern                   */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_colspan TD mit colspan                                                      */
 /***************************************************************************************/
-int u2w_colspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_colspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
   char z[MAX_ZEILENLAENGE], *p;
 
@@ -112,12 +112,12 @@ int u2w_colspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_rowspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_rowspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*                  int pars: Bitflag mit gesetzten Parameterfeldern                   */
 /*                  char prg_pars: Parameter                                           */
 /*     u2w_rowspan TD mit rowspan                                                      */
 /***************************************************************************************/
-int u2w_rowspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_rowspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int i;
   char z[MAX_ZEILENLAENGE], *p;
 
@@ -143,15 +143,15 @@ int u2w_rowspan(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_par(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)*/
+/* short u2w_par(int pars,char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],char token)*/
 /*            int pars: Bitflag mit gesetzten Parameterfeldern                         */
 /*            char prg_pars: Parameter                                                 */
 /*            char token: Art des Formularfeldes                                       */
 /*     u2w_par liest Block hinter Formularfeldern                                      */
 /***************************************************************************************/
-int u2w_par(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
+short u2w_par(int pars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], char token)
 { int i1, i2;
-  int rda_flag;                                    /* Bit 1: read-only                 */
+  short rda_flag;                                  /* Bit 1: read-only                 */
                                                    /* Bit 2: disabled                  */
                                                    /* Bit 4: autofocus                 */
 

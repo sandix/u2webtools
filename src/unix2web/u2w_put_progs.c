@@ -19,10 +19,10 @@
 
 
 /***************************************************************************************/
-/* int do_shellmenu(void)                                                              */
+/* short do_shellmenu(void)                                                            */
 /*     do_shellmenu                                                                    */
 /***************************************************************************************/
-int do_shellmenu(void)
+short do_shellmenu(void)
 { if( menu == SUBSHELL )               /* Subshell suchen?                  */
   { return do_subshell(inz);           /*  1: Fehler, ABBRUCH               */
                                        /* -1: falsche Zeile: weiter         */
@@ -37,10 +37,10 @@ int do_shellmenu(void)
 
 
 /***************************************************************************************/
-/* int do_subfile(void)                                                                */
+/* short do_subfile(void)                                                              */
 /*     do_subfile                                                                      */
 /***************************************************************************************/
-int do_subfile(void)
+short do_subfile(void)
 { if( send_submenufile(inz) )
     return true;
   return -1;
@@ -48,10 +48,10 @@ int do_subfile(void)
 
 
 /***************************************************************************************/
-/* int do_exitmenu(void)                                                               */
+/* short do_exitmenu(void)                                                             */
 /*     do_exitmenu                                                                     */
 /***************************************************************************************/
-int do_exitmenu(void)
+short do_exitmenu(void)
 { if( send_subfile(inz, EXITTARGET) )
     return true;
   return -1;
@@ -59,10 +59,10 @@ int do_exitmenu(void)
 
 
 /***************************************************************************************/
-/* int do_menulink(void)                                                               */
+/* short do_menulink(void)                                                             */
 /*     do_menulink                                                                     */
 /***************************************************************************************/
-int do_menulink(void)
+short do_menulink(void)
 { if( send_subfile(inz, menu != NOMENU ? MENUFRAMERIGHTNAME : "") )
     return true;
   return -1;
@@ -70,10 +70,10 @@ int do_menulink(void)
 
 
 /***************************************************************************************/
-/* int do_newwind(void)                                                                */
+/* short do_newwind(void)                                                              */
 /*     do_newwind                                                                      */
 /***************************************************************************************/
-int do_newwind(void)
+short do_newwind(void)
 { if( send_subfile(inz, NEWTARGET) )
     return true;
   return -1;
@@ -81,10 +81,10 @@ int do_newwind(void)
 
 
 /***************************************************************************************/
-/* int do_newmenu(void)                                                                */
+/* short do_newmenu(void)                                                              */
 /*     do_newmenu                                                                      */
 /***************************************************************************************/
-int do_newmenu(void)
+short do_newmenu(void)
 { if( send_subfile(inz, TOPTARGET) )
     return true;
   return -1;
@@ -92,10 +92,10 @@ int do_newmenu(void)
 
 
 /***************************************************************************************/
-/* int do_submenu(void)                                                                */
+/* short do_submenu(void)                                                              */
 /*     do_submenu                                                                      */
 /***************************************************************************************/
-int do_submenu(void)
+short do_submenu(void)
 { if( menu_submenu(inz, &headlineflag, background) )    /* Untermenüzeile    */
     return true;                                        /* auswerten         */
   return -1;
@@ -103,10 +103,10 @@ int do_submenu(void)
 
 
 /***************************************************************************************/
-/* int do_table_start(void)                                                            */
+/* short do_table_start(void)                                                          */
 /*     do_table_start                                                                  */
 /***************************************************************************************/
-int do_table_start(void)
+short do_table_start(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   char *p;
 
@@ -213,10 +213,10 @@ int do_table_start(void)
 
 
 /***************************************************************************************/
-/* int do_table_head(void)                                                             */
+/* short do_table_head(void)                                                           */
 /*     do_table_head                                                                   */
 /***************************************************************************************/
-int do_table_head(void)
+short do_table_head(void)
 { char *p;
 
   LOG(3, "do_table_head, tablecols: %d.\n", tablecols);
@@ -252,10 +252,10 @@ int do_table_head(void)
 
 
 /***************************************************************************************/
-/* int do_table_end(void)                                                              */
+/* short do_table_end(void)                                                            */
 /*     do_table_end                                                                    */
 /***************************************************************************************/
-int do_table_end(void)
+short do_table_end(void)
 { char *p;
 
   if( tablelevel )
@@ -305,10 +305,10 @@ int do_table_end(void)
 
 
 /***************************************************************************************/
-/* int do_center(void)                                                                 */
+/* short do_center(void)                                                               */
 /*     do_center                                                                       */
 /***************************************************************************************/
-int do_center(void)
+short do_center(void)
 {  if( !centerflag )
   { if( dosend("<center>") )
       return true;
@@ -319,10 +319,10 @@ int do_center(void)
 
 
 /***************************************************************************************/
-/* int do_left(void)                                                                   */
+/* short do_left(void)                                                                 */
 /*     do_left                                                                         */
 /***************************************************************************************/
-int do_left(void)
+short do_left(void)
 { if( centerflag )
   { if( dosend("</center>") )
       return true;
@@ -333,11 +333,11 @@ int do_left(void)
 
 
 /***************************************************************************************/
-/* int do_pre_on(void)                                                                 */
+/* short do_pre_on(void)                                                               */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_pre_on                                                                       */
 /***************************************************************************************/
-int do_pre_on(void)
+short do_pre_on(void)
 { if( dosend(START_FIXED_FONT) )
     return true;
   u2w_mode = S2W_MODE;
@@ -346,11 +346,11 @@ int do_pre_on(void)
 
 
 /***************************************************************************************/
-/* int do_pre_off(void)                                                                */
+/* short do_pre_off(void)                                                              */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_pre_off                                                                      */
 /***************************************************************************************/
-int do_pre_off(void)
+short do_pre_off(void)
 { if( dosend(END_FIXED_FONT) )
     return true;
   u2w_mode = U2W_MODE;

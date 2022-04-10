@@ -20,22 +20,22 @@
 
 
 /***************************************************************************************/
-/* int test_argument(char *s)                                                          */
+/* short test_argument(char *s)                                                        */
 /*                   char *s: ab hier testen                                           */
 /*                   return : true, wenn in s nicht nur whitespaces stehen             */
 /***************************************************************************************/
-int test_argument(char *s)
+short test_argument(char *s)
 { skip_blanks(s);
   return *s;
 } 
 
 
 /***************************************************************************************/
-/* int do_parameter_get(void)                                                          */
+/* short do_parameter_get(void)                                                        */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_parameter_get                                                                */
 /***************************************************************************************/
-int do_parameter_get(void)
+short do_parameter_get(void)
 { if( test_argument(inz) ? !test(inz) : NULL != parwert(FORMMAGIC, HP_BROWSER_LEVEL) )
                /* Bedingung angegeben? dann testen : sonst OK gedrückt?                */
   { skip_to(inzeile, ATTRIB_STR ENDBLOCK, akt_ptr);            /* ja, dann weiter      */
@@ -57,11 +57,11 @@ int do_parameter_get(void)
 
 
 /***************************************************************************************/
-/* int do_parameter_multipart(void)                                                    */
+/* short do_parameter_multipart(void)                                                  */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_parameter_multipart                                                          */
 /***************************************************************************************/
-int do_parameter_multipart(void)
+short do_parameter_multipart(void)
 { if( test_argument(inz) ? !test(inz) : NULL != parwert(FORMMAGIC, HP_BROWSER_LEVEL) )
                /* Bedingung angegeben? dann testen : sonst OK gedrückt?                */
     skip_to(inzeile, ATTRIB_STR ENDBLOCK, akt_ptr);            /* ja, dann weiter      */
@@ -82,11 +82,11 @@ int do_parameter_multipart(void)
 
 
 /***************************************************************************************/
-/* int do_parameter(void)                                                              */
+/* short do_parameter(void)                                                            */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_parameter                                                                    */
 /***************************************************************************************/
-int do_parameter(void)
+short do_parameter(void)
 { LOG(4, "u2w_put, parameter, inz: %s.\n", inz);
   if( test_argument(inz) ? !test(inz) : NULL != parwert(FORMMAGIC, HP_BROWSER_LEVEL) )
                /* Bedingung angegeben? dann testen : sonst OK gedrückt?                */
@@ -110,11 +110,11 @@ int do_parameter(void)
 
 
 /***************************************************************************************/
-/* int do_html_head_on(void)                                                           */
+/* short do_html_head_on(void)                                                         */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_html_head_on                                                                 */
 /***************************************************************************************/
-int do_html_head_on(void)
+short do_html_head_on(void)
 { LOG(21, "do_html_head_on - u2w_mode: %d\n", u2w_mode);
   if( u2w_mode >= S2W_MODE )
     skip_to(inzeile, ATTRIB_STR HTML_HEAD_OFF, akt_ptr);
@@ -127,11 +127,11 @@ int do_html_head_on(void)
 
 
 /***************************************************************************************/
-/* int do_html_heads_on(void)                                                          */
+/* short do_html_heads_on(void)                                                        */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_html_heads_on                                                                */
 /***************************************************************************************/
-int do_html_heads_on(void)
+short do_html_heads_on(void)
 { if( u2w_mode >= S2W_MODE )
     skip_to(inzeile, ATTRIB_STR HTML_HEADS_OFF, akt_ptr);
   else
@@ -143,11 +143,11 @@ int do_html_heads_on(void)
 
 
 /***************************************************************************************/
-/* int do_html_head_off(void)                                                          */
+/* short do_html_head_off(void)                                                        */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_html_head_off                                                                */
 /***************************************************************************************/
-int do_html_head_off(void)
+short do_html_head_off(void)
 { u2w_mode = html_head_u2w_mode;
   html_head_u2w_mode = NO_MODE;
   return -1;
@@ -155,11 +155,11 @@ int do_html_head_off(void)
 
 
 /***************************************************************************************/
-/* int do_http_head_on(void)                                                           */
+/* short do_http_head_on(void)                                                         */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_http_head_on                                                                 */
 /***************************************************************************************/
-int do_http_head_on(void)
+short do_http_head_on(void)
 { http_head_u2w_mode = u2w_mode;
   u2w_mode = RAW_MODE|RAW_HTTPHEAD_MODE;
   return -1;
@@ -167,11 +167,11 @@ int do_http_head_on(void)
 
 
 /***************************************************************************************/
-/* int do_http_heads_on(void)                                                          */
+/* short do_http_heads_on(void)                                                        */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_http_heads_on                                                                */
 /***************************************************************************************/
-int do_http_heads_on(void)
+short do_http_heads_on(void)
 { http_head_u2w_mode = u2w_mode;
   u2w_mode = S2W_MODE|S2W_HTTPHEAD_MODE;
   return -1;
@@ -179,11 +179,11 @@ int do_http_heads_on(void)
 
 
 /***************************************************************************************/
-/* int do_http_head_off(void)                                                          */
+/* short do_http_head_off(void)                                                        */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_http_head_off                                                                */
 /***************************************************************************************/
-int do_http_head_off(void)
+short do_http_head_off(void)
 { u2w_mode = http_head_u2w_mode;
   http_head_u2w_mode = NO_MODE;
   return -1;
@@ -191,11 +191,11 @@ int do_http_head_off(void)
 
 
 /***************************************************************************************/
-/* int do_frame(void)                                                                  */
+/* short do_frame(void)                                                                */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_frame                                                                        */
 /***************************************************************************************/
-int do_frame(void)
+short do_frame(void)
 { char *p, *q, *r;
 
   if( eqbpar(FRAMENAME, FRAMETOPNAME) || eqbpar(FRAMENAME, FRAMELEFTNAME) )
@@ -238,11 +238,11 @@ int do_frame(void)
 
 
 /***************************************************************************************/
-/* int do_frame_end(void)                                                              */
+/* short do_frame_end(void)                                                            */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_frame_end                                                                    */
 /***************************************************************************************/
-int do_frame_end(void)
+short do_frame_end(void)
 { while( include_counter )
   {
 #ifdef MAYDBCLIENT
@@ -257,11 +257,11 @@ int do_frame_end(void)
 
 
 /***************************************************************************************/
-/* int do_menuhead(void)                                                               */
+/* short do_menuhead(void)                                                             */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_menuhead                                                                     */
 /***************************************************************************************/
-int do_menuhead(void)
+short do_menuhead(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   LOG(11, "do_menuhead\n");
@@ -305,11 +305,11 @@ int do_menuhead(void)
 
 
 /***************************************************************************************/
-/* int do_menu(void)                                                                   */
+/* short do_menu(void)                                                                 */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_menu                                                                         */
 /***************************************************************************************/
-int do_menu(void)
+short do_menu(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   char leftframe[MAX_ZEILENLAENGE];
 
@@ -373,11 +373,11 @@ int do_menu(void)
 
 
 /***************************************************************************************/
-/* int do_settop(void)                                                                 */
+/* short do_settop(void)                                                               */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_settop                                                                       */
 /***************************************************************************************/
-int do_settop(void)
+short do_settop(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -390,11 +390,11 @@ int do_settop(void)
 
 
 /***************************************************************************************/
-/* int do_setleft(void)                                                                */
+/* short do_setleft(void)                                                              */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_setleft                                                                      */
 /***************************************************************************************/
-int do_setleft(void)
+short do_setleft(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -407,11 +407,11 @@ int do_setleft(void)
 
 
 /***************************************************************************************/
-/* int do_setright(void)                                                               */
+/* short do_setright(void)                                                             */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_setright                                                                     */
 /***************************************************************************************/
-int do_setright(void)
+short do_setright(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -424,11 +424,11 @@ int do_setright(void)
 
 
 /***************************************************************************************/
-/* int do_fsettop(void)                                                                */
+/* short do_fsettop(void)                                                              */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_fsettop                                                                      */
 /***************************************************************************************/
-int do_fsettop(void)
+short do_fsettop(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -441,11 +441,11 @@ int do_fsettop(void)
 
 
 /***************************************************************************************/
-/* int do_fsetbottom(void)                                                             */
+/* short do_fsetbottom(void)                                                           */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_fsetbottom                                                                   */
 /***************************************************************************************/
-int do_fsetbottom(void)
+short do_fsetbottom(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -458,11 +458,11 @@ int do_fsetbottom(void)
 
 
 /***************************************************************************************/
-/* int do_fsetleft(void)                                                               */
+/* short do_fsetleft(void)                                                             */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_fsetleft                                                                     */
 /***************************************************************************************/
-int do_fsetleft(void)
+short do_fsetleft(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -475,11 +475,11 @@ int do_fsetleft(void)
 
 
 /***************************************************************************************/
-/* int do_fsetright(void)                                                              */
+/* short do_fsetright(void)                                                            */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_fsetright                                                                    */
 /***************************************************************************************/
-int do_fsetright(void)
+short do_fsetright(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz )
@@ -492,11 +492,11 @@ int do_fsetright(void)
 
 
 /***************************************************************************************/
-/* int do_setframe(void)                                                               */
+/* short do_setframe(void)                                                             */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_setframe                                                                     */
 /***************************************************************************************/
-int do_setframe(void)
+short do_setframe(void)
 { char *p;
   char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
@@ -516,11 +516,11 @@ int do_setframe(void)
 
 
 /***************************************************************************************/
-/* int do_csslink(void)                                                                */
+/* short do_csslink(void)                                                              */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_csslink                                                                      */
 /***************************************************************************************/
-int do_csslink(void)
+short do_csslink(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
 
   if( *inz && (u2w_mode & (U3W_MODE|U2W_HTML_MODE|U2W_MODE|U4W_MODE|U5W_MODE)) )
@@ -533,11 +533,11 @@ int do_csslink(void)
 
 
 /***************************************************************************************/
-/* int do_refresh(void)                                                                */
+/* short do_refresh(void)                                                              */
 /*             char **inz: nächste Leseposition                                        */
 /*     do_refresh                                                                      */
 /***************************************************************************************/
-int do_refresh(void)
+short do_refresh(void)
 { char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
   int seks;
 

@@ -11,7 +11,7 @@
 
 /* Anfang globale Variablen */
 #ifdef MAXDBCLIENT
-int maxdb_connect_flag = false;
+short maxdb_connect_flag = false;
 SQLDBC_IRuntime *mdbr;
 int maxdbport = STD_MAXDBPORT;
 #endif
@@ -20,14 +20,14 @@ int maxdbport = STD_MAXDBPORT;
 
 #ifdef MAXDBCLIENT
 
-int maxdb_write_flag = false;
-int maxdb_id_flag = false;
+short maxdb_write_flag = false;
+short maxdb_id_flag = false;
 
 #define MAX_P_QUERIES 5
 MAXDB_RES *mres[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int maxdb_res_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int maxdb_line_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
-int maxdb_next_value[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short maxdb_res_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short maxdb_line_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
+short maxdb_next_value[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 MAXDB_ROW mrow[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 unsigned int mnf[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 unsigned long *mlengths[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
@@ -139,13 +139,13 @@ void maxdb_free_res(void)
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_maxdb_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])     */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_port Port für Maxdb-Server ändern                                     */
 /***************************************************************************************/
-int u2w_maxdb_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   if( isdigit(prg_pars[0][0]) )
   { maxdbport = atoi(prg_pars[0]);
@@ -156,13 +156,13 @@ int u2w_maxdb_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_maxdb_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_connect öffnet eine Verbindung zum Maxdb-Server                       */
 /***************************************************************************************/
-int u2w_maxdb_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { static char cursqlserver[128], cursqluser[128], cursqlpwd[128], cursqldb[128];
 
   LOG(1, "u2w_maxdb_connect.\n");
@@ -203,14 +203,14 @@ int u2w_maxdb_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_maxdb_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_query Stellt Anfrage an Maxdb-Datenbank, Ergebnisse können dann mit   */
 /*                 u2w_maxdb_next_line gelesen und mit maxdb_get_value gelesen werden  */
 /***************************************************************************************/
-int u2w_maxdb_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_maxdb_query.\n");
@@ -258,13 +258,13 @@ int u2w_maxdb_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_maxdb_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_write Stellt Anfrage an Maxdb-Datenbank, für insert und update        */
 /***************************************************************************************/
-int u2w_maxdb_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(1, "u2w_maxdb_write, query: %s.\n", prg_pars[0]);
 
@@ -288,13 +288,13 @@ int u2w_maxdb_write(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/* short u2w_maxdb_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_test Stellt Anfrage an Maxdb-Datenbank, und liefert nur Wahrheitswert */
 /***************************************************************************************/
-int u2w_maxdb_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { MAXDB_RES *lmres;
 
   LOG(1, "u2w_maxdb_test, query: %s.\n", prg_pars[0]);
@@ -323,16 +323,17 @@ int u2w_maxdb_test(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 #define MAXDB_PUFFERSIZE 10000000
 
 /***************************************************************************************/
-/* int u2w_maxdb_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
+/* short u2w_maxdb_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_store Datei als blob in Datenbank speichern - Update                  */
 /***************************************************************************************/
-int u2w_maxdb_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *puffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   int mode = 0;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
@@ -489,13 +490,13 @@ int u2w_maxdb_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
+/* short u2w_maxdb_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])      */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_out Query ausführen und Ergebnis in Datei schreiben                   */
 /***************************************************************************************/
-int u2w_maxdb_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
   LOG(3, "u2w_maxdb_out, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
       pa & P3 ? prg_pars[2] : "");
@@ -506,13 +507,13 @@ int u2w_maxdb_out(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
+/* short u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]) */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_get_line bereitet eine Zeile zum lesen vor                            */
 /***************************************************************************************/
-int u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_maxdb_get_line.\n");
@@ -548,7 +549,7 @@ int u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
 
 
 /***************************************************************************************/
-/* int do_maxdb_list_get_line(int *listlen,                                            */
+/* short do_maxdb_list_get_line(int *listlen,                                          */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -557,7 +558,7 @@ int u2w_maxdb_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_list_get_line Eine Zeile in Liste                                      */
 /***************************************************************************************/
-int do_maxdb_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_maxdb_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn, i;
 
@@ -604,13 +605,13 @@ int do_maxdb_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LI
 
 
 /***************************************************************************************/
-/* int u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])    */
+/* short u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
 /*             return: true bei Fehler                                                 */
 /*     u2w_maxdb_isvalue testet, ob noch ein Wert für maxdbreadvalue vorliegt          */
 /***************************************************************************************/
-int u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+short u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { unsigned int cn;
 
   LOG(1, "u2w_maxdb_isvalue.\n");
@@ -631,7 +632,7 @@ int u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* int do_maxdb_writeline(int pa, char **out, long n, int tablecols,                   */
+/* short do_maxdb_writeline(int pa, char **out, long n, int tablecols,                 */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -640,7 +641,7 @@ int u2w_maxdb_isvalue(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_maxdb_writeline fügt Zeile des letzten maxdb_getline ein                    */
 /***************************************************************************************/
-int do_maxdb_writeline(int pa, char **out, long n, int tablecols,
+short do_maxdb_writeline(int pa, char **out, long n, int tablecols,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   char *oo;
@@ -691,7 +692,7 @@ int do_maxdb_writeline(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,               */
+/* short do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,             */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -700,7 +701,7 @@ int do_maxdb_writeline(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_readwriteline fügt eine Zeile der letzten maxdb_query ein              */
 /***************************************************************************************/
-int do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,
+short do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,
                            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !u2w_maxdb_get_line(pa, prg_pars) )
@@ -711,7 +712,7 @@ int do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_num_fields(int pa, char **out, long n, int tablecols,                  */
+/* short do_maxdb_num_fields(int pa, char **out, long n, int tablecols,                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -720,7 +721,7 @@ int do_maxdb_readwriteline(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_num_fields ergibt Anzahl Spalten der Maxdb-Abfrage                     */
 /***************************************************************************************/
-int do_maxdb_num_fields(int pa, char **out, long n, int tablecols,
+short do_maxdb_num_fields(int pa, char **out, long n, int tablecols,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -744,7 +745,7 @@ int do_maxdb_num_fields(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_value(int pa, char **out, long n, int tablecols,                       */
+/* short do_maxdb_value(int pa, char **out, long n, int tablecols,                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -753,7 +754,7 @@ int do_maxdb_num_fields(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_value fügt einen Wert einer Zeile ein                                  */
 /***************************************************************************************/
-int do_maxdb_value(int pa, char **out, long n, int tablecols,
+short do_maxdb_value(int pa, char **out, long n, int tablecols,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
   int i;
@@ -798,7 +799,7 @@ int do_maxdb_value(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_read_value(int pa, char **out, long n, int tablecols,                  */
+/* short do_maxdb_read_value(int pa, char **out, long n, int tablecols,                */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -807,7 +808,7 @@ int do_maxdb_value(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_read_value fügt näcshten Wert einer Zeile ein                          */
 /***************************************************************************************/
-int do_maxdb_read_value(int pa, char **out, long n, int tablecols,
+short do_maxdb_read_value(int pa, char **out, long n, int tablecols,
                         char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { unsigned int cn;
 
@@ -842,7 +843,7 @@ int do_maxdb_read_value(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_id(int pa, char **out, long n, int tablecols,                          */
+/* short do_maxdb_id(int pa, char **out, long n, int tablecols,                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -851,7 +852,7 @@ int do_maxdb_read_value(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb fügt letzte ID (nach insert) ein                                       */
 /***************************************************************************************/
-int do_maxdb_id(int pa, char **out, long n, int tablecols,
+short do_maxdb_id(int pa, char **out, long n, int tablecols,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( !maxdb_id_flag )
     return true;
@@ -862,7 +863,7 @@ int do_maxdb_id(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_read(int pa, char **out, long n, int tablecols,                        */
+/* short do_maxdb_read(int pa, char **out, long n, int tablecols,                      */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -871,7 +872,7 @@ int do_maxdb_id(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_read Query ausführen und Ergebnis einfügen                             */
 /***************************************************************************************/
-int do_maxdb_read(int pa, char **out, long n, int tablecols,
+short do_maxdb_read(int pa, char **out, long n, int tablecols,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   LOG(3, "do_maxdb_read, pa: %d, %s, %s.\n", pa, pa & P2 ? prg_pars[1] : "",
@@ -887,7 +888,7 @@ int do_maxdb_read(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_list_read(int *listlen,                                                */
+/* short do_maxdb_list_read(int *listlen,                                              */
 /*                        char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],             */
 /*                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])   */
 /*              int *listlen: Anzahl der Listenelemente                                */
@@ -896,7 +897,7 @@ int do_maxdb_read(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_list_read Query ausführen und Ergebnis in Liste                        */
 /***************************************************************************************/
-int do_maxdb_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_maxdb_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                        int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { MAXDB_RES *mres;
   MAXDB_ROW mrow;
@@ -936,7 +937,7 @@ int do_maxdb_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 
 
 /***************************************************************************************/
-/* int do_maxdb_idvalue(int pa, char **out, long n, int tablecols,                     */
+/* short do_maxdb_idvalue(int pa, char **out, long n, int tablecols,                   */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -945,7 +946,7 @@ int do_maxdb_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_P
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_idvalue Einen Wert einer Tabelle bestimemn                             */
 /***************************************************************************************/
-int do_maxdb_idvalue(int pa, char **out, long n, int tablecols,
+short do_maxdb_idvalue(int pa, char **out, long n, int tablecols,
                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[1024];
 
@@ -964,7 +965,7 @@ int do_maxdb_idvalue(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_ins(int pa, char **out, long n, int tablecols,                         */
+/* short do_maxdb_ins(int pa, char **out, long n, int tablecols,                       */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -974,7 +975,7 @@ int do_maxdb_idvalue(int pa, char **out, long n, int tablecols,
 /*     do_maxdb_ins testen, ob Datensatz, der beschrieben wird vohanden ist, dann      */
 /*                ID zurück, sonst neuen Datensatz erzeugen und neue ID zurück         */
 /***************************************************************************************/
-int do_maxdb_ins(int pa, char **out, long n, int tablecols,
+short do_maxdb_ins(int pa, char **out, long n, int tablecols,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char *p, *q;
@@ -1027,7 +1028,7 @@ int do_maxdb_ins(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_enums(int pa, char **out, long n, int tablecols,                       */
+/* short do_maxdb_enums(int pa, char **out, long n, int tablecols,                     */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1036,7 +1037,7 @@ int do_maxdb_ins(int pa, char **out, long n, int tablecols,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_maxdb_enums Möglichkeiten eines ENUMs oder SETs bestimmen                    */
 /***************************************************************************************/
-int do_maxdb_enums(int pa, char **out, long n, int tablecols,
+short do_maxdb_enums(int pa, char **out, long n, int tablecols,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char query[MAX_ZEILENLAENGE];
   char qresult[MAX_ZEILENLAENGE], *qr;
@@ -1071,7 +1072,7 @@ int do_maxdb_enums(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_num_rows(int pa, char **out, long n, int tablecols,                    */
+/* short do_maxdb_num_rows(int pa, char **out, long n, int tablecols,                  */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1081,7 +1082,7 @@ int do_maxdb_enums(int pa, char **out, long n, int tablecols,
 /*     do_maxdb_num_rows fügt Anzahl der geänderten/selektierten Zeilen der letzten    */
 /*              maxdb_query ein                                                        */
 /***************************************************************************************/
-int do_maxdb_num_rows(int pa, char **out, long n, int tablecols,
+short do_maxdb_num_rows(int pa, char **out, long n, int tablecols,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   if( !maxdb_write_flag )
@@ -1094,7 +1095,7 @@ int do_maxdb_num_rows(int pa, char **out, long n, int tablecols,
 
 
 /***************************************************************************************/
-/* int do_maxdb_store_ins(int pa, char **out, long n, int tablecols,                   */
+/* short do_maxdb_store_ins(int pa, char **out, long n, int tablecols,                 */
 /*                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)*/
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1104,11 +1105,12 @@ int do_maxdb_num_rows(int pa, char **out, long n, int tablecols,
 /*              return: true bei Fehler                                                */
 /*     do_maxdb_store_ins Datei als blob in Datenbank speichern - neuen Datensatz      */
 /***************************************************************************************/
-int do_maxdb_store_ins(int pa, char **out, long n, int tabelrows,
+short do_maxdb_store_ins(int pa, char **out, long n, int tabelrows,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *puffer, *p;
   long nb, i;
-  int hd_in, ret;
+  int hd_in;
+  short ret;
   my_ulonglong newid;
 #ifdef _LARGEFILE64_SOURCE
   struct stat64 stat_buf;                            /* fuer stat-Aufruf               */
@@ -1243,7 +1245,7 @@ int do_maxdb_store_ins(int pa, char **out, long n, int tabelrows,
 
 
 /***************************************************************************************/
-/* int maxdb2s(char *query, char **o, long n, int error_flag,                          */
+/* short maxdb2s(char *query, char **o, long n, int error_flag,                        */
 /*             char *ssep, char *zsep, int tablecols, int quote)                       */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
@@ -1255,14 +1257,15 @@ int do_maxdb_store_ins(int pa, char **out, long n, int tabelrows,
 /*             return     : true bei kein Wert                                         */
 /*     maxdb2s fuehrt query aus und schreibt die Ausgabe nach o                        */
 /***************************************************************************************/
-int maxdb2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
+short maxdb2s(char *query, char **o, long n, int error_flag, char *ssep, char *zsep,
              int tablecols, int quote)
 { MAXDB_RES *mres;
   MAXDB_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
   char *oo;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "maxdb2s, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1341,7 +1344,7 @@ int maxdb2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 
 
 /***************************************************************************************/
-/* int maxdb2net(char *query, int error_flag,                                          */
+/* short maxdb2net(char *query, int error_flag,                                        */
 /*             char *ssep, char *zsep, int tablecols)                                  */
 /*             char *query: SQL-query                                                  */
 /*             int error_flag: true, Fehler ausgeben                                   */
@@ -1351,14 +1354,15 @@ int maxdb2s(char *query, char **o, long n, int error_flag, char *ssep, char *zse
 /*             return     : true bei kein Wert                                         */
 /*     maxdb2net fuehrt query aus und sendet Ausgabe an Browser                        */
 /***************************************************************************************/
-int maxdb2net(char *query, int error_flag, char *ssep, char *zsep,
+short maxdb2net(char *query, int error_flag, char *ssep, char *zsep,
              int tablecols)
 { char o[MAX_ZEILENLAENGE];
   MAXDB_RES *mres;
   MAXDB_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
 
   LOG(1, "maxdb2net, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
@@ -1436,7 +1440,7 @@ int maxdb2net(char *query, int error_flag, char *ssep, char *zsep,
 
 
 /***************************************************************************************/
-/* int maxdb2dat(char *query, char *path, char *ssep, char *zsep)                      */
+/* short maxdb2dat(char *query, char *path, char *ssep, char *zsep)                    */
 /*             char *query: SQL-query                                                  */
 /*             char *path: Datei für die Ausgabe                                       */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
@@ -1445,12 +1449,13 @@ int maxdb2net(char *query, int error_flag, char *ssep, char *zsep,
 /*             return     : true bei kein Wert                                         */
 /*     maxdb2dat fuehrt query aus und schreibt Ausgabe in Datei path                   */
 /***************************************************************************************/
-int maxdb2dat(char *query, char *path, char *ssep, char *zsep)
+short maxdb2dat(char *query, char *path, char *ssep, char *zsep)
 { MAXDB_RES *mres;
   MAXDB_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int i, ret;
+  int i;
+  short ret;
   long nz;
   int hd_out;
 #ifndef _LARGEFILE64_SOURCE
@@ -1519,7 +1524,7 @@ int maxdb2dat(char *query, char *path, char *ssep, char *zsep)
 
 
 /***************************************************************************************/
-/* int maxdbinsert2s(char *query, char **o, long n, int error_flag)                    */
+/* short maxdbinsert2s(char *query, char **o, long n, int error_flag)                  */
 /*             char *query: SQL-query                                                  */
 /*             char **o    : Ausgaben der Query hier hinein                            */
 /*             long n     : Platz in b                                                 */
@@ -1527,7 +1532,7 @@ int maxdb2dat(char *query, char *path, char *ssep, char *zsep)
 /*             return     : true bei Fehler                                            */
 /*     maxdbinsert2s führt query aus und schreibt eingefügte ID nach o                 */
 /***************************************************************************************/
-int maxdbinsert2s(char *query, char **o, long n, int error_flag)
+short maxdbinsert2s(char *query, char **o, long n, int error_flag)
 {
   LOG(1, "maxdbinsert2s, query: %s.\n", query);
 
@@ -1554,7 +1559,7 @@ int maxdbinsert2s(char *query, char **o, long n, int error_flag)
 
 #ifdef NEW_VERSION
 /***************************************************************************************/
-/* int maxdb2p(char *query, char *ssep, char *zsep, char *p)                           */
+/* short maxdb2p(char *query, char *ssep, char *zsep, char *p)                         */
 /*             char *query: SQL-query                                                  */
 /*             char *ssep  : Trennzeichen zwischen einzelnen Spalten                   */
 /*             char *zsep  : Trennzeichen zwischen einzelnen Zeilen                    */
@@ -1562,12 +1567,12 @@ int maxdbinsert2s(char *query, char **o, long n, int error_flag)
 /*             return     : true bei kein Wert                                         */
 /*     maxdb2p fuehrt query aus und schreibt die Ausgabe in einer pipe an *p           */
 /***************************************************************************************/
-int maxdb2p(char *query, char *ssep, char *zsep, char *p)
+short maxdb2p(char *query, char *ssep, char *zsep, char *p)
 { MAXDB_RES *mres;
   MAXDB_ROW mrow;
   unsigned int nf;
   unsigned long *lengths;
-  int ret;
+  short ret;
 
   LOG(1, "maxdb2p, query: %s, ssep: %s, zsep: %s.\n", query, ssep ? ssep : "NULL",
       zsep ? zsep : "NULL");

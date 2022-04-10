@@ -11,7 +11,7 @@
 
 #ifdef WEBSERVER
 /***************************************************************************************/
-/* int do_image(int pa, char **out, long n,                                            */
+/* short do_image(int pa, char **out, long n,                                          */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -19,7 +19,7 @@
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_image fügt image ein                                                         */
 /***************************************************************************************/
-int do_image(int pa, char **out, long n,
+short do_image(int pa, char **out, long n,
              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *o;
 
@@ -84,7 +84,7 @@ int do_image(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int make_object(int pa, char **out, long n,                                         */
+/* short make_object(int pa, char **out, long n,                                       */
 /*                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int eflag)       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -92,7 +92,7 @@ int do_image(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     make_object fügt <object ...> und ggf. </object> bei eflag == true ein          */
 /***************************************************************************************/
-int make_object(int pa, char **out, long n,
+short make_object(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int eflag)
 { char *o;
 
@@ -148,7 +148,7 @@ int make_object(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_object(int pa, char **out, long n,                                           */
+/* short do_object(int pa, char **out, long n,                                         */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -156,14 +156,14 @@ int make_object(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_object fügt object mit <object ...></object> ein                             */
 /***************************************************************************************/
-int do_object(int pa, char **out, long n,
+short do_object(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { return make_object(pa, out, n, prg_pars, true);
 }
 
 
 /***************************************************************************************/
-/* int do_sobject(int pa, char **out, long n,                                          */
+/* short do_sobject(int pa, char **out, long n,                                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -171,14 +171,14 @@ int do_object(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_sobject fügt object nur mit <object> ein                                     */
 /***************************************************************************************/
-int do_sobject(int pa, char **out, long n,
+short do_sobject(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { return make_object(pa, out, n, prg_pars, false);
 }
 
 
 /***************************************************************************************/
-/* int do_eobject(int pa, char **out, long n,                                          */
+/* short do_eobject(int pa, char **out, long n,                                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -186,14 +186,14 @@ int do_sobject(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_eobject fügt </object> ein                                                   */
 /***************************************************************************************/
-int do_eobject(int pa, char **out, long n,
+short do_eobject(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { return dosend("</object>");
 }
 
 
 /***************************************************************************************/
-/* int do_referer(int pa, char **out, long n,                                          */
+/* short do_referer(int pa, char **out, long n,                                        */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -201,7 +201,7 @@ int do_eobject(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_referer fügt Referer ein                                                    */
 /***************************************************************************************/
-int do_referer(int pa, char **out, long n,
+short do_referer(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
@@ -212,7 +212,7 @@ int do_referer(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_http_accept_language(int pa, char **out, long n,                             */
+/* short do_http_accept_language(int pa, char **out, long n,                           */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -220,7 +220,7 @@ int do_referer(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_http_accept_language fügt http_accept_language ein                          */
 /***************************************************************************************/
-int do_http_accept_language(int pa, char **out, long n,
+short do_http_accept_language(int pa, char **out, long n,
                             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( http_accept_language && *http_accept_language )
     strqcpyn_z(out, http_accept_language, n, qf_strings[quote]);
@@ -229,13 +229,13 @@ int do_http_accept_language(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int test_lang(char *langs, char *lang)                                              */
+/* short test_lang(char *langs, char *lang)                                            */
 /*               char *langs: Sprachen codes in denen gesucht wird, durch ' ' oder ',' */
 /*                            getrennt                                                 */
 /*               char *lang: Sprache, die gesucht wird                                 */
 /*     test_lang sucht lang in langs, ignoriert case und '-' == '_'                    */
 /***************************************************************************************/
-int test_lang(char *langs, char *lang)
+short test_lang(char *langs, char *lang)
 { char *s, *l;
 
   LOG(1, "test_lang, langs: %s, lang: %s.\n", langs, lang);
@@ -270,7 +270,7 @@ int test_lang(char *langs, char *lang)
 
 
 /***************************************************************************************/
-/* int do_preflang(int pa, char **out, long n,                                         */
+/* short do_preflang(int pa, char **out, long n,                                       */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -278,7 +278,7 @@ int test_lang(char *langs, char *lang)
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_preflang fügt bevorzugte Sprache des Browsers ein                           */
 /***************************************************************************************/
-int do_preflang(int pa, char **out, long n,
+short do_preflang(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *z;
   int f;
@@ -327,7 +327,7 @@ int do_preflang(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_useragent(int pa, char **out, long n,                                        */
+/* short do_useragent(int pa, char **out, long n,                                      */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -335,7 +335,7 @@ int do_preflang(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_useragent fügt User-Agent                                                   */
 /***************************************************************************************/
-int do_useragent(int pa, char **out, long n,
+short do_useragent(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
@@ -346,7 +346,7 @@ int do_useragent(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_uatype(int pa, char **out, long n,                                           */
+/* short do_uatype(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -355,7 +355,7 @@ int do_useragent(int pa, char **out, long n,
 /*      do_uatype fügt Kennung für Type des User-Agents ein                            */
 /*              B(rowser), T(ablet), M(obile), C(onsole)                               */
 /***************************************************************************************/
-int do_uatype(int pa, char **out, long n,
+short do_uatype(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
@@ -375,7 +375,7 @@ int do_uatype(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_var_contenttype(int pa, char **out, long n,                                  */
+/* short do_var_contenttype(int pa, char **out, long n,                                */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -383,7 +383,7 @@ int do_uatype(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_var_contenttype %content_type                                                */
 /***************************************************************************************/
-int do_var_contenttype(int pa, char **out, long n,
+short do_var_contenttype(int pa, char **out, long n,
                        char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( content_path )
     strqcpyn_z(out, content_type, n, qf_strings[quote]);
@@ -392,7 +392,7 @@ int do_var_contenttype(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_var_content(int pa, char **out, long n,                                      */
+/* short do_var_content(int pa, char **out, long n,                                    */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -400,7 +400,7 @@ int do_var_contenttype(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_var_content %content                                                         */
 /***************************************************************************************/
-int do_var_content(int pa, char **out, long n,
+short do_var_content(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( content_path )
     strqcpyn_z(out, content_path, n, qf_strings[quote]);
@@ -412,7 +412,7 @@ int do_var_content(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_getenv(int pa, char **out, long n,                                           */
+/* short do_getenv(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -420,7 +420,7 @@ int do_var_content(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_getenv fügt Wert einer Environmentvariablen ein                             */
 /***************************************************************************************/
-int do_getenv(int pa, char **out, long n,
+short do_getenv(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *s;
 
@@ -431,7 +431,7 @@ int do_getenv(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_getpid(int pa, char **out, long n,                                           */
+/* short do_getpid(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -439,7 +439,7 @@ int do_getenv(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_getpid fügt Prozess PID ein                                                 */
 /***************************************************************************************/
-int do_getpid(int pa, char **out, long n,
+short do_getpid(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   *out += snprintf(*out, n, "%lu", (unsigned long)getpid());
@@ -448,7 +448,7 @@ int do_getpid(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_getppid(int pa, char **out, long n,                                          */
+/* short do_getppid(int pa, char **out, long n,                                        */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -456,7 +456,7 @@ int do_getpid(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_getppid fügt Parent PID ein                                                 */
 /***************************************************************************************/
-int do_getppid(int pa, char **out, long n,
+short do_getppid(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   *out += snprintf(*out, n, "%lu", (unsigned long)getppid());
@@ -465,7 +465,7 @@ int do_getppid(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_myport(int pa, char **out, long n,                                           */
+/* short do_myport(int pa, char **out, long n,                                         */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -473,7 +473,7 @@ int do_getppid(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_myport %myport Ausgabe des Ports des u2w-Servers                             */
 /***************************************************************************************/
-int do_myport(int pa, char **out, long n,
+short do_myport(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -484,7 +484,7 @@ int do_myport(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_printuser(int pa, char **out, long n,                                        */
+/* short do_printuser(int pa, char **out, long n,                                      */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -492,7 +492,7 @@ int do_myport(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_printuser %user                                                              */
 /***************************************************************************************/
-int do_printuser(int pa, char **out, long n,
+short do_printuser(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -503,7 +503,7 @@ int do_printuser(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_printpwd(int pa, char **out, long n,                                         */
+/* short do_printpwd(int pa, char **out, long n,                                       */
 /*                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -511,7 +511,7 @@ int do_printuser(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_printpwd %pwd                                                                */
 /***************************************************************************************/
-int do_printpwd(int pa, char **out, long n,
+short do_printpwd(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -522,7 +522,7 @@ int do_printpwd(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_clientip(int pa, char **out, long n,                                         */
+/* short do_clientip(int pa, char **out, long n,                                       */
 /*                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -530,7 +530,7 @@ int do_printpwd(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_clientip %clientip                                                           */
 /***************************************************************************************/
-int do_clientip(int pa, char **out, long n,
+short do_clientip(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -541,7 +541,7 @@ int do_clientip(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_clientip6(int pa, char **out, long n,                                        */
+/* short do_clientip6(int pa, char **out, long n,                                      */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -549,7 +549,7 @@ int do_clientip(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_clientip6 %clientip6                                                         */
 /***************************************************************************************/
-int do_clientip6(int pa, char **out, long n,
+short do_clientip6(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -560,7 +560,7 @@ int do_clientip6(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_var_ok(int pa, char **out, long n,                                           */
+/* short do_var_ok(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -568,7 +568,7 @@ int do_clientip6(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_var_ok %ok                                                                   */
 /***************************************************************************************/
-int do_var_ok(int pa, char **out, long n,
+short do_var_ok(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
@@ -579,7 +579,7 @@ int do_var_ok(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_thisfile(int pa, char **out, long n,                                         */
+/* short do_thisfile(int pa, char **out, long n,                                       */
 /*                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -587,7 +587,7 @@ int do_var_ok(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_thisfile %this                                                               */
 /***************************************************************************************/
-int do_thisfile(int pa, char **out, long n,
+short do_thisfile(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { strqcpyn_z(out, clientgetfile, n, qf_strings[quote]);
   return false;
@@ -595,7 +595,7 @@ int do_thisfile(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_myhost(int pa, char **out, long n,                                           */
+/* short do_myhost(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -603,7 +603,7 @@ int do_thisfile(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_myhost %thishost                                                             */
 /***************************************************************************************/
-int do_myhost(int pa, char **out, long n,
+short do_myhost(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -614,7 +614,7 @@ int do_myhost(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_mypage(int pa, char **out, long n,                                           */
+/* short do_mypage(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -622,7 +622,7 @@ int do_myhost(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_mypage %thispage                                                             */
 /***************************************************************************************/
-int do_mypage(int pa, char **out, long n,
+short do_mypage(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { LOG(59, "do_mypage, clientgetpath: %s.\n", clientgetpath ? clientgetpath : "(NULL)");
   strqcpyn_z(out, clientgetpath, n, qf_strings[quote]);
@@ -631,7 +631,7 @@ int do_mypage(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_method(int pa, char **out, long n,                                           */
+/* short do_method(int pa, char **out, long n,                                         */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -639,7 +639,7 @@ int do_mypage(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_method %method HTTP-Methode zurueck                                          */
 /***************************************************************************************/
-int do_method(int pa, char **out, long n,
+short do_method(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -651,7 +651,7 @@ int do_method(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_putdata(int pa, char **out, long n,                                          */
+/* short do_putdata(int pa, char **out, long n,                                        */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -659,7 +659,7 @@ int do_method(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_putdata Pfad zu den Put-Daten                                                */
 /***************************************************************************************/
-int do_putdata(int pa, char **out, long n,
+short do_putdata(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -671,7 +671,7 @@ int do_putdata(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_subname(int pa, char **out, long n,                                          */
+/* short do_subname(int pa, char **out, long n,                                        */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -679,7 +679,7 @@ int do_putdata(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_subname == $SUBMENUPAR                                                       */
 /***************************************************************************************/
-int do_subname(int pa, char **out, long n,
+short do_subname(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
@@ -690,7 +690,7 @@ int do_subname(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_allvars(int pa, char **out, long n,                                          */
+/* short do_allvars(int pa, char **out, long n,                                        */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -698,10 +698,10 @@ int do_subname(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_allvars fügt alle globalen Variablennamen ein (nicht vom Browser)           */
 /***************************************************************************************/
-int do_allvars(int pa, char **out, long n,
+short do_allvars(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *o;
-  int firstflag = 0;
+  short firstflag = 0;
   unsigned int h;
   hparstype *hp;
 
@@ -726,7 +726,7 @@ int do_allvars(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_allpars(int pa, char **out, long n,                                          */
+/* short do_allpars(int pa, char **out, long n,                                        */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -734,10 +734,10 @@ int do_allvars(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_allpars fügt alle Variablennamen vom Browser erhalten ein                   */
 /***************************************************************************************/
-int do_allpars(int pa, char **out, long n,               
+short do_allpars(int pa, char **out, long n,               
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *o;
-  int firstflag = 0;
+  short firstflag = 0;
   unsigned int h;
   hparstype *hp;
 
@@ -780,7 +780,7 @@ int do_allpars(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_par(int pa, char **out, long n,                                              */
+/* short do_par(int pa, char **out, long n,                                            */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -788,7 +788,7 @@ int do_allpars(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_par fügt Variable ein, ggf. mit Trennzeichen                                */
 /***************************************************************************************/
-int do_par(int pa, char **out, long n,
+short do_par(int pa, char **out, long n,
            char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *sep;
 
@@ -813,7 +813,7 @@ int do_par(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_gpar(int pa, char **out, long n,                                             */
+/* short do_gpar(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -821,7 +821,7 @@ int do_par(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_gpar fügt globale Variable ein, ggf. mit Trennzeichen                       */
 /***************************************************************************************/
-int do_gpar(int pa, char **out, long n,
+short do_gpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *sep;
 
@@ -846,7 +846,7 @@ int do_gpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_bpar(int pa, char **out, long n,                                             */
+/* short do_bpar(int pa, char **out, long n,                                           */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*               int pa: Anzahl Parameter in prg_pars                                  */
 /*               char **out: Ziel des Ergebnisses                                      */
@@ -855,7 +855,7 @@ int do_gpar(int pa, char **out, long n,
 /*      do_bpar fügt Parameter des Browsers oder CMD (u2w_interpreter) ein,            */
 /*               ggf. mit Trennzeichen                                                 */
 /***************************************************************************************/
-int do_bpar(int pa, char **out, long n,
+short do_bpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *sep;
 
@@ -880,7 +880,7 @@ int do_bpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_bfpar(int pa, char **out, long n,                                            */
+/* short do_bfpar(int pa, char **out, long n,                                          */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*               int pa: Anzahl Parameter in prg_pars                                  */
 /*               char **out: Ziel des Ergebnisses                                      */
@@ -889,7 +889,7 @@ int do_bpar(int pa, char **out, long n,
 /*      do_bfpar fügt Parameter des Browsers bei Multipart Dateien                     */
 /*               ggf. mit Trennzeichen                                                 */
 /***************************************************************************************/
-int do_bfpar(int pa, char **out, long n,
+short do_bfpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *sep;
 
@@ -914,7 +914,7 @@ int do_bfpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_cpar(int pa, char **out, long n,                                             */
+/* short do_cpar(int pa, char **out, long n,                                           */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*               int pa: Anzahl Parameter in prg_pars                                  */
 /*               char **out: Ziel des Ergebnisses                                      */
@@ -922,7 +922,7 @@ int do_bfpar(int pa, char **out, long n,
 /*               char prg_pars: übergebene Funktionsparameter                          */
 /*      do_cpar fügt cookie Parameter ein, ggf. mit Trennzeichen                       */
 /***************************************************************************************/
-int do_cpar(int pa, char **out, long n,
+short do_cpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *sep;
 
@@ -947,7 +947,7 @@ int do_cpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_spar(int pa, char **out, long n,                                             */
+/* short do_spar(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -955,7 +955,7 @@ int do_cpar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_spar fügt system Variable ein, ggf. mit Trennzeichen                        */
 /***************************************************************************************/
-int do_spar(int pa, char **out, long n,
+short do_spar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   getpar_sep(out, prg_pars[0], n, '\0', quote, "", HP_SYSTEM_LEVEL, 0);
@@ -965,7 +965,7 @@ int do_spar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_ipar(int pa, char **out, long n,                                             */
+/* short do_ipar(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -973,7 +973,7 @@ int do_spar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_ipar fügt init Variable ein, ggf. mit Trennzeichen                          */
 /***************************************************************************************/
-int do_ipar(int pa, char **out, long n,
+short do_ipar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   getipar(out, prg_pars[0], n, '\0', quote);
@@ -983,7 +983,7 @@ int do_ipar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_hpar(int pa, char **out, long n,                                             */
+/* short do_hpar(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -991,7 +991,7 @@ int do_ipar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_hpar fügt Elemente des HTTP-Headers ein                                     */
 /***************************************************************************************/
-int do_hpar(int pa, char **out, long n,
+short do_hpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   getpar_sep(out, prg_pars[0], n, '\0', quote, "", HP_HTTP_HEADER_LEVEL, 0);
@@ -1001,7 +1001,7 @@ int do_hpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_countpar(int pa, char **out, long n,                                         */
+/* short do_countpar(int pa, char **out, long n,                                       */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -1009,7 +1009,7 @@ int do_hpar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_countpar fügt Anzahl der Werte einer Variablen ein                          */
 /***************************************************************************************/
-int do_countpar(int pa, char **out, long n,
+short do_countpar(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   countpar(out, prg_pars[0], n, include_counter);
@@ -1018,7 +1018,7 @@ int do_countpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_gcountpar(int pa, char **out, long n,                                        */
+/* short do_gcountpar(int pa, char **out, long n,                                      */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -1026,7 +1026,7 @@ int do_countpar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_gcountpar fügt Anzahl der Werte einer globalen Variable ein                 */
 /***************************************************************************************/
-int do_gcountpar(int pa, char **out, long n,
+short do_gcountpar(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   countpar(out, prg_pars[0], n, 1);
@@ -1035,7 +1035,7 @@ int do_gcountpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_bccountpar(int pa, char **out, long n,                                       */
+/* short do_bccountpar(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -1043,7 +1043,7 @@ int do_gcountpar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_bccountpar fügt Anzahl der Werte einer Variablen ein Browser/CMD            */
 /***************************************************************************************/
-int do_bccountpar(int pa, char **out, long n,
+short do_bccountpar(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   countpar(out, prg_pars[0], n, 0);
@@ -1052,7 +1052,7 @@ int do_bccountpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_countchar(int pa, char **out, long n,                                        */
+/* short do_countchar(int pa, char **out, long n,                                      */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -1060,7 +1060,7 @@ int do_bccountpar(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*      do_countchar Zahlt Zeichen in String                                           */
 /***************************************************************************************/
-int do_countchar(int pa, char **out, long n,
+short do_countchar(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int i = 0;
   char *p;
@@ -1076,7 +1076,7 @@ int do_countchar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_split(int pa, char **out, long n,                                            */
+/* short do_split(int pa, char **out, long n,                                          */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1084,7 +1084,7 @@ int do_countchar(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_split zerlegt String am Zeichen                                              */
 /***************************************************************************************/
-int do_split(int pa, char **out, long n,
+short do_split(int pa, char **out, long n,
              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int v, b, i;
   char *s, *t, *o;
@@ -1134,7 +1134,7 @@ int do_split(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],    */
+/* short do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],  */
 /*                   int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int *listlen: Anzahl der Listenelemente                                */
 /*              char list_pars: Ergebnisse                                             */
@@ -1142,7 +1142,7 @@ int do_split(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_list_split zerlegt String am Zeichen und Ergebnis in Liste                   */
 /***************************************************************************************/
-int do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                   int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { int v, b, i;
   char *s, *o;
@@ -1191,7 +1191,7 @@ int do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
 
 
 /***************************************************************************************/
-/* int do_substr(int pa, char **out, long n,                                           */
+/* short do_substr(int pa, char **out, long n,                                         */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1199,7 +1199,7 @@ int do_list_split(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_substr Substring                                                             */
 /***************************************************************************************/
-int do_substr(int pa, char **out, long n,
+short do_substr(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int v, b;
   char *pv, *pb;
@@ -1246,7 +1246,7 @@ int do_substr(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_strpos(int pa, char **out, long n,                                           */
+/* short do_strpos(int pa, char **out, long n,                                         */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1254,7 +1254,7 @@ int do_substr(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_strpos String suchen                                                         */
 /***************************************************************************************/
-int do_strpos(int pa, char **out, long n,
+short do_strpos(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int v;
   char *p;
@@ -1282,7 +1282,7 @@ int do_strpos(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_strcpos(int pa, char **out, long n,                                          */
+/* short do_strcpos(int pa, char **out, long n,                                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1291,7 +1291,7 @@ int do_strpos(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_strcpos Zeichen aus String suchen                                            */
 /***************************************************************************************/
-int do_strcpos(int pa, char **out, long n,
+short do_strcpos(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { long v, m;
 
@@ -1323,7 +1323,7 @@ int do_strcpos(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_getpar(int pa, char **out, long n,                                           */
+/* short do_getpar(int pa, char **out, long n,                                         */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1331,7 +1331,7 @@ int do_strcpos(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_getpar Parameter lesen                                                       */
 /***************************************************************************************/
-int do_getpar(int pa, char **out, long n,
+short do_getpar(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *o, *p, *e;
   char c;
@@ -1367,7 +1367,7 @@ int do_getpar(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],   */
+/* short do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS], */
 /*                   int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int *listlen: Anzahl der Listenelemente                                */
 /*              char list_pars: Ergebnisse                                             */
@@ -1375,7 +1375,7 @@ int do_getpar(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_list_getpar Parameter lesen                                                  */
 /***************************************************************************************/
-int do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                    int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *o, *p, *e;
   char c;
@@ -1420,7 +1420,7 @@ int do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS]
 
 
 /***************************************************************************************/
-/* int do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],  */
+/* short do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],*/
 /*                   int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int *listlen: Anzahl der Listenelemente                                */
 /*              char list_pars: Ergebnisse                                             */
@@ -1428,7 +1428,7 @@ int do_list_getpar(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS]
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_list_getname Name z. B. Funktionsname einlesen (Alnums)                      */
 /***************************************************************************************/
-int do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
+short do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS],
                     int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 { char *o, *p, *e;
   int kflag;
@@ -1479,7 +1479,7 @@ int do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS
 
 
 /***************************************************************************************/
-/* int do_isodate(int pa, char **out, long n,                                          */
+/* short do_isodate(int pa, char **out, long n,                                        */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1487,7 +1487,7 @@ int do_list_getname(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_isodate wandelt Datum ins ISO-Format                                         */
 /***************************************************************************************/
-int do_isodate(int pa, char **out, long n,
+short do_isodate(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int t, m, j;
 
@@ -1515,7 +1515,7 @@ char monam[12][4] = {"Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
                      "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"};
 
 /***************************************************************************************/
-/* int do_date(int pa, char **out, long n,                                             */
+/* short do_date(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1523,7 +1523,7 @@ char monam[12][4] = {"Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_date Datum ausgeben                                                          */
 /***************************************************************************************/
-int do_date(int pa, char **out, long n,
+short do_date(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int j, lj;
   char *s, *o;
@@ -1625,7 +1625,7 @@ int do_date(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_trim(int pa, char **out, long n,                                             */
+/* short do_trim(int pa, char **out, long n,                                           */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1633,7 +1633,7 @@ int do_date(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_trim entfernt alle Zeichen aus P1 bzw. Blanks am Anfang und Ende             */
 /***************************************************************************************/
-int do_trim(int pa, char **out, long n,
+short do_trim(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p, *q, *o;
 
@@ -1678,7 +1678,7 @@ int do_trim(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_ltrim(int pa, char **out, long n,                                            */
+/* short do_ltrim(int pa, char **out, long n,                                          */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1686,7 +1686,7 @@ int do_trim(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_ltrim entfernt alle Zeichen aus P1 bzw. Blanks am Anfang                     */
 /***************************************************************************************/
-int do_ltrim(int pa, char **out, long n,
+short do_ltrim(int pa, char **out, long n,
              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p, *o;
 
@@ -1715,7 +1715,7 @@ int do_ltrim(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_rtrim(int pa, char **out, long n,                                            */
+/* short do_rtrim(int pa, char **out, long n,                                          */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1723,7 +1723,7 @@ int do_ltrim(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_rtrim entfernt alle Zeichen aus P1 bzw. Blanks am Ende                       */
 /***************************************************************************************/
-int do_rtrim(int pa, char **out, long n,
+short do_rtrim(int pa, char **out, long n,
              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p, *q, *o;
 
@@ -1760,7 +1760,7 @@ int do_rtrim(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_replace(int pa, char **out, long n,                                          */
+/* short do_replace(int pa, char **out, long n,                                        */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1768,7 +1768,7 @@ int do_rtrim(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_replace suchen und ersetzen im String                                        */
 /***************************************************************************************/
-int do_replace(int pa, char **out, long n,
+short do_replace(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p, *o;
 
@@ -1792,7 +1792,7 @@ int do_replace(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_random(int pa, char **out, long n,                                           */
+/* short do_random(int pa, char **out, long n,                                         */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1800,11 +1800,11 @@ int do_replace(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_random Zufallswert erzeugen                                                  */
 /***************************************************************************************/
-int do_random(int pa, char **out, long n,
+short do_random(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char zahl[128], *q, *p;
   double von, bis, r;
-  int intflag = true;
+  short intflag = true;
 
   LOG(1, "do_random, p1: %s, p2: %s.\n", prg_pars[0], prg_pars[1]);
 
@@ -1857,7 +1857,7 @@ int do_random(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_readline(int pa, char **out, long n,                                         */
+/* short do_readline(int pa, char **out, long n,                                       */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1865,7 +1865,7 @@ int do_random(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_readline eine Zeile von Datei lesen                                          */
 /***************************************************************************************/
-int do_readline(int pa, char **out, long n,
+short do_readline(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int i;
 
@@ -1924,7 +1924,7 @@ int do_readline(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_fileopen(int pa, char **out, long n,                                         */
+/* short do_fileopen(int pa, char **out, long n,                                       */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1932,7 +1932,7 @@ int do_readline(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_fileopen Datei zum Lesen/Schreiben öffnen                                    */
 /***************************************************************************************/
-int do_fileopen(int pa, char **out, long n,
+short do_fileopen(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int i;
 
@@ -1956,7 +1956,7 @@ int do_fileopen(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_fileappend(int pa, char **out, long n,                                       */
+/* short do_fileappend(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1964,7 +1964,7 @@ int do_fileopen(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_fileapend Datei zum Lesen/Schreiben ans Ende der Datei öffnen                */
 /***************************************************************************************/
-int do_fileappend(int pa, char **out, long n,
+short do_fileappend(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int i;
 
@@ -1988,7 +1988,7 @@ int do_fileappend(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_filecreate(int pa, char **out, long n,                                       */
+/* short do_filecreate(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -1996,7 +1996,7 @@ int do_fileappend(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_filecreate Datei zum Schreiben anlegen                                       */
 /***************************************************************************************/
-int do_filecreate(int pa, char **out, long n,
+short do_filecreate(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { int i;
 
@@ -2018,7 +2018,7 @@ int do_filecreate(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_readfile(int pa, char **out, long n,                                         */
+/* short do_readfile(int pa, char **out, long n,                                       */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -2027,7 +2027,7 @@ int do_filecreate(int pa, char **out, long n,
 /*      do_readfile fügt Inhalt einer Datei ein, oder wenn Parameter angegeben ist,    */
 /*              setzt Variable mit Inhalt der Datei                                    */
 /***************************************************************************************/
-int do_readfile(int pa, char **out, long n,
+short do_readfile(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { FILE *ptr;
   size_t nb;
@@ -2064,7 +2064,7 @@ int do_readfile(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_send_html(int pa, char **out, long n,                                        */
+/* short do_send_html(int pa, char **out, long n,                                      */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -2072,7 +2072,7 @@ int do_readfile(int pa, char **out, long n,
 /*                char prg_pars: übergebene Funktionsparameter                         */
 /*     do_send_html HMTL-Code einfügen                                                 */
 /***************************************************************************************/
-int do_send_html(int pa, char **out, long n,
+short do_send_html(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   return dosend(prg_pars[0]);
@@ -2080,7 +2080,7 @@ int do_send_html(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_filesize(int pa, char **out, long n,                                         */
+/* short do_filesize(int pa, char **out, long n,                                       */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -2088,7 +2088,7 @@ int do_send_html(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_filesize Größe einer Datei ausgeben                                          */
 /***************************************************************************************/
-int do_filesize(int pa, char **out, long n,
+short do_filesize(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char zahl[128];
 #ifdef _LARGEFILE64_SOURCE
@@ -2116,13 +2116,13 @@ int do_filesize(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int u2w_hink(int pa, char **out, long n,                                            */
+/* short u2w_hink(int pa, char **out, long n,                                          */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*          int pa: Bitflag mit gesetzten Parameterfeldern                             */
 /*          char prg_pars: Parameter                                                   */
 /*     u2w_hlink Hypertextlink erzeugen                                                */
 /***************************************************************************************/
-int u2w_hlink(int pa, char **out, long n,
+short u2w_hlink(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char z[MAX_ZEILENLAENGE], *p;
 
@@ -2157,13 +2157,13 @@ int u2w_hlink(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int u2w_iframe(int pa, char **out, long n,                                          */
+/* short u2w_iframe(int pa, char **out, long n,                                        */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*          int pa: Bitflag mit gesetzten Parameterfeldern                             */
 /*          char prg_pars: Parameter                                                   */
 /*     u2w_iframe iframe Elemente erzeugen                                             */
 /***************************************************************************************/
-int u2w_iframe(int pa, char **out, long n,
+short u2w_iframe(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char z[MAX_ZEILENLAENGE], *p;
 
@@ -2197,13 +2197,13 @@ int u2w_iframe(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int u2w_url(int pa, char **out, long n,                                             */
+/* short u2w_url(int pa, char **out, long n,                                           */
 /*              char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)          */
 /*          int pa: Bitflag mit gesetzten Parameterfeldern                             */
 /*          char prg_pars: Parameter                                                   */
 /*     u2w_url Text für URL codieren                                                   */
 /***************************************************************************************/
-int u2w_url(int pa, char **out, long n,
+short u2w_url(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { if( out )
   { *out = code_link(*out, prg_pars[0], n, (pa & P2) && atoi(prg_pars[1]));
@@ -2219,7 +2219,7 @@ int u2w_url(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int u2w_queryvars(int pa, char **out, long n,                                       */
+/* short u2w_queryvars(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */
 /*                char **out: Ziel des Ergebnisses                                     */
@@ -2234,7 +2234,7 @@ int u2w_url(int pa, char **out, long n,
 
 #ifdef WITH_GETTEXT
 /***************************************************************************************/
-/* int do_decimalpoint(int pa, char **out, long n,                                     */
+/* short do_decimalpoint(int pa, char **out, long n,                                   */
 /*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -2242,7 +2242,7 @@ int u2w_url(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*      do_decimalpoint fügt Wert des Dezimalpunktes entsprechend der locale ein       */
 /***************************************************************************************/
-int do_decimalpoint(int pa, char **out, long n,
+short do_decimalpoint(int pa, char **out, long n,
                     char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
   strqcpyn_z(out, dezimalpunkt, n, qf_strings[quote]);
@@ -2253,7 +2253,7 @@ int do_decimalpoint(int pa, char **out, long n,
 
 #ifdef WITH_HTTPS
 /***************************************************************************************/
-/* int do_ssl_subject(int pa, char **out, long n,                                      */
+/* short do_ssl_subject(int pa, char **out, long n,                                    */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -2261,7 +2261,7 @@ int do_decimalpoint(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_ssl_subject %sslsubject                                                      */
 /***************************************************************************************/
-int do_ssl_subject(int pa, char **out, long n,
+short do_ssl_subject(int pa, char **out, long n,
                    char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
@@ -2272,7 +2272,7 @@ int do_ssl_subject(int pa, char **out, long n,
 
 
 /***************************************************************************************/
-/* int do_ssl_issuer(int pa, char **out, long n,                                       */
+/* short do_ssl_issuer(int pa, char **out, long n,                                     */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char **out: Ziel des Ergebnisses                                       */
@@ -2280,7 +2280,7 @@ int do_ssl_subject(int pa, char **out, long n,
 /*              char prg_pars: übergebene Funktionsparameter                           */
 /*     do_ssl_issuer %sslissuer                                                        */
 /***************************************************************************************/
-int do_ssl_issuer(int pa, char **out, long n,
+short do_ssl_issuer(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
 #ifdef WEBSERVER
