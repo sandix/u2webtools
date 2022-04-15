@@ -531,7 +531,7 @@ short do_break(void)
     { if( *zeile )
         logging("Error: %%break %s without loop.\n", zeile);
       else
-        logging("Error: %%break without loop.\n", zeile);
+        logging("Error: %%break without loop.\n");
       return true;
     }
   }

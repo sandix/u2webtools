@@ -56,6 +56,8 @@
 #define SSL_MODE_OFF 0                /* SSL ist ausgeschaltet                         */
 #define SSL_MODE_ON  1                /* SSL ist eingeschaltet                         */
 #define SSL_MODE_FORCE_CERT 2         /* SSL ist eingeschaltet Cert testen             */
+#define SSL_MODE_FORCE_CN   4         /* SSL ist eingeschaltet CN testen               */
+
 #endif /* WITH_HTTPS */
 
 #define HAS_VSNPRINTF 1

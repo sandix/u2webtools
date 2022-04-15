@@ -31,6 +31,8 @@ void init_global_vars(void)
   anz_httpheadlines = 0;             /* Anzahl zusätzlicher HTTP-Headerzeilen          */
   charset = "";                      /* Characterset von %charset                      */
   savename = "";                     /* Datei-Name für Content-Disposition             */
+  httpnum = 0;                       /* HTTP-Response-Code                             */
+  httpdesc = NULL;                   /* HTTP-Response-Description                      */
   content_type = "";
   content_path = "";
   user[0] = '\0';

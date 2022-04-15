@@ -99,7 +99,7 @@ void usage(char *prg)
          "               [-mm mime] [-mn name] [-m-] [-o path] [-O] [-p pwd|-pf pwdfile] [-P proxy]\n"
          "               [-q] [-r range] [-R] [-s]"
 #ifdef WITH_HTTPS
-                       " [-S] [-Sa path] [-Sc path] [-Sf]\n"
+                       " [-S] [-Sa path] [-Sc path] [-Sf|-SF]\n"
          "               [-Sk path] [-SC]"
 #endif  /* WITH_HTTPS */
                        " [-t sec] [-tc sec] [-T] [-u user]\n"
@@ -168,6 +168,8 @@ fputs(" -Sc path ", stdout);
          puts(_("path to ssl-cert"));
 fputs(" -Sf      ", stdout);
          puts(_("force server cert"));
+fputs(" -SF      ", stdout);
+         puts(_("force server cert and signed hostname"));
 fputs(" -Sk path ", stdout);
          puts(_("path to ssl-key"));
 fputs(" -SC      ", stdout);
@@ -453,7 +455,9 @@ int main(int argc, char **argv)
                   ssl_ca_file = argv[options];
                 }
                 else if( argv[options][2] == 'f' )
-                  ssl_mode = ssl_mode | SSL_MODE_FORCE_CERT;
+                  opt_ssl_mode = opt_ssl_mode | SSL_MODE_FORCE_CERT;
+                else if( argv[options][2] == 'F' )
+                  opt_ssl_mode = opt_ssl_mode | SSL_MODE_FORCE_CERT | SSL_MODE_FORCE_CN;
                 else if( argv[options][2] == 's' )
                   ssl_print_issuer = 1;
                 else if( argv[options][2] == 'i' )
@@ -464,6 +468,7 @@ int main(int argc, char **argv)
                   ssl_print_subject = 2;
                 else if( argv[options][2] == 'C' )
                   http_method |= HTTPS_GET_SSL_CERT;
+                LOG(20, "httpget, op_ssl_mode: %d\n", ssl_mode);
                 break;
 #endif  /* WITH_HTTPS */
      case 'T':  http_method |= HTTP_TRACE;

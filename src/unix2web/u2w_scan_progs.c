@@ -205,7 +205,7 @@ short do_referer(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
-  if( (p = parwert("Referer", HP_HTTP_HEADER_LEVEL)) )
+  if( (p = parwert("referer", HP_HTTP_HEADER_LEVEL)) )
     strqcpyn_z(out, p, n, qf_strings[quote]);
   return false;
 }
@@ -339,7 +339,7 @@ short do_useragent(int pa, char **out, long n,
                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
-  if( (p = parwert("User-Agent", HP_HTTP_HEADER_LEVEL)) )
+  if( (p = parwert("user-agent", HP_HTTP_HEADER_LEVEL)) )
     strqcpyn_z(out, p, n, qf_strings[quote]);
   return false;
 }
@@ -359,7 +359,7 @@ short do_uatype(int pa, char **out, long n,
               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 { char *p;
 
-  if( n > 0 && (p = parwert("User-Agent", HP_HTTP_HEADER_LEVEL)) && *p )
+  if( n > 0 && (p = parwert("user-agent", HP_HTTP_HEADER_LEVEL)) && *p )
   { if( strcasestr(p, "mobile") || strcasestr(p, "phone")
         || strcasestr(p, "ipod") || strcasestr(p, "blackberry")
         || strcasestr(p, "opera mobi") )
@@ -994,6 +994,10 @@ short do_ipar(int pa, char **out, long n,
 short do_hpar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
+  char *p;
+  for( p = prg_pars[0]; *p; p++ )
+    if( isupper(*p) )
+      *p =  tolower((unsigned char)*p);
   getpar_sep(out, prg_pars[0], n, '\0', quote, "", HP_HTTP_HEADER_LEVEL, 0);
 
   return false;

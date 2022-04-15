@@ -438,6 +438,7 @@ int read_http_header(methodtype *method, char **par,
     { while( *read_header_pos == ' ' )
         read_header_pos++;
       http_accept_language = read_header_pos;
+      store_parstring("accept-language", read_header_pos, HP_HTTP_HEADER_LEVEL);
     }
     else if( tolower(*read_header_pos) == 'a'
              && str_lcasestarts_z(&read_header_pos, "accept-encoding:") )
@@ -483,6 +484,7 @@ int read_http_header(methodtype *method, char **par,
     { while( *read_header_pos == ' ' )
         read_header_pos++;
       content_type = read_header_pos;
+      store_parstring("content-type", read_header_pos, HP_HTTP_HEADER_LEVEL);
     }
     else if( tolower(*read_header_pos) == 'c'
              && str_lcasestarts_z(&read_header_pos, "content-length:") )
@@ -495,18 +497,21 @@ int read_http_header(methodtype *method, char **par,
              && str_lcasestarts_z(&read_header_pos, "host:") )
     { while( *read_header_pos == ' ' )
         read_header_pos++;
+      store_parstring("host", read_header_pos, HP_HTTP_HEADER_LEVEL);
       http_host = read_header_pos;
     }
     else if( tolower(*read_header_pos) == 'i'
              && str_lcasestarts_z(&read_header_pos, "if-modified-since:") )
     { while( *read_header_pos == ' ' )
         read_header_pos++;
+      store_parstring("if-modified-since", read_header_pos, HP_HTTP_HEADER_LEVEL);
       *test_modified_time = datestr2time_t(read_header_pos);
     }
     else if( tolower(*read_header_pos) == 'r'
              && str_lcasestarts_z(&read_header_pos, "range:") )
     { while( *read_header_pos == ' ' )
         read_header_pos++;
+      store_parstring("range", read_header_pos, HP_HTTP_HEADER_LEVEL);
       *range = read_header_pos;
     }
     else if( tolower(*read_header_pos) == 't'
@@ -551,7 +556,12 @@ int read_http_header(methodtype *method, char **par,
     }
     if( http_value )
     { if( strcasecmp(http_name, "cookie") )
+      { char *p;
+        for( p = http_name; *p; p++ )
+          if( isupper(*p) )
+            *p =  tolower((unsigned char)*p);
         store_parstring(http_name, http_value, HP_HTTP_HEADER_LEVEL);
+      }
       else
         store_cookies(http_value);
     }

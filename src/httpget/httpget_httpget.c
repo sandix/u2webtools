@@ -139,6 +139,17 @@ void send_multipart_file(char *multipart_name,
   chunksend(NL, strlen(NL));
 }
 
+#ifdef WITH_HTTPS
+
+int verify_callback(int ok, X509_STORE_CTX *ctx)
+{
+  if( !ok )
+    fprintf(stderr, "verify error: %s\n",
+            X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx)));
+
+  return ok;
+}
+#endif
 
 int httpget(char *path, char *outputfile, char *gfile, char *host,
             char *auth, int quiet_flag, int http_flag, char *proxy, int http_method,
@@ -205,6 +216,10 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
     { ERR_print_errors_fp(stderr);
       return ERROR_CTX_LOCATION;
     }
+    else if( !SSL_CTX_set_default_verify_paths(ctx) )
+    { ERR_print_errors_fp(stderr);
+      return ERROR_CTX_LOCATION;
+    }
 
     if( !SSL_CTX_set_cipher_list(ctx, "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS") )
     { ERR_print_errors_fp(stderr);
@@ -212,8 +227,8 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
       return ERROR_CTX_SET_CIPHER;
     }
 
-    if( ssl_mode & (SSL_MODE_FORCE_CERT) )
-      SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+    if( opt_ssl_mode & SSL_MODE_FORCE_CERT )
+      SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
   }
 #endif  /* WITH_HTTPS */
 
@@ -463,7 +478,27 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
     if( NULL == (server_cert = SSL_get_peer_certificate(ssl)) )
       return ERROR_SSL_GET_PEER;
     if( NULL != (p = X509_NAME_oneline(X509_get_subject_name(server_cert), 0, 0)) )
-    { LOG(5, "httpget, ssl subject name: %s.\n", p);
+    { LOG(5, "httpget, ssl_mode: %d, ssl subject name: %s.\n", ssl_mode, p);
+      if( ssl_mode & SSL_MODE_FORCE_CN )
+      { char *q;
+        if( (q = strstr(p, "/CN=")) )
+        { char *r;
+          q += 4;
+          LOG(15, "httpget, ssl subject CN: %s.\n", q);
+          if( (r = strchr(q, '/')) )
+            *r = '\0';
+          if( *q == '*' )
+          { q++;
+            r = hoststr + strlen(hoststr) - strlen(q);
+          }
+          else
+            r = hoststr;
+          if( strcasecmp(r, q) )
+            return ERROR_SSL_VERIFY;
+        }
+        else
+          return ERROR_SSL_VERIFY;
+      }
       if( ssl_print_subject )
         printf("%s%s\n", ssl_print_subject == 2 ? "Subject: " : "", p);
       OPENSSL_free(p);

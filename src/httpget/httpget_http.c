@@ -160,7 +160,7 @@ long read_http(char **b, int read_mode)
   { if( 0 > (nb = read_data(buffer, MAXDATASIZE, timeout_secs)) )
       return nb;
     buffer[nb] = '\0';
-    LOG(9, "read_http, nb: %ld, buffer: %s.\n", nb, buffer);
+    LOG(9, "read_http, nb: %ld, buffer: %.30s.\n", nb, buffer);
     bp = buffer;
     nnb = 1;
     while( nnb > 0 && (nb < 1 || buffer[0] == 'H') && (nb < 2 || buffer[1] == 'T')

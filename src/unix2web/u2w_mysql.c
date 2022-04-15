@@ -1469,7 +1469,8 @@ short do_mysql_enums(int pa, char **out, long n,
 /***************************************************************************************/
 short do_mysql_num_rows(int pa, char **out, long n,
                       char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
-{
+{ LOG(11, "do_mysql_num_rows, mysql_query_flag: %d, rows: %llu.\n",
+      mysql_query_flag, mysql_affected_rows(&mh));
   if( !mysql_query_flag )
     return true;
 
@@ -2053,7 +2054,9 @@ short mysql2dat(char *query, char *path, char *ssep, char *zend)
         close(hd_out);
       }
       else
+      { logging("%%mysqlout error: can't open file '%s'.\n", path);
         ret = true;
+      }
       mysql_free_result(mres);
       if( str_lcasestarts(query, "call ") )
       { while( !mysql_next_result(&mh) )
