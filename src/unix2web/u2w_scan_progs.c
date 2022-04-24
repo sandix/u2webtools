@@ -838,8 +838,8 @@ short do_gpar(int pa, char **out, long n,
   else
     sep = " ";
 
-  getpar_sep(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
-             HP_GLOBAL_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
+                   HP_GLOBAL_LEVEL, 0);
 
   return false;
 }
@@ -872,8 +872,8 @@ short do_bpar(int pa, char **out, long n,
   else
     sep = " ";
 
-  getpar_sep(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
-             HP_BROWSER_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
+                   HP_BROWSER_LEVEL, 0);
 
   return false;
 }
@@ -906,8 +906,8 @@ short do_bfpar(int pa, char **out, long n,
   else
     sep = " ";
 
-  getpar_sep(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
-             HP_BROWSER_SYS_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
+                   HP_BROWSER_SYS_LEVEL, 0);
 
   return false;
 }
@@ -939,8 +939,8 @@ short do_cpar(int pa, char **out, long n,
   else
     sep = " ";
 
-  getpar_sep(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
-             HP_COOKIE_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, pa & P3 ? prg_pars[2][0] : '\0', quote, sep,
+                   HP_COOKIE_LEVEL, 0);
 
   return false;
 }
@@ -958,7 +958,7 @@ short do_cpar(int pa, char **out, long n,
 short do_spar(int pa, char **out, long n,
             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
-  getpar_sep(out, prg_pars[0], n, '\0', quote, "", HP_SYSTEM_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, '\0', quote, "", HP_SYSTEM_LEVEL, 0);
 
   return false;
 }
@@ -998,7 +998,7 @@ short do_hpar(int pa, char **out, long n,
   for( p = prg_pars[0]; *p; p++ )
     if( isupper(*p) )
       *p =  tolower((unsigned char)*p);
-  getpar_sep(out, prg_pars[0], n, '\0', quote, "", HP_HTTP_HEADER_LEVEL, 0);
+  getpar_sep_level(out, prg_pars[0], n, '\0', quote, "", HP_HTTP_HEADER_LEVEL, 0);
 
   return false;
 }

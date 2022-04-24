@@ -30,7 +30,8 @@ int mysqlport = STD_MYSQLPORT;
 #define stat64(a,b) stat(a,b)
 #endif
 
-short mysql_query_flag = 0;             // 0: no query, 1: query, 2: query with call
+short mysql_query_flag = 0;             // 0: no query, 1: %mysqlread, 2: query,
+                                        // 3: query with call
 short mysql_id_flag = false;
 
 #define MAX_P_QUERIES 5
@@ -112,7 +113,7 @@ MYSQL_RES *sql_mysql_query(MYSQL *mh, char *query)
     return true;
   }
   else
-  { mysql_query_flag = 1;
+  { mysql_query_flag = 2;
     return mysql_store_result(mh);
   }
 }
@@ -124,7 +125,7 @@ MYSQL_RES *sql_mysql_query(MYSQL *mh, char *query)
 /* mysql_clean_multistatements                                                         */
 /*      ggf. multistatements lesen                                                     */
 /***************************************************************************************/
-#define MYSQL_CLEAN_MULTISTATEMENTS if( mysql_query_flag == 2 )\
+#define MYSQL_CLEAN_MULTISTATEMENTS if( mysql_query_flag == 3 )\
   { while( !mysql_next_result(&mh) )\
     { MYSQL_RES *mr;\
       if( (mr = mysql_store_result(&mh)) ) mysql_free_result(mr);\
@@ -283,7 +284,7 @@ short u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   else
     cn = include_counter;
 
-  if( mysql_query_flag )
+  if( mysql_query_flag >= 2 )
   { if( mysql_res_flag[cn] )
     { mysql_res_flag[cn] = mysql_line_flag[cn] = false;
       mysql_free_result(mres[cn]);
@@ -304,9 +305,9 @@ short u2w_mysql_query(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   }
   else
   { if( str_lcasestarts(prg_pars[0], "call ") )
-      mysql_query_flag = 2;
+      mysql_query_flag = 3;
     else
-      mysql_query_flag = 1;
+      mysql_query_flag = 2;
     if( (mres[cn] = mysql_store_result(&mh)) )
     { mysql_res_flag[cn] = true;
       mnf[cn] = mysql_num_fields(mres[cn]);
@@ -744,7 +745,7 @@ short u2w_mysql_get_line(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PAR
     cn = include_counter;
 
   if( mysql_res_flag[cn] && mres[cn] )
-  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 2 )
+  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 3 )
     { if( mysql_next_result(&mh) )
       { mysql_query_flag = 0;
         break;
@@ -808,7 +809,7 @@ short do_mysql_list_get_line(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_
     cn = include_counter;
 
   if( mysql_res_flag[cn] && mres[cn] )
-  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 2 )
+  { while( !(mrow[cn] = mysql_fetch_row(mres[cn])) && mysql_query_flag == 3 )
     { if( mysql_next_result(&mh) )
       { mysql_query_flag = 0;
         break;
@@ -1169,13 +1170,14 @@ short do_mysql_id(int pa, char **out, long n,
 /*              char **out: Ziel des Ergebnisses                                       */
 /*              long n    : Platz in out                                               */
 /*              char prg_pars: übergebene Funktionsparameter                           */
-/*     do_mysql_read_tc Query ausführen und Ergebnis einfügen tablecols beachten       */
+/*     do_mysql_read_send Query ausführen und Ergebnis einfügen                        */
 /***************************************************************************************/
 short do_mysql_read_send(int pa,
                      char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
 {
-  LOG(3, "do_mysql_read_send, pa: %d, %s, %s, quote: %d, last_char_sended: %d.\n", pa, pa & P2 ? prg_pars[1] : "",
-      pa & P3 ? prg_pars[2] : "", quote, (int)last_char_sended);
+  LOG(3, "do_mysql_read_send, pa: %d, %s, %s, quote: %d, last_char_sended: %d.\n",
+      pa, pa & P2 ? prg_pars[1] : "", pa & P3 ? prg_pars[2] : "",
+      quote, (int)last_char_sended);
 
   if( (pa & (P2|P3)) || !tablecols || u2w_mode != U2W_MODE )
     return mysql2net(prg_pars[0], true, pa & P2 ? prg_pars[1] : NULL,
@@ -1192,7 +1194,7 @@ short do_mysql_read_send(int pa,
 /*              char **out: Ziel des Ergebnisses                                       */
 /*              long n    : Platz in out                                               */
 /*              char prg_pars: übergebene Funktionsparameter                           */
-/*     do_mysql_read_ntc Query ausführen und Ergebnis einfügen tablecols nicht beachten*/
+/*     do_mysql_read Query ausführen und Ergebnis einfügen                             */
 /***************************************************************************************/
 short do_mysql_read(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
@@ -1297,7 +1299,8 @@ short do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST
     return true;
   }
   else
-  { mres = mysql_store_result(&mh);
+  { mysql_query_flag = 1;
+    mres = mysql_store_result(&mh);
     if( mres )
     { nf = mysql_num_fields(mres);
       LOG(11, "do_mysql_list_read, nf: %d.\n", nf);
@@ -1686,7 +1689,8 @@ short mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *z
     return true;
   }
   else
-  { mres = mysql_store_result(&mh);
+  { mysql_query_flag = 1;
+    mres = mysql_store_result(&mh);
     if( mres )
     { nf = mysql_num_fields(mres);
       LOG(11, "mysql2s, nf: %d.\n", nf);
@@ -1775,6 +1779,7 @@ short mysql2net(char *query, int error_flag, char *ssep, char *zsep, int htmlfla
   }
   else
   { mres = mysql_store_result(&mh);
+    mysql_query_flag = 1;
     if( mres )
     { nf = mysql_num_fields(mres);
       nz = 0;
@@ -1898,7 +1903,8 @@ short mysql2net_tbl(char *query, int error_flag, int htmlflag)
     return true;
   }
   else
-  { mres = mysql_store_result(&mh);
+  { mysql_query_flag = 1;
+    mres = mysql_store_result(&mh);
     if( mres )
     { nf = mysql_num_fields(mres);
       nz = 0;
@@ -2026,7 +2032,8 @@ short mysql2dat(char *query, char *path, char *ssep, char *zend)
     return true;
   }
   else
-  { if( (mres = mysql_store_result(&mh)) )
+  { mysql_query_flag = 1;
+    if( (mres = mysql_store_result(&mh)) )
     { if( 0 <= (hd_out = open64(path, O_WRONLY | O_CREAT | O_TRUNC, 00600)) ) 
       { nf = mysql_num_fields(mres);
         while( !ret && (mrow = mysql_fetch_row(mres) ) )
@@ -2150,7 +2157,8 @@ short mysql2p(char *query, char *ssep, char *zsep, char *p)
     return true;
   }
   else
-  { if( (mres = mysql_store_result(&mh)) )
+  { mysql_query_flag = 1;
+    if( (mres = mysql_store_result(&mh)) )
     { nf = mysql_num_fields(mres);
       nz = 0;
       while( (mrow = mysql_fetch_row(mres) ) )

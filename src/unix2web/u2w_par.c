@@ -131,7 +131,7 @@ short set_initpar(char *arg)
 /* hparstype *gethp(char *parname, short level)                                        */
 /*             char *parname  : Parametername                                          */
 /*             short level    : Skope bzw. bei < 0 Browser, cookie, HTTP-header, sys   */
-/*      gethp Bestimmt Zeiger auf Wert in Hash-Tabelle                                 */
+/*      gethp Bestimmt Zeiger auf Wert in Hash-Tabelle mit skope <= level              */
 /***************************************************************************************/
 #ifdef __clang__
 hparstype *gethp(char *parname, short level)
@@ -189,6 +189,36 @@ inline hparstype *gethp(char *parname, short level)
     } 
   }
   LOG(9, "/gethp, return: NULL.\n");
+  return NULL;
+}
+
+
+/***************************************************************************************/
+/* hparstype *gethpeq(char *parname, short level)                                      */
+/*             char *parname  : Parametername                                          */
+/*             short level    : Skope bzw. bei < 0 Browser, cookie, HTTP-header, sys   */
+/*      gethpeq Bestimmt Zeiger auf Wert in Hash-Tabelle mit skope == level            */
+/***************************************************************************************/
+#ifdef __clang__
+hparstype *gethpeq(char *parname, short level)
+#else
+inline hparstype *gethpeq(char *parname, short level)
+#endif
+{ hparstype *hp;
+  unsigned int h;
+
+  LOG(7, "gethpeq, parname: %s, level: %hd.\n", parname, level);
+
+  h = var_hash(parname);
+  if( (hp = phash[h]) )
+  { while( hp )
+    { if( hp->level == level && 0 == strcmp(parname, hp->name) )
+        return hp;
+      else
+        hp = hp->next;
+    }
+  }
+  LOG(9, "/gethpeq, return: NULL.\n");
   return NULL;
 }
 
@@ -472,6 +502,46 @@ short getpar_sep(char **p, char *parname, size_t n, char trenn, int quote_mode,
       parname, trenn, quote_mode, level);
 
   if( (hp = gethp(parname, level)) )
+    return wpar_sep(p, hp->werte, hp->quote, n, trenn, quote_mode, sep, flags);
+  else
+  { if( trenn && !skip_empty_flag )
+    { if( n >= 2 )                             /* ggf. '' bei nicht def. Parametern    */
+      { *(*p)++ = trenn;
+        *(*p)++ = trenn;
+      }
+      else
+        return 1;
+    }
+  }
+  return 0;
+}
+
+
+/***************************************************************************************/
+/* short getpar_sep_level(char **p, char *parname, size_t n, char trenn,int quote_mode,*/
+/*                 char *sep, short level, unsigned int flags)                         */
+/*             char **p       : zum Aufbauen des Parameters                            */
+/*             char *parname  : Parametername                                          */
+/*             size_t n       : noch n Zeichen Platz in p                              */
+/*             char trenn     : Zeichen, das die einzelnen Werte umschliesst           */
+/*             int quote_mode : Quotingmodus                                           */
+/*             char *sep      : Trennung zwischen den einzelenen Werten                */
+/*             short level    : -2: SystemP., -1: Browser/CMD, 0: global, x: level <= x*/
+/*             unsigned int maxlen: > 0: Maximal maxlen Zeichen ausgeben               */
+/*             unsigned int flags: 1: Bei Pufferüberlauf return 2 statt 1              */
+/*                                 2: links trimmen  (noch nicht implementiert)        */
+/*                                 4: rechts trimmen (noch nicht implementiert)        */
+/*    return: 1, wenn n ueberschritten wird, bzw. 2, wenn (flags&1)                    */
+/*      getpar_sep_level Bestimmt alle Werte zum Parameter parname mit skope == level  */
+/***************************************************************************************/
+short getpar_sep_level(char **p, char *parname, size_t n, char trenn, int quote_mode,
+                       char *sep, short level, unsigned int flags)
+{ hparstype *hp;
+
+  LOG(1, "getpar_sep, parname: %s, trenn: %c, quote_mode: %d, level: %hd.\n",
+      parname, trenn, quote_mode, level);
+
+  if( (hp = gethpeq(parname, level)) )
     return wpar_sep(p, hp->werte, hp->quote, n, trenn, quote_mode, sep, flags);
   else
   { if( trenn && !skip_empty_flag )
