@@ -6,19 +6,17 @@ Release: SETRELEASE
 License: GPL
 Group: Productivity/Networking/Web/Servers
 Source: SETSOURCE
-BuildRoot: /dev/shm/u2w_makerpm
+BuildRoot: /dev/shm/u2w_my_makerpm
 #DATAPORT#Packager: Henning Sander <henning.sander@dataport.de>
 #NODATAPORT#Packager: Henning Sander <sandix@universal-logging-system.org>
 #DATAPORT#Vendor: Henning Sander (Dataport)
 #NODATAPORT#Vendor: Universal-Logging-System.org
-Conflicts: u2webtools_mysql
+Conflicts: u2webtools_nomysql, u2webtools_mysql
 #DEB#Section: httpd
 
 %description
 Unix2Web-Http/Https-Server
-unix2webd without MySQL-Exteinsion or MariaDB-Extension, httpget
-
-%global debug_package %{nil}
+unix2webd with MariaDB-Extension, httpget, code_http
 
 %prep
 echo
@@ -27,13 +25,14 @@ echo
 echo
 
 %build
+#MAKEDEFINE#MYSQL="_mariadb"
 if [[ -d SRC ]]
  then
   if cd SRC
    then
     for i in *
      do
-      (cd $i && make)
+      (cd $i && MYSQL="_mariadb" make)
     done
   fi
 fi
@@ -44,9 +43,9 @@ if [[ -n "$RPM_BUILD_ROOT" ]]
   mkdir -p $RPM_BUILD_ROOT
   cp -a `ls| grep -v 'SRC'` $RPM_BUILD_ROOT/
 else
-  rm -rf /dev/shm/u2w_makerpm
-  mkdir -p /dev/shm/u2w_makerpm
-  cp -a `ls| grep -v 'SRC'` /dev/shm/u2w_makerpm
+  rm -rf /dev/shm/u2w_my_makerpm
+  mkdir -p /dev/shm/u2w_my_makerpm
+  cp -a `ls| grep -v 'SRC'` /dev/shm/u2w_my_makerpm
 fi
 if [[ -d SRC ]]
  then
@@ -54,7 +53,7 @@ if [[ -d SRC ]]
    then
     for i in *
      do
-      (cd $i && PREFIX=${RPM_BUILD_ROOT:-/dev/shm/u2w_makerpm}/usr make install)
+      (cd $i && MYSQL="_mariadb" PREFIX=${RPM_BUILD_ROOT:-/dev/shm/u2w_my_makerpm}/usr make install)
     done
   fi
 fi
@@ -204,6 +203,10 @@ else
 fi
 
 %changelog
+* Sun Aug 28 2022 sandix@universal-logging-system.org
+- New "%https"
+* Sun Apr 10 2022 sandix@universal-logging-system.org
+- MariaDB / MySQL added code to accept multiple statements
 * Sat May  1 2021 sandix@universal-logging-system.org
 - Bugfix: %text(...) in Tables
 * Sun Mar 14 2021 sandix@universal-logging-system.org
