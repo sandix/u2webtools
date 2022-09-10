@@ -4,11 +4,11 @@ WALL = -Wall
 
 PRG = unix2web
 
-ifeq (${BINFILE},u2w_passwd)
+ifeq (${BINFILE},u2w_passwd${DEBUGEXT})
 PRGCS = u2w_u2w_passwd.c \
 	u2w_md5.c \
 	u2w_pwd.c \
-        u2w_str.c \
+	u2w_str.c \
 	unix2web_version.c
 else
 PRGCS = unix2web.c \

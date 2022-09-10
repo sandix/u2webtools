@@ -41,6 +41,8 @@
 #define REFERER      "referer"        /* %referer: Referer vom Browswer                */
 #define USERAGENT    "useragent"      /* %useragent: User-Agent vom Browser            */
 #define USERAGENTTYPE "uatype"        /* B(rowser), T(ablet), M(obile), C(onsole)      */
+#define GETHTTPS     "https"          /* %https liefert "https" oder "http"            */
+#define GETHTTP      "http"           /* %http liefert "https" oder "http"             */
 #define HTTP_ACCEPT_LANGUAGE "http_accept_language" /* %http_accept_language, wie vom  */
                                       /* Browser im header                             */
 #define PREFLANG     "preflang"       /* %preflang([<langlist>]): bevorzugte Sprache   */

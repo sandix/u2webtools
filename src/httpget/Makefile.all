@@ -55,6 +55,9 @@ ${BINDIR}/${BINFILE}:	${OBJDIR} ${PRGOBJS}
 install:	${BINDIR}/${BINFILE}
 	if [ -f ${PREFIX}/bin/${BINFILE} ] ; then diff -q ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} >/dev/null 2>&1 || (mv ${PREFIX}/bin/${BINFILE} ${PREFIX}/bin/${BINFILE}.old && cp ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} && rm ${PREFIX}/bin/${BINFILE}.old || mv ${PREFIX}/bin/${BINFILE}.old ${PREFIX}/bin/${BINFILE}); else cp ${BINDIR}/${BINFILE} ${PREFIX}/bin/${BINFILE} ; fi
 
+copybin:	${BINDIR}/${BINFILE}
+	if [ -f ${PREFIX}/${BINFILE} ] ; then diff -q ${BINDIR}/${BINFILE} ${PREFIX}/${BINFILE} >/dev/null 2>&1 || (mv ${PREFIX}/${BINFILE} ${PREFIX}/${BINFILE}.old && cp ${BINDIR}/${BINFILE} ${PREFIX}/${BINFILE} && rm ${PREFIX}/${BINFILE}.old || mv ${PREFIX}/${BINFILE}.old ${PREFIX}/${BINFILE}); else cp ${BINDIR}/${BINFILE} ${PREFIX}/${BINFILE} ; fi
+
 clean:
 	rm -f ${OBJDIR}/*.o ${PRG}_dec.h ${PRG}_var.h
 

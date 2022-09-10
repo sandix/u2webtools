@@ -11,6 +11,45 @@
 #define false 0
 #define true !false
 
+/* Anfang globale Variablen */
+
+#ifdef DEBUG
+char logfiles[MAX_LEN_LOGFILES] = {'\0'};
+                                     /* durch ' ' getrennte Liste mit den Logfilenamen */
+short all_log_flag = false;          /* true, alle Logs werden ausgegeben              */
+short loglevel = 1;                  /* Loglevel                                       */
+int linenumber;
+int line_number_stack[MAX_ANZ_INCLUDE];
+char *curfile_stack[MAX_ANZ_INCLUDE];
+#endif  /* #ifdef DEBUG */
+
+/* Ende globale Variablen */
+
+#ifdef DEBUG
+/***************************************************************************************/
+/* void logging(char *f, ...)                                                          */
+/*              char *f: Formatstring für vfprintf                                     */
+/*              ...    : Weitere Parameter für vfprintf                                */
+/*      logging schreibt die Ausgabe nach stderr oder, wenn logpath != NULL hängt an   */
+/*              die Datei an                                                           */
+/***************************************************************************************/
+void logging(char *f, ...)
+{ va_list ap;
+  time_t tt;
+  struct tm *tm;
+
+  time(&tt);
+  tm = localtime(&tt);
+  va_start(ap, f);
+  fprintf(stderr, "%04d-%02d-%02d %02d:%02d:%02d ",
+          tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
+          tm->tm_hour, tm->tm_min, tm->tm_sec);
+  vfprintf(stderr, f, ap);
+
+  va_end(ap);
+}
+#endif
+
 
 /***************************************************************************************/
 /* calc_md5sum(char *md5sum, unsigned char *s, long n)                                 */

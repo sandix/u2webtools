@@ -484,6 +484,30 @@ short do_myport(int pa, char **out, long n,
 
 
 /***************************************************************************************/
+/* short do_https(int pa, char **out, long n,                                          */
+/*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*     do_https %https Ausgabe "https" oder "http"                                     */
+/***************************************************************************************/
+short do_https(int pa, char **out, long n,
+             char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{
+#ifdef WEBSERVER
+#ifdef WITH_HTTPS
+  if( ssl_mode )
+    strqcpyn_z(out, "https", n, qf_strings[quote]);
+  else
+#endif
+    strqcpyn_z(out, "http", n, qf_strings[quote]);
+#endif
+  return false;
+}
+
+
+/***************************************************************************************/
 /* short do_printuser(int pa, char **out, long n,                                      */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
 /*              int pa: Anzahl Parameter in prg_pars                                   */

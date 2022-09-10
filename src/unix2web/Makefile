@@ -18,18 +18,23 @@
 #****************************************************************
 #
 all:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd${MYSQL}
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter${MYSQL}
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd
 
 install:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL} install
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL} install
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd install
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd${MYSQL} install
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter${MYSQL} install
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd install
+
+copybin:
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd${MYSQL} copybin
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter${MYSQL} copybin
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd copybin
 
 clean:
-	BINFILE=unix2webd make -f Makefile.unix2webd clean
-	BINFILE=unix2webd make -f Makefile.unix2webd_mysql clean
-	BINFILE=u2w_interpreter make -f Makefile.interpreter clean
-	BINFILE=u2w_interpreter make -f Makefile.interpreter_mysql clean
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd clean
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd clean
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd_mysql clean
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter clean
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter_mysql clean
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd clean

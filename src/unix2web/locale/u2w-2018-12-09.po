@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: unix2web\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-09 11:15+0100\n"
-"PO-Revision-Date: 2018-12-09 11:21+0100\n"
+"PO-Revision-Date: 2022-09-10 12:27+0200\n"
 "Last-Translator: Henning Sander <unix2web@web.de>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: u2w_dirlist.c:156 u2w_dirlist.c:161 u2w_dirlist.c:218
 msgid "Content from"
@@ -80,7 +81,7 @@ msgstr "  Zurück   "
 
 #: u2w_multi.c:317
 msgid "Max filesize reached."
-msgstr "Maximale Dateigröße erreicht"
+msgstr "Maximale Dateigröße erreicht."
 
 #: u2w_multi.c:323
 msgid "Can't write to file."
@@ -166,15 +167,15 @@ msgstr "Private key does not match the certificate public key\n"
 
 #: u2w_u2w.c:288
 msgid "Failed to get EC curve."
-msgstr "EC-Curve konnte nicht bestimmt werden"
+msgstr "EC-Curve konnte nicht bestimmt werden."
 
 #: u2w_u2w.c:296
 msgid "Failed to get DH params."
-msgstr "DH-Parameter konnten nicht bestimmt werden"
+msgstr "DH-Parameter konnten nicht bestimmt werden."
 
 #: u2w_u2w.c:301
 msgid "Failed to set DH."
-msgstr "DH konnte nicht gesetzt werden"
+msgstr "DH konnte nicht gesetzt werden."
 
 #: u2w_u2w.c:385
 #, c-format
@@ -374,7 +375,7 @@ msgstr "?&edit erlauben"
 #: unix2web.c:498
 #, c-format
 msgid "accesscontrol with file \"%s\""
-msgstr "Zugriff wird über \"%\" Datei geregelt"
+msgstr "Zugriff wird über \"%s\" Datei geregelt"
 
 #: unix2web.c:500
 #, c-format
@@ -419,8 +420,7 @@ msgstr "kein Zugriff, wenn Passwort-Datei \"%s\" nicht vorhanden ist"
 #: unix2web.c:523
 #, c-format
 msgid "path is global password file for all directories without \"%s\" file"
-msgstr ""
-"path ist globale Passwort-Datei für alle Verzeichnisse ohne \"%s\" Datei"
+msgstr "path ist globale Passwort-Datei für alle Verzeichnisse ohne \"%s\" Datei"
 
 #: unix2web.c:526
 msgid "path is global password file including homedirectories"

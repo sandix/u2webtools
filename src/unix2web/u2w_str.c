@@ -29,38 +29,6 @@ char last_non_ws_char(char *s, long n)
 
 
 /***************************************************************************************/
-/* void strcpyn_qs(char *out, char **in, long n)                                       */
-/*                 char *out: Ausgabezeile                                             */
-/*                 char **in: Eingabezeile                                             */
-/*                 long n   : Maximal n Zeichen                                        */
-/*      strcpyn_qs kopiert in nach out bis ein Leerzeichen, Tab oder \n gefunden wird, */
-/*                 dabei werden Strings, die durch "..." umgeben sind beachtet.        */
-/*                 '\' ist Quotingchar innerhalb "..."                                 */
-/***************************************************************************************/
-void strcpyn_qs(char *out, char **in, long n)
-{
-  skip_blanks(*in);
-  if( **in == '"' )
-  { (*in)++;
-    while( **in && **in != '"' && --n > 0 )
-    { if( **in == '\\' )
-      { if( *++(*in) )
-          *out++ = *(*in)++;
-      }
-      else
-        *out++ = *(*in)++;
-    }
-    if( **in == '"' )
-      (*in)++;
-  }
-  else
-    while( **in && **in != ' ' && **in != '\t' && **in != '\n' && **in != '\r' && --n > 0 )
-      *out++ = *(*in)++;
-  *out = '\0';
-}
-
-
-/***************************************************************************************/
 /* void strcpyn_s(char *out, char **in, long n)                                        */
 /*                char *out: Ausgabezeile                                              */
 /*                char **in: Eingabezeile                                              */
@@ -483,27 +451,6 @@ short strcaseeq(const char *s, const char *t)
   }
   else
     return false;
-}
-
-
-/***************************************************************************************/
-/* short is_elem(char *s, const char *t)                                               */
-/*             char *s      : String, in dem gesucht wird                              */
-/*             const char *t: String, der gesucht werden soll                          */
-/*             return       : true, String wurde gefunden                              */
-/*     is_elem sucht den String t in s als ganzes wort                                 */
-/***************************************************************************************/
-short is_elem(char *s, const char *t)
-{ char elem[PARLEN];
-
-  while( *s )
-  { strcpyn_qs(elem, &s, PARLEN);
-    if( strcmp(elem, t) == 0 )
-      return true;
-
-    skip_blanks(s);
-  }
-  return false;
 }
 
 
@@ -1271,6 +1218,61 @@ LONGWERT getlong(char **s)
   return ret;
 }
 #endif  /* #if defined(WEBSERVER) || defined(INTERPRETER) */
+
+
+#if defined(WEBSERVER) || defined(INTERPRETER) || defined(DEBUG)
+/***************************************************************************************/
+/* void strcpyn_qs(char *out, char **in, long n)                                       */
+/*                 char *out: Ausgabezeile                                             */
+/*                 char **in: Eingabezeile                                             */
+/*                 long n   : Maximal n Zeichen                                        */
+/*      strcpyn_qs kopiert in nach out bis ein Leerzeichen, Tab oder \n gefunden wird, */
+/*                 dabei werden Strings, die durch "..." umgeben sind beachtet.        */
+/*                 '\' ist Quotingchar innerhalb "..."                                 */
+/***************************************************************************************/
+void strcpyn_qs(char *out, char **in, long n)
+{
+  skip_blanks(*in);
+  if( **in == '"' )
+  { (*in)++;
+    while( **in && **in != '"' && --n > 0 )
+    { if( **in == '\\' )
+      { if( *++(*in) )
+          *out++ = *(*in)++;
+      }
+      else
+        *out++ = *(*in)++;
+    }
+    if( **in == '"' )
+      (*in)++;
+  }
+  else
+    while( **in && **in != ' ' && **in != '\t' && **in != '\n' && **in != '\r' && --n > 0 )
+      *out++ = *(*in)++;
+  *out = '\0';
+}
+
+
+/***************************************************************************************/
+/* short is_elem(char *s, const char *t)                                               */
+/*             char *s      : String, in dem gesucht wird                              */
+/*             const char *t: String, der gesucht werden soll                          */
+/*             return       : true, String wurde gefunden                              */
+/*     is_elem sucht den String t in s als ganzes wort                                 */
+/***************************************************************************************/
+short is_elem(char *s, const char *t)
+{ char elem[PARLEN];
+
+  while( *s )
+  { strcpyn_qs(elem, &s, PARLEN);
+    if( strcmp(elem, t) == 0 )
+      return true;
+
+    skip_blanks(s);
+  }
+  return false;
+}
+#endif  /* #if defined(WEBSERVER) || defined(INTERPRETER) || defined(DEBUG)*/
 
 
 /***************************************************************************************/

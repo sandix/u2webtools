@@ -2,7 +2,7 @@
 #
 # httpget
 #
-# Copyright (C) 1999 - 2015,
+# Copyright (C) 1999 - 2022,
 #   Henning Sander, <sandix@universal-logging-system.org>
 #
 # This program is free software; you can redistribute it and/or
@@ -19,6 +19,8 @@
 #
 PRG = httpget
 
+BINFILE ?= httpget${DEBUGEXT}
+
 CC ?= gcc
 
 PREFIX ?= /usr
@@ -33,7 +35,6 @@ STATIC ?=
 
 WALL := -Wall
 
-BINFILE := httpget
 
 MAININCLUDE := httpget.h
 

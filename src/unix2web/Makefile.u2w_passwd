@@ -1,7 +1,7 @@
 ###############################################
 # LINUX
 
-BINFILE ?= u2w_passwd
+BINFILE ?= u2w_passwd${DEBUGEXT}
 
 MINCFLAGS = -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -D_LARGEFILE64_SOURCE -DU2W_PASSWD
 

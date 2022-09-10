@@ -68,14 +68,17 @@ DEBIANBASE=/dev/shm/$(id -un)-deb
 #
 TAREXCLUDE='--exclude=.*.swp'
 #
-unset DISTRV CFGFILES D DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE
+unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES
 FUSER="root"
 FGROUP="root"
 SOURCEFLAG=0
 #
-while getopts An:v:V:sSu:g:rD? op; do
+while getopts An:v:V:sSu:g:rBDd? op; do
   case "$op" in
    A) APPLIANCE="-appliance";;
+   B) BINFILES=1;;
+   d) export 'DEBUG=-DDEBUG'
+      export DEBUGEXT='_debug';;
    n) SETNAME="$OPTARG";;
    v) SETVERSION="$OPTARG";;
    V) SPECIALVERSION="$OPTARG"
@@ -85,8 +88,9 @@ while getopts An:v:V:sSu:g:rD? op; do
    u) FUSER=$OPTARG;;
    g) FGROUP=$OPTARG;;
    D) D=_dataport;;
-   ?) echo "usage: `basename $0` [-A] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
+   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
   -A Appliance
+  -B only binaries
   -D Dataport package
   -g set group to <grp>
   -n set name to <name>
@@ -447,9 +451,22 @@ else
 fi
 #
 ###############################################################################
+# Only binaries
+###############################################################################
+if [[ -n "$BINFILES" ]]; then
+  if cd "$TMPDIR/$NAME/SRC"; then
+    export OUTPUTDIR
+    for i in *; do
+      (cd $i && PREFIX="$OUTPUTDIR" make && PREFIX="$OUTPUTDIR" make copybin)
+    done
+  else
+    echo "Directory '$TMPDIR/$NAME' not found."
+    exit 1
+  fi
+###############################################################################
 # DEB
 ###############################################################################
-if [[ -n "$DEB" ]]; then
+elif [[ -n "$DEB" ]]; then
   DEBBUILD="$DEBIANBASE/${PKGNAME//_/-}-$VERSION.$RELEASE$DISTRV$APPLIANCE"
   if [[ -d "$DEBBUILD" ]]; then
     if [[ -d "$DEBBUILD".old ]]; then
