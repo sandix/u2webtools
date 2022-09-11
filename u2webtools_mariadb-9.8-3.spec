@@ -204,6 +204,7 @@ fi
 
 %changelog
 * Sun Sep 11 2022 sandix@universal-logging-system.org
+- gettext: fixed quoting
 - .hosts file: added support for IP-V6
 * Sat Sep 10 2022 sandix@universal-logging-system.org
 - makepackage: new switch -B -d

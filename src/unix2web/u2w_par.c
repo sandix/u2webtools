@@ -450,6 +450,13 @@ short wipar(char **p, wert *w, char *quote, size_t n, char trenn, int quote_mode
     }
     else
 #endif
+#ifdef SQLITE3
+    if( !quote && quote_mode == QF_SQLITE3 )
+    { if( w_sqlite3_cpyn_z(p, w, n-(*p-pp)-2) )
+        return 1;
+    }
+    else
+#endif
     { if( quote )
         q = quote;
       else if( quote_mode != QF_NONE )

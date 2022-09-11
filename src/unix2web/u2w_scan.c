@@ -120,11 +120,11 @@ short scan_zeile(char *out, char **s, menutype menu, long n)
       }
 #ifdef WITH_GETTEXT
       else if( **s == GETTEXT )
-        scan_gettext_z(&o, s, n-(o-out), "", '\0', QF_NONE);
+        scan_gettext_z(&o, s, n-(o-out), "", '\0', u2w_mode == U2W_MODE ? QF_HTML : QF_NONE);
       else if( **s == GETTEXTCONST )
-        scan_gettextconst_z(&o, s, n-(o-out), "", '\0', QF_NONE);
+        scan_gettextconst_z(&o, s, n-(o-out), "", '\0', u2w_mode == U2W_MODE ? QF_HTML : QF_NONE);
       else if( **s == GETTEXTFKT )
-        scan_gettextfkt_z(&o, s, n-(o-out), "", '\0', QF_NONE);
+        scan_gettextfkt_z(&o, s, n-(o-out), "", '\0', u2w_mode == U2W_MODE ? QF_HTML : QF_NONE);
 #endif  /* WITH_GETTEXT */
       else if( **s == ' ' )
       { strcpyn_z(&o, "&nbsp;", (n-6)-(o-out));
@@ -650,7 +650,7 @@ int scan_gettext_z(char **out, char **in, long n, char *endchars,
                    char partrenn, int quote)
 { char *t, *z, text[MAX_ZEILENLAENGE];
 
-  LOG(1, "scan_gettext_z, in: %.200s.\n", *in);
+  LOG(1, "scan_gettext_z, in: %.200s, quote: %d.\n", *in, quote);
 
   if( *(*in)++ != GETTEXT )                       /* '"' überlesen                     */
     return true;
@@ -691,7 +691,7 @@ int scan_gettext_z(char **out, char **in, long n, char *endchars,
 
 
 /***************************************************************************************/
-/* int scan_gettextconst_z(char **out, char **in, long n,                              */
+/* short scan_gettextconst_z(char **out, char **in, long n,                            */
 /*                         char *endchars, char partrenn, int quote)                   */
 /*             char **out: Ergegbnis hierinein                                         */
 /*             char **in: gelesenen Eingabezeile                                       */
@@ -701,7 +701,7 @@ int scan_gettext_z(char **out, char **in, long n, char *endchars,
 /*             char quote: Zeichen, die mit erst. Zeich. in Params gequotet werden     */
 /*     scan_gettextconst_z liest von der Eingabezeile, bis zum "'" und ruft gettext auf*/
 /***************************************************************************************/
-int scan_gettextconst_z(char **out, char **in, long n, char *endchars,
+short scan_gettextconst_z(char **out, char **in, long n, char *endchars,
                    char partrenn, int quote)
 { char *z;
 
@@ -726,7 +726,21 @@ int scan_gettextconst_z(char **out, char **in, long n, char *endchars,
   *z = '\0';
   LOG(7, "scan_gettextconst_z, dgettext(%s, %s).\n", u2wtextdomain, zeile);
   if( *zeile )
-    strcpyn_z(out, dgettext(u2wtextdomain, zeile), n);
+  { if( quote == QF_HTML )
+      return code_html(out, dgettext(u2wtextdomain, zeile), n);
+    else
+#ifdef MAYDBCLIENT
+    if( quote == QF_MYSQL )
+      return strqcpyn_z(out, dgettext(u2wtextdomain, zeile), n, "\\'");
+    else
+#endif
+#ifdef SQLITE3
+    if( quote == QF_SQLITE3 )
+      return strqcpyn_z(out, dgettext(u2wtextdomain, zeile), n, "''");
+    else
+#endif
+      return strcpyn_z(out, dgettext(u2wtextdomain, zeile), n);
+  }
   return false;
 }
 
@@ -759,7 +773,21 @@ int scan_gettextfkt_z(char **out, char **in, long n, char *endchars,
     (*in)++;
   LOG(7, "scan_gettextfkt_z, dgettext(%s, %s).\n", u2wtextdomain, text);
   if( *text )
-    strcpyn_z(out, dgettext(u2wtextdomain, text), n);
+  { if( quote == QF_HTML )
+      return code_html(out, dgettext(u2wtextdomain, text), n);
+    else
+#ifdef MAYDBCLIENT
+    if( quote == QF_MYSQL )
+      return strqcpyn_z(out, dgettext(u2wtextdomain, text), n, "\\'");
+    else
+#endif
+#ifdef SQLITE3
+    if( quote == QF_SQLITE3 )
+      return strqcpyn_z(out, dgettext(u2wtextdomain, text), n, "''");
+    else
+#endif
+      return strcpyn_z(out, dgettext(u2wtextdomain, text), n);
+  }
   return false;
 }
 #endif  /* WITH_GETTEXT */
