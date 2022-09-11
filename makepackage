@@ -88,10 +88,11 @@ while getopts An:v:V:sSu:g:rBDd? op; do
    u) FUSER=$OPTARG;;
    g) FGROUP=$OPTARG;;
    D) D=_dataport;;
-   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
+   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
   -A Appliance
   -B only binaries
   -D Dataport package
+  -d Debug package
   -g set group to <grp>
   -n set name to <name>
   -s only source package

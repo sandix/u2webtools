@@ -94,14 +94,14 @@ int send_last_chunk(void)
 
 
 /***************************************************************************************/
-/* int chunksend(char *s, size_t nb)                                                   */
+/* int chunksend(const char *s, size_t nb)                                             */
 /*             char *s  : string                                                       */
 /*             size_t nb: Anzahl Zeichen, die gesendet werden sollen                   */
 /*             return   : true bei fehler, sonst false                                 */
 /*     chunksend sendet die Daten aus s an den socket sh und testet auf Fehler         */
 /***************************************************************************************/
-int chunksend(char *s, size_t nb)
-{ char *ss;
+int chunksend(const char *s, size_t nb)
+{ const char *ss;
 
   LOGLOG(LOGSENDDATA, "chunksend: %s.\n", s);
   if( nb > 0 )
@@ -118,13 +118,13 @@ int chunksend(char *s, size_t nb)
 #endif  /* #ifdef WEBSERVER */
 
 /***************************************************************************************/
-/* int binsend(char *s, size_t nb)                                                     */
+/* int binsend(const char *s, size_t nb)                                               */
 /*             char *s  : string                                                       */
 /*             size_t nb: Anzahl Zeichen, die gesendet werden sollen                   */
 /*             return   : true bei fehler, sonst false                                 */
 /*     binsend sendet die Daten aus s an den socket sh und testet auf Fehler           */
 /***************************************************************************************/
-int binsend(char *s, size_t nb)
+int binsend(const char *s, size_t nb)
 { size_t b, sb;
 
   LOG(1, "binsend, nb: %d\n", nb);
@@ -252,12 +252,12 @@ int dosendh(char *s)
 
 
 /***************************************************************************************/
-/* int dobinsend(char *s, size_t nb)                                                   */
+/* int dobinsend(const char *s, size_t nb)                                             */
 /*             char *s: string soll gesendet werden                                    */
 /*             size_t nb: Anzahl Zeichen                                               */
 /*             return : true bei fehler, sonst false                                   */
 /***************************************************************************************/
-int dobinsend(char *s, size_t nb)
+int dobinsend(const char *s, size_t nb)
 {
   if( nb > 0 )
   {
@@ -273,7 +273,7 @@ int dobinsend(char *s, size_t nb)
 
 
 /***************************************************************************************/
-/* int dobinsendh(char *s, size_t nb)                                                  */
+/* int dobinsendh(const char *s, size_t nb)                                            */
 /*             char *s: string soll gesendet werden                                    */
 /*             size_t nb: Anzahl Zeichen                                               */
 /*             return : true bei fehler, sonst false                                   */
@@ -282,7 +282,8 @@ int dobinsendh(const char *s, size_t nb)
 {
   if( nb > 0 )
   { if( u2w_mode == U2W_MODE )
-    { char z[2*MAX_ZEILENLAENGE], *zp, *sp;
+    { char z[2*MAX_ZEILENLAENGE], *zp;
+      const char *sp;
 
       zp = z;
       sp = s;

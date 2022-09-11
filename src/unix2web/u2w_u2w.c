@@ -587,14 +587,18 @@ void unix2web(int port, int backlog)
 
 #ifdef WITH_IPV6
         if( !ipv4flag )
-        { inet_ntop(AF_INET6, &their_addr6.sin6_addr, clientip6, MAX_IP_LEN);
+        { clientip6struct = &their_addr6.sin6_addr;
+          clientipstruct = NULL;
+          inet_ntop(AF_INET6, &their_addr6.sin6_addr, clientip6, MAX_IP_LEN);
           clientip = clientip6;
           if( !str_starts_z(&clientip, "::ffff:") )
             clientip = clientip6;
         }
         else
-        { clientip = clientip6;
+        { clientip6struct = NULL;
+          clientip = clientip6;         // clientip ist bei WITH_IPV6 ein "char *"
 #endif
+          clientipstruct = &their_addr.sin_addr;
           strcpyn(clientip, inet_ntoa(their_addr.sin_addr), MAX_IP_LEN);
 #ifdef WITH_IPV6
         }
@@ -604,7 +608,7 @@ void unix2web(int port, int backlog)
           logging("server: got connection from %s\n", clientip);
 
         if( restricted_ips != NULL )
-        { if( !host_in_list(clientip, restricted_ips) )
+        { if( !test_host_in_list(restricted_ips) )
           { close(new_fd);
             exit(1);
           }

@@ -203,6 +203,10 @@ else
 fi
 
 %changelog
+* Sun Sep 11 2022 sandix@universal-logging-system.org
+- .hosts file: added support for IP-V6
+* Sat Sep 10 2022 sandix@universal-logging-system.org
+- makepackage: new switch -B -d
 * Sun Aug 28 2022 sandix@universal-logging-system.org
 - New "%https"
 * Sun Apr 10 2022 sandix@universal-logging-system.org

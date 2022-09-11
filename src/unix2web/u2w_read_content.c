@@ -32,7 +32,7 @@ int read_content(void)
       w_flag = true;
       if( upload_post_mode == POST_WRITE )
       { test_passwd(pathname, auth_basic, &dummy, &w_flag, &dummy, NULL, NULL);
-        test_hosts(pathname, clientip, &dummy, &w_flag, &dummy);
+        test_hosts(pathname, &dummy, &w_flag, &dummy);
       }
       if( w_flag )
       { if( 0 <= (h = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0400)) )

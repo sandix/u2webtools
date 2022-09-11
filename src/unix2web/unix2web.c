@@ -87,9 +87,11 @@ char *listenip = NULL;               /* IP-Adresse für den bind                
 #ifdef WITH_IPV6
 char clientip6[MAX_IP_LEN];          /* IP-Adresse des Clients                         */
 char *clientip;
+struct in6_addr *clientip6struct;    /* IPV6 Adresse network order                     */
 #else
 char clientip[MAX_IP_LEN];           /* IP-Adresse des Clients                         */
 #endif
+struct in_addr *clientipstruct;      /* IPV4 Adresse network order                     */
 char *auth_basic = "";               /* Platz fuer den Auth Basic String               */
 char *realm=STD_REALM;               /* String im Anmeldefenster                       */
 int digestnum = 0;                   /* Digest num                                     */

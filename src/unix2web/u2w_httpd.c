@@ -482,7 +482,7 @@ int do_httpd(void)
 
   LOG(25, "do_httpd - vor test_hosts\n");
   if( hosts_file_mode != NOACCESSFILE
-      && BAD == test_hosts(getfile, clientip, &read_flag, &write_flag, &access_flag) )
+      && BAD == test_hosts(getfile, &read_flag, &write_flag, &access_flag) )
                                                /* Zugriff über .hosts geregelt?        */
   {                                            /* Rechner hat keinen Zugriff           */
     return 1;

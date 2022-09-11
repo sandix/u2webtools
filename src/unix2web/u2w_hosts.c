@@ -10,17 +10,20 @@
 #ifdef WEBSERVER
 
 /***************************************************************************************/
-/* int host_in_net(char *host, char *net)                                              */
-/*                 char *host: ip-Adresse eines Hosts                                  */
+/* short host_in_net(uint32_t hip, char *net)                                          */
+/*                 uint32_t hip: Host-IP host-order                                    */
 /*                 char *net: Netz in der Form: a.b.c.d[/n]                            */
 /*                 return: true, host-ip ist im Netz net                               */
 /*     host_in_net vergleicht die IP-Adresse eines hosts mit dem eines Netzes und      */
 /*                 liefert true, wenn die IP-Adresse host im Netzsegment net ist.      */
 /***************************************************************************************/
-int host_in_net(char *host, char *net)
+short host_in_net(uint32_t hip, char *net)
 { unsigned long a, b, c, d;
   int n, i;
-  unsigned long h, nw;
+  unsigned long nw;
+
+  if( strchr(net, ':') )
+    return false;
 
   i = sscanf(net, "%lu.%lu.%lu.%lu/%d", &a, &b, &c, &d, &n);
   if( i < 4 )
@@ -31,23 +34,18 @@ int host_in_net(char *host, char *net)
     n = 32 - n;
   nw = (a << 24) | (b << 16) | (c << 8) | d;
 
-  i = sscanf(host, "%lu.%lu.%lu.%lu", &a, &b, &c, &d);
-  if( i < 4 )
-    return false;
-  h = (a << 24) | (b << 16) | (c << 8) | d;
-
-  return (h >> n) == (nw >> n);
+  return (hip >> n) == (nw >> n);
 }
 
 
 /***************************************************************************************/
-/* int host_in_list(char *host, char *list)                                            */
-/*                  char *host: Adresse des Clients                                    */
+/* short host_in_list(uint32_t hip, char *list)                                        */
+/*                  uint32_t hip: Host-IP host-order                                   */
 /*                  char *list: IP-Liste mit Leerzeichen getrennt                      */
 /*                  return: true, host ist in Liste enthalten                          */
 /*     host_in_list prüft, ob die IP-des hosts in der Liste angegben ist.              */
 /***************************************************************************************/
-int host_in_list(char *host, char *list)
+short host_in_list(uint32_t hip, char *list)
 { char *p, *q;
 
   q = list;
@@ -57,7 +55,7 @@ int host_in_list(char *host, char *list)
     skip_to_blank(q);
     if( *q )
       *q++ = '\0';
-    if( host_in_net(host, p) )
+    if( host_in_net(hip, p) )
       return true;
   }
   return false;
@@ -65,17 +63,16 @@ int host_in_list(char *host, char *list)
 
 
 /***************************************************************************************/
-/* auth_type test_hosts_file(char *hd, char *host, int *r_flag, int *w_flag,           */
-/*                           int *a_flag)                                              */
+/* auth_type test_hosts_file(char *hd, uint32_t hip,                                   */
+/*                           int *r_flag, int *w_flag, int *a_flag)                    */
 /*                     char *hd   : Pfad der .hosts-Datei                              */
-/*                     char *host : Adresse des Clients                                */
 /*                     int *r_flag: Lesen im Verzeichnis erlaubt                       */
 /*                     int *w_flag: Schreiben im Verzeichnis erlaubt                   */
 /*                     int *a_flag: Access auf .passwd und .hosts Datei erlaubt        */
 /*                     return: true bei Zugriff, false keine Berechtigung              */
 /*     test_hosts_file bestimmt anhand der Datei .hosts die Zugriffsrechte             */
 /***************************************************************************************/
-auth_type test_hosts_file(char *hd, char *host, int *r_flag, int *w_flag, int *a_flag)
+auth_type test_hosts_file(char *hd, uint32_t hip, int *r_flag, int *w_flag, int *a_flag)
 { FILE *ptr;                                     /* ptr auf .hosts-Datei               */
   char *z;                                       /* eingelesene Zeilen aus hosts-Datei */
   struct stat stat_buf;                          /* Zum Test, ob hosts-Datei vorhanden */
@@ -95,14 +92,14 @@ auth_type test_hosts_file(char *hd, char *host, int *r_flag, int *w_flag, int *a
         if( !strcmp(h, GLOB_IP_AUTH) )
         { if( (hosts_file_mode == GLOBAL || hosts_file_mode == GLOBAL_X)
               && hd != hosts_path )
-          { if( test_hosts_file(hosts_path, host, r_flag, w_flag, a_flag) == AUTH )
+          { if( test_hosts_file(hosts_path, hip, r_flag, w_flag, a_flag) == AUTH )
               return AUTH;
           }
           continue;
         }
         LOG(3, "test_hosts_file, r: %s, h: %s, zeile: %s.\n", r, h, zeile);
         if( !strcmp(h, NO_IP_AUTH)               /* alle IPs erlaubt?                  */
-            || host_in_net(host, h) )            /* mit host vergleichen               */
+            || host_in_net(hip, h) )             /* mit host vergleichen               */
         { fclose(ptr);                           /* gefunden, ACCESS-Datei schliessen  */
           *r_flag = *r_flag && (strchr(r, 'r') != NULL);
           *w_flag = *w_flag && (strchr(r, 'w') != NULL);
@@ -119,43 +116,214 @@ auth_type test_hosts_file(char *hd, char *host, int *r_flag, int *w_flag, int *a
 }
 
 
+#ifdef WITH_IPV6
+
+typedef uint32_t ip6addr[4];
+
 /***************************************************************************************/
-/* auth_type test_hosts(char *pfad, char *host, int *r_flag, int *w_flag, int *a_flag) */
+/* short host6_in_net(uint32_t hip6[], char *net)                                      */
+/*                  uint32_t hip6[]: Host-IP host-order                                */
+/*                  char *net: Netz in der Text-Form                                   */
+/*                  return: true, host-ip ist im Netz net                              */
+/*     host6_in_net vergleicht die IP-Adresse eines hosts mit dem eines Netzes und     */
+/*                  liefert true, wenn die IP-Adresse host im Netzsegment net ist.     */
+/***************************************************************************************/
+short host6_in_net(uint32_t hip6[], char *net)
+{ char *p;
+  ip6addr ip6;
+  unsigned int n;
+
+  if( strchr(net, ':') )
+  {
+    if( (p = strchr(net, '/')) )
+    { *p = '\0';
+      n = atoi(p+1);
+      if( n >= 128 )
+        n = 0;
+      else
+        n = 128 - n;
+    }
+    else
+      n = 0;
+  
+    if( !inet_pton(PF_INET6, net, ip6) )
+      return false;
+  
+    ip6[0] = ntohl(ip6[0]);
+    ip6[1] = ntohl(ip6[1]);
+    ip6[2] = ntohl(ip6[2]);
+    ip6[3] = ntohl(ip6[3]);
+  
+    if( n == 0 )
+      return ip6[0] == hip6[0] && ip6[1] == hip6[1] && ip6[2] == hip6[2] && ip6[3] == hip6[3];
+    else if( n < 32 )
+      return ip6[0] == hip6[0] && ip6[1] == hip6[1] && ip6[2] == hip6[2] && (ip6[3] >> n) == (hip6[3] >> n);
+    else if( n < 64 )
+      return ip6[0] == hip6[0] && ip6[1] == hip6[1] && (ip6[2] >> (n-32)) == (hip6[2] >> (n-32));
+    else if( n < 96 )
+      return ip6[0] == hip6[0] && (ip6[1] >> (n-64)) == (hip6[1] >> (n-64));
+    else
+      return (ip6[0] >> (n-96)) == (hip6[0] >> (n-96));
+  }
+  else if( hip6[0] == 0 && hip6[1] == 0 && hip6[2] == 0xffff )
+    return host_in_net(hip6[3], net);
+  else
+    return false;
+}
+
+
+/***************************************************************************************/
+/* short host6_in_list(uint32_t hip6[], char *list)                                    */
+/*                   uint32_t hip6[]: Host-IP host-order                               */
+/*                   char *list: IP-Liste mit Leerzeichen getrennt                     */
+/*                   return: true, host ist in Liste enthalten                         */
+/*     host6_in_list prüft, ob die IP-des hosts in der Liste angegben ist.             */
+/***************************************************************************************/
+short host6_in_list(uint32_t hip6[], char *list)
+{ char *p, *q;
+
+  q = list;
+  while( *q )
+  { skip_blanks(q);
+    p = q;
+    skip_to_blank(q);
+    if( *q )
+      *q++ = '\0';
+    if( host6_in_net(hip6, p) )
+      return true;
+  }
+  return false;
+}
+
+
+/***************************************************************************************/
+/* auth_type test_hosts6_file(char *hd, uint32_t hip6[],                               */
+/*                            int *r_flag, int *w_flag, int *a_flag)                   */
+/*                     char *hd   : Pfad der .hosts-Datei                              */
+/*                     uint32_t hip6[]: Host-IP host-order                             */
+/*                     int *r_flag: Lesen im Verzeichnis erlaubt                       */
+/*                     int *w_flag: Schreiben im Verzeichnis erlaubt                   */
+/*                     int *a_flag: Access auf .passwd und .hosts Datei erlaubt        */
+/*                     return: true bei Zugriff, false keine Berechtigung              */
+/*     test_hosts6_file bestimmt anhand der Datei .hosts die Zugriffsrechte            */
+/***************************************************************************************/
+auth_type test_hosts6_file(char *hd, uint32_t hip6[],
+                           int *r_flag, int *w_flag, int *a_flag)
+{ FILE *ptr;                                     /* ptr auf .hosts-Datei               */
+  char *z;                                       /* eingelesene Zeilen aus hosts-Datei */
+  struct stat stat_buf;                          /* Zum Test, ob hosts-Datei vorhanden */
+  char h[MAX_IP_LEN];                            /* IP-Adresse aus hosts-Datei         */
+  char r[MAX_ACC_LEN];                           /* access-Zeichen in hosts-Datei      */
+
+  LOG(1, "test_hosts6_file, hostsfile: %s.\n", hd);
+  if( !stat(hd, &stat_buf) && (S_IFREG & stat_buf.st_mode) == S_IFREG )
+  { LOG(11, "test_hosts6_file, nach stat.\n");
+    if( NULL != (ptr = fopen(hd, "r")) )         /* hosts-Datei oeffnen                */
+    { while( !feof(ptr) )
+      { if( NULL == fgets(zeile, MAX_ZEILENLAENGE, ptr) )   /* Zeile einlesen          */
+          break;
+        z = zeile;
+        strcpyn_l(r, &z, MAX_ACC_LEN);           /* Accessflags nach r                 */
+        strcpyn_l(h, &z, MAX_IP_LEN);            /* IP-Adresse nach h                  */
+        if( !strcmp(h, GLOB_IP_AUTH) )
+        { if( (hosts_file_mode == GLOBAL || hosts_file_mode == GLOBAL_X)
+              && hd != hosts_path )
+          { if( test_hosts6_file(hosts_path, hip6, r_flag, w_flag, a_flag) == AUTH )
+              return AUTH;
+          }
+          continue;
+        }
+        LOG(3, "test_hosts6_file, r: %s, h: %s, zeile: %s.\n", r, h, zeile);
+        if( !strcmp(h, NO_IP_AUTH)               /* alle IPs erlaubt?                  */
+            || host6_in_net(hip6, h) )           /* mit host vergleichen               */
+        { fclose(ptr);                           /* gefunden, ACCESS-Datei schliessen  */
+          *r_flag = *r_flag && (strchr(r, 'r') != NULL);
+          *w_flag = *w_flag && (strchr(r, 'w') != NULL);
+          *a_flag = *a_flag && (strchr(r, 'a') != NULL);
+          LOG(4, "/test_hosts6_file, return true.\n");
+          return AUTH;                           /* Zugriff gewaehrt zurueck           */
+        }
+      }
+      fclose(ptr);
+    }
+    return BAD;
+  }
+  return NONE;
+}
+#endif
+
+
+/***************************************************************************************/
+/* auth_type test_hosts(char *pfad, int *r_flag, int *w_flag, int *a_flag)             */
 /*                      char *pfad : Pfad der angeforderten Seite                      */
-/*                      char *host : Adresse des Clients                               */
 /*                      int *r_flag: Lesen im Verzeichnis erlaubt                      */
 /*                      int *w_flag: Schreiben im Verzeichnis erlaubt                  */
 /*                      int *a_flag: Access auf .passwd und .hosts Datei erlaubt       */
 /*                      return: true bei Zugriff, false keine Berechtigung             */
 /*           test_hosts bestimmt anhand der Datei .hosts die Zugriffsrechte            */
 /***************************************************************************************/
-auth_type test_hosts(char *pfad, char *host, int *r_flag, int *w_flag, int *a_flag)
+auth_type test_hosts(char *pfad, int *r_flag, int *w_flag, int *a_flag)
 { char *p;
   char hostsdat[MAX_DIR_LEN];                    /* Aufbau des host-Pfades+Datei       */
   auth_type ret;
+  uint32_t hip;
 
-  LOG(1, "test_hosts, pfad: %s, host: %s, file_mode: %d.\n", pfad, host, hosts_file_mode);
+  LOG(1, "test_hosts, pfad: %s, file_mode: %d.\n", pfad, hosts_file_mode);
 
   if( hosts_file_mode == NOACCESSFILE )
   { LOG(3, "/test_hosts, ret: NONE.\n");
     return NONE;
   }
-  else if( hosts_file_mode == PATH )
-    ret = test_hosts_file(hosts_path, host, r_flag, w_flag, a_flag);
-  else
-  { strcpyn(hostsdat, pfad, MAX_DIR_LEN);        /* Pfad, der angefordert wird         */
 
-    if( NULL == (p = strrchr(hostsdat, '/')) )   /* letzten '/'                        */
-      return BAD;
+#ifdef WITH_IPV6
+  if( clientip6struct )
+  { uint32_t hip6[4];
+    hip6[0] = (clientip6struct->s6_addr[0] << 24) | (clientip6struct->s6_addr[1] << 16) | (clientip6struct->s6_addr[2] << 8) | clientip6struct->s6_addr[3];
+    hip6[1] = (clientip6struct->s6_addr[4] << 24) | (clientip6struct->s6_addr[5] << 16) | (clientip6struct->s6_addr[6] << 8) | clientip6struct->s6_addr[7];
+    hip6[2] = (clientip6struct->s6_addr[8] << 24) | (clientip6struct->s6_addr[9] << 16) | (clientip6struct->s6_addr[10] << 8) | clientip6struct->s6_addr[11];
+    hip6[3] = (clientip6struct->s6_addr[12] << 24) | (clientip6struct->s6_addr[13] << 16) | (clientip6struct->s6_addr[14] << 8) | clientip6struct->s6_addr[15];
 
-    strcpyn(p+1, HOSTS_FILE, MAX_DIR_LEN+hostsdat-p-1);   /* Pfad+Name der HOSTS-Datei */
+    if( hosts_file_mode == PATH )
+      ret = test_hosts6_file(hosts_path, hip6, r_flag, w_flag, a_flag);
+    else
+    { strcpyn(hostsdat, pfad, MAX_DIR_LEN);        /* Pfad, der angefordert wird         */
 
-    ret = test_hosts_file(hostsdat, host, r_flag, w_flag, a_flag);
+      if( NULL == (p = strrchr(hostsdat, '/')) )   /* letzten '/'                        */
+        return BAD;
 
-    if( (ret != AUTH && hosts_file_mode == GLOBAL_X)
-        || (ret == NONE && hosts_file_mode == GLOBAL) )
-      ret = test_hosts_file(hosts_path, host, r_flag, w_flag, a_flag);
+      strcpyn(p+1, HOSTS_FILE, MAX_DIR_LEN+hostsdat-p-1);   /* Pfad+Name der HOSTS-Datei */
+
+      ret = test_hosts6_file(hostsdat, hip6, r_flag, w_flag, a_flag);
+
+      if( (ret != AUTH && hosts_file_mode == GLOBAL_X)
+          || (ret == NONE && hosts_file_mode == GLOBAL) )
+        ret = test_hosts6_file(hosts_path, hip6, r_flag, w_flag, a_flag);
+    }
   }
+  else
+  {
+#endif
+    hip = ntohl(clientipstruct->s_addr);
+
+    if( hosts_file_mode == PATH )
+      ret = test_hosts_file(hosts_path, hip, r_flag, w_flag, a_flag);
+    else
+    { strcpyn(hostsdat, pfad, MAX_DIR_LEN);        /* Pfad, der angefordert wird         */
+
+      if( NULL == (p = strrchr(hostsdat, '/')) )   /* letzten '/'                        */
+        return BAD;
+
+      strcpyn(p+1, HOSTS_FILE, MAX_DIR_LEN+hostsdat-p-1);   /* Pfad+Name der HOSTS-Datei */
+
+      ret = test_hosts_file(hostsdat, hip, r_flag, w_flag, a_flag);
+
+      if( (ret != AUTH && hosts_file_mode == GLOBAL_X)
+          || (ret == NONE && hosts_file_mode == GLOBAL) )
+        ret = test_hosts_file(hosts_path, hip, r_flag, w_flag, a_flag);
+    }
+#ifdef WITH_IPV6
+  }
+#endif
 
   if( ret == AUTH )
   { LOG(2, "/test_hosts, ret: AUTH.\n");
@@ -177,13 +345,46 @@ auth_type test_hosts(char *pfad, char *host, int *r_flag, int *w_flag, int *a_fl
 
 
 /***************************************************************************************/
-/* int edit_hosts(char *hostsdat, int globflag)                                        */
+/* short test_host_in_list(char *list)                                                 */
+/*                  char *list: IP-Liste mit Leerzeichen getrennt                      */
+/*                      return: true bei Zugriff, false keine Berechtigung             */
+/*      test_host_in_list prüft, ob Client IP in *list enthalten ist                   */
+/***************************************************************************************/
+short test_host_in_list(char *list)
+{ uint32_t hip;
+
+  LOG(1, "test_host_in_list, list: %s.\n", list);
+
+#ifdef WITH_IPV6
+  if( clientip6struct )
+  { uint32_t hip6[4];
+    hip6[0] = (clientip6struct->s6_addr[0] << 24) | (clientip6struct->s6_addr[1] << 16) | (clientip6struct->s6_addr[2] << 8) | clientip6struct->s6_addr[3];
+    hip6[1] = (clientip6struct->s6_addr[4] << 24) | (clientip6struct->s6_addr[5] << 16) | (clientip6struct->s6_addr[6] << 8) | clientip6struct->s6_addr[7];
+    hip6[2] = (clientip6struct->s6_addr[8] << 24) | (clientip6struct->s6_addr[9] << 16) | (clientip6struct->s6_addr[10] << 8) | clientip6struct->s6_addr[11];
+    hip6[3] = (clientip6struct->s6_addr[12] << 24) | (clientip6struct->s6_addr[13] << 16) | (clientip6struct->s6_addr[14] << 8) | clientip6struct->s6_addr[15];
+
+    return host6_in_list(hip6, list);
+  }
+  else
+  {
+#endif
+    hip = ntohl(clientipstruct->s_addr);
+
+    return host_in_list(hip, list);
+#ifdef WITH_IPV6
+  }
+#endif
+}
+
+
+/***************************************************************************************/
+/* short edit_hosts(char *hostsdat, int globflag)                                      */
 /*                char *hostsdat: Pfad der .hosts-Datei                                */
 /*                int globflag: true, wenn globale .hosts-Datei bearbeitet wird        */
 /*               return: true bei Fehler                                               */
 /*     edit_hosts Erzeugt Formular zum Ändern der .hosts-Datei                         */
 /***************************************************************************************/
-int edit_hosts(char *hostsdat, int globflag)
+short edit_hosts(char *hostsdat, int globflag)
 { FILE *ptr;                                     /* ptr auf .hosts-Datei               */
   char *z;                                       /* eingelesen Zeilen aus .hosts-Dat.  */
   char ip[MAX_IP_LEN];                           /* IP-Adresse aus .hosts-Datei        */
@@ -228,12 +429,12 @@ int edit_hosts(char *hostsdat, int globflag)
 
 
 /***************************************************************************************/
-/* int save_hosts(char *hostsdat, int globflag)                                        */
+/* short save_hosts(char *hostsdat, int globflag)                                      */
 /*                char *hostsdat: Pfad der .hosts-Datei                                */
 /*                return: true bei Fehler                                              */
 /*     save_hosts Speichert neue Access-Rechte aus Formularergebnis                    */
 /***************************************************************************************/
-int save_hosts(char *hostsdat, int globflag)
+short save_hosts(char *hostsdat, int globflag)
 { FILE *ptr;                                     /* ptr auf ACCESS-Datei               */
   char ip[MAX_IP_LEN];                           /* IP-Adresse für hosts-Datei         */
   wertetype *w;                                  /* Zeigt auf die einzelnen Werte      */
@@ -286,11 +487,11 @@ int save_hosts(char *hostsdat, int globflag)
 
 
 /***************************************************************************************/
-/* int hosts_start_form(int globflag)                                                  */
+/* short hosts_start_form(int globflag)                                                */
 /*                      int globflag: true, wenn globale .hosts-Datei bearbeitet wird  */
 /*     hosts_start_form Gibt Anfang des Editierfensters für die .hosts-Datei aus       */
 /***************************************************************************************/
-int hosts_start_form(int globflag)
+short hosts_start_form(int globflag)
 { if( send_http_header("text/html", "", true, 0, u2w_charset) )
     return 1;
   http_head_flag = 3;
@@ -313,11 +514,11 @@ int hosts_start_form(int globflag)
 
 
 /***************************************************************************************/
-/* int hosts_end_form(void)                                                            */
+/* short hosts_end_form(void)                                                          */
 /*     hosts_end_form gibt Ende des Editierfensters für die .hosts-Datei mit Buttons   */
 /*                    aus                                                              */
 /***************************************************************************************/
-int hosts_end_form(void)
+short hosts_end_form(void)
 {
   if( dosend("</table>\n") || end_formular(BUTTONS, false) || dosend(PAGE_END) )
     return true;
@@ -327,10 +528,10 @@ int hosts_end_form(void)
 
 
 /***************************************************************************************/
-/* int hosts_eintrag_form(int r_flag, int w_flag, int a_flag, char *ip, int newflag)   */
+/* short hosts_eintrag_form(int r_flag, int w_flag, int a_flag, char *ip, int newflag) */
 /*     hosts_eintrag_form gibt eine Zeile der .hosts-Datei aus                         */
 /***************************************************************************************/
-int hosts_eintrag_form(int r_flag, int w_flag, int a_flag, char *ip, int newflag)
+short hosts_eintrag_form(int r_flag, int w_flag, int a_flag, char *ip, int newflag)
 {
   if( dosendf("<tr><td><input name=\"N\" type=\"hidden\" value=\"%s\">"
               "<input name=\"R_%s\" type=\"checkbox\"%s></td>"
