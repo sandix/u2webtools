@@ -106,10 +106,10 @@ done
 shift $(( $OPTIND - 1))
 #
 if grep -q 'BuildArch: *noarch' "$1"; then
-  RPMS=noarch
+  MACHINE=noarch
   FILES=""
 else
-  RPMS=`uname -m`
+  MACHINE=`uname -m`
 fi
 #
 SPECFILE="$1"
@@ -191,7 +191,7 @@ fi
 #
 unset DISTRO DISTRV
 #
-if [[ "$RPMS" = "noarch" ]]; then
+if [[ "$MACHINE" = "noarch" ]]; then
   DISTRO='SuSE or any RPM based'
 elif [[ -z "$DISTRV" ]]; then
   if [[ -f /etc/SuSE-release ]] && grep -q 'SUSE Linux Enterprise Server' /etc/SuSE-release; then
@@ -457,6 +457,9 @@ fi
 if [[ -n "$BINFILES" ]]; then
   if cd "$TMPDIR/$NAME/SRC"; then
     export OUTPUTDIR
+    if [[ -n "$MAKEDEFINE" ]]; then
+      eval export $MAKEDEFINE
+    fi
     for i in *; do
       (cd $i && PREFIX="$OUTPUTDIR" make && PREFIX="$OUTPUTDIR" make copybin)
     done
@@ -581,12 +584,12 @@ fi
               }
             }' $SPECFILE)
   DEBSECTION=$(awk -F ': *' '/#DEB#Section:/ {print $2}' $SPECFILE)
-  if [[ "$RPMS" = "noarch" ]]; then
-    DEBALL='all'
+  if [[ "$MACHINE" = "noarch" ]]; then
+    DEBARCH='all'
     ARCHITECTURE='all'
     SHLIBS=''
   else
-    unset DEBALL
+    DEBARCH=${MACHINE/i686/i386}
     ARCHITECTURE='any'
     SHLIBS='${shlibs:Depends}, '
   fi
@@ -741,10 +744,10 @@ EOF
 ###########################################################
 # /debian/rules
 ###########################################################
-  if [[ -z "$DEBALL" ]]; then
-    DHEXT="--dpkg-gencontrol-params=-v$VERSION-$RELEASE$DISTRV$APPLIANCE"
-  else
+  if [[ "$DEBARCH" = "all" ]]; then
     DHEXT=''
+  else
+    DHEXT="--dpkg-gencontrol-params=-v$VERSION-$RELEASE$DISTRV$APPLIANCE"
   fi
   cat >"$DEBBUILD"/debian/rules <<EOF
 #!/usr/bin/make -f
@@ -775,13 +778,12 @@ EOF
   #
   cd "$DEBBUILD"
   fakeroot debian/rules binary
-  if [[ -z "$DEBALL" ]]; then
-    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2${DISTRV}${APPLIANCE}_amd64.deb/" <<<${SPECFILENAME//_/-})
-    [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
+  if [[ "$DEBARCH" = "all" ]]; then
+    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2_all.deb/" <<<${SPECFILENAME//_/-})
   else
-    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2_${DEBALL:-amd64}.deb/" <<<${SPECFILENAME//_/-})
-    [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
+    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2${DISTRV}${APPLIANCE}_$DEBARCH.deb/" <<<${SPECFILENAME//_/-})
   fi
+  [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
 #
 ###############################################################################
 # RPM
@@ -795,16 +797,16 @@ else
     rpmbuild -bs $BUILDDIR/SPECS/$SPEC
     cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$D.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.src.rpm
   elif [[ $SOURCEFLAG = 2 ]]; then
-    rpmbuild -ba --target=$RPMS $BUILDDIR/SPECS/$SPEC
-    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
-    cp $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+    rpmbuild -ba --target=$MACHINE $BUILDDIR/SPECS/$SPEC
+    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
+    cp $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
     cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV.src.rpm
-    chmod og+r $PKGNAME-$VERSION-$RELEASE.src.rpm $PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+    chmod og+r $PKGNAME-$VERSION-$RELEASE.src.rpm $PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
   else
-    rpmbuild -bb --target=$RPMS $BUILDDIR/SPECS/$SPEC
-    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
-    cp $BUILDDIR/RPMS/$RPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$RPMS.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
-    chmod og+r $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$RPMS.rpm
+    rpmbuild -bb --target=$MACHINE $BUILDDIR/SPECS/$SPEC
+    MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
+    cp $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
+    chmod og+r $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
   fi
 fi
 #

@@ -204,6 +204,9 @@ else
 fi
 
 %changelog
+* Mon Sep 26 2022 sandix@universal-logging-system.org
+- bugfix: delete pidfile on SIGTERM
+- bugfix: open and write "pidfile" as changed user
 * Sun Sep 11 2022 sandix@universal-logging-system.org
 - gettext: fixed quoting
 - .hosts file: added support for IP-V6
