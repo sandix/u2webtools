@@ -1196,6 +1196,32 @@ int scan_shell(char **out, char **in, long n, char c)
 
 
 /***************************************************************************************/
+/* int scan_shell_skip(char **in, char c)                                              */
+/*                char **in: gelesenen Eingabezeile                                    */
+/*                char c: Startzeichen '#' oder '`'                                    */
+/*     scan_shell liest Block in '#' oder '`'                                          */
+/***************************************************************************************/
+int scan_shell_skip(char **in, char c)
+{ char kommand[MAX_ZEILENLAENGE];
+  char endstring[2];
+  int ret;
+
+  LOG(1, "scan_shell_skip, in: %.200s, c: %c.\n", *in, c);
+
+  endstring[0] = c;
+  endstring[1] = '\0';
+
+  ret = scan_to(kommand, in, MAX_ZEILENLAENGE, 0, endstring, '\'');
+
+  if( ret )
+  { LOG(9, "/scan_shell_skip, return ret: %d.\n", ret);
+    logging(_("Error: Buffer overflow on calling shell_skip.\n"));
+  }
+  return ret;
+}
+
+
+/***************************************************************************************/
 /* int scan_calc(char **out, char **in, long n)                                        */
 /*               char **out: Ergegbnis hierinein                                       */
 /*               char **in: gelesenen Eingabezeile                                     */

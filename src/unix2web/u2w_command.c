@@ -666,6 +666,26 @@ short do_x2w_command(char **s, command_prog_type prog)
 
 
 /***************************************************************************************/
+/* short skip_x2w_command(char **s, command_prog_type prog)                            */
+/*                        char **s : gelesene Eingabezeile                             */
+/*                        command_prog_type Aufzurufendes Programm                     */
+/*     skip_x2w_command  Parameter überlesen                                           */
+/***************************************************************************************/
+short skip_x2w_command(char **s, command_prog_type prog)
+{ char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
+  int pars;
+
+  LOG(1, "skip_x2w_command, prg: %s, s: %s.\n", prog.command, *s);
+
+  pars = (*(prog.get_pars_fkt))(s, prog.maxpars, prg_pars, prog.quoteflags);
+  if( (prog.minpars & pars) != prog.minpars )
+    return true;
+
+  return false;
+}
+
+
+/***************************************************************************************/
 /* short do_x2w_token_command(char **s, command_prog_token_type prog)                  */
 /*                     char **s : gelesene Eingabezeile                                */
 /*                     command_prog_type Aufzurufendes Programm                        */
@@ -708,6 +728,29 @@ short do_x2w_list_command(char **s, command_list_prog_type prog)
   LOG(17, "do_x2w_list_command, parnames[1]: %s, list_pars[1]: %s.\n", parnames[1], list_pars[1]);
 
   return lens[1] < 0 || (*(prog.do_list_fkt))(pars, lens, parnames, list_pars);
+}
+
+
+/***************************************************************************************/
+/* short skip_x2w_list_command(char **s, command_list_prog_type prog)                  */
+/*                     char **s : gelesene Eingabezeile                                */
+/*                     command_list_prog_type Aufzurufendes Programm                   */
+/*     skip_x2w_list_command überliest Parameter                                       */
+/***************************************************************************************/
+short skip_x2w_list_command(char **s, command_list_prog_type prog)
+{ int lens[2];
+  char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN];
+  char list_pars[MAX_LIST_LEN][MAX_LEN_LIST_PARS];
+  int pars;
+
+  LOG(1, "skip_x2w_list_command, prg: %s, s: %s.\n", prog.command, *s);
+
+  pars = (*(prog.get_list_pars_fkt))(s, prog.maxpars, lens, parnames, list_pars,
+                                     prog.quoteflags);
+  if( (prog.minpars & pars) != prog.minpars )
+    return true;
+
+  return false;
 }
 
 
@@ -775,6 +818,26 @@ short do_scan_command(char **out, char **s, long n, scan_prog_type prog,
     return true;
 
   return (*(prog.do_fkt))(pars, out, n, prg_pars, quote);
+}
+
+
+/***************************************************************************************/
+/* short skip_scan_command(char **s, scan_prog_type prog)                              */
+/*                     char **in : gelesene Eingabezeile                               */
+/*                     scan_prog_type prog: Programm                                   */
+/*     skip_scan_command überliest Parameter                                           */
+/***************************************************************************************/
+short skip_scan_command(char **s, scan_prog_type prog)
+{ char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS];
+  int pars;
+
+  LOG(1, "skip_scan_command, prg: %s, s: %s.\n", prog.command, *s);
+
+  pars = get_pars(s, prog.maxpars, prg_pars, prog.quoteflags);
+  if( (prog.minpars & pars) != prog.minpars )
+    return true;
+
+  return false;
 }
 
 

@@ -20,7 +20,7 @@ unaryoperatortype unaryops[] = {
   {'-',    T_UMINUS,              1},   /* d                                      */
   {'~',    T_NEG,                 1},   /* b                                      */
   {'!',    T_NOT,                 1},   /* n                                      */
-  {'(',    T_KLAMMERAUF,         10},   /* (                                      */
+  {'(',    T_KLAMMERAUF,         11},   /* (                                      */
   {'\0',   '\0',                  0}
 };
 
@@ -63,13 +63,13 @@ operatortype operatoren[] = {
   {"&&",   T_UNDUND,              7},   /* a                                      */
   {"|",    T_ODER,                4},   /* |  muss vor || stehen                  */
   {"||",   T_ODERODER,            6},   /* o                                      */
-  {"?",    T_FRAGEZEICHEN,        9},   /* ?                                      */
+  {"?",    T_FRAGEZEICHEN,       10},   /* ?                                      */
   {":",    T_DOPPELPUNKT,         9},   /* :                                      */
-  {")",    T_KLAMMERZU,          10},   /* )                                      */
+  {")",    T_KLAMMERZU,          11},   /* )                                      */
   {"",     T_UMINUS,              1},   /* d                                      */
   {"",     T_NEG,                 1},   /* b                                      */
   {"",     T_NOT,                 1},   /* n                                      */
-  {"",     T_KLAMMERAUF,         10},   /* (                                      */
+  {"",     T_KLAMMERAUF,         11},   /* (                                      */
   {"",     '\0',                  0}
 };
 
@@ -88,7 +88,16 @@ char opstack[MAXANZOPS];
 int anz_ops;
 wert wstack[MAXANZWERTE];
 int anz_wstack;
-
+int skipcalc_opstack_pos;     // Position im Operanden Stack des "skip-calc"
+                              // erst wenn dieser Operanden gepopt wird, wird die
+                              // skipcalc_opstack_pos gelöscht.
+                              // es gilt dann der Wert des Wertestacks.
+                              // wird gesetzt bei: 0 *
+                              //                   true ||
+                              //                   false &&
+                              //                   ? ... : ... im Block, der nicht gilt
+                              // Wenn gesetzt, dann werden keine Berechnungen ausgeführt,
+                              // es werden nur die Stacks gefüllt und geleert.
 
 /***************************************************************************************/
 /* char *getstring(char **s)                                                           */
@@ -235,6 +244,24 @@ int pushdouble(double d)
   if( anz_wstack < MAXANZWERTE )
   { wstack[anz_wstack].type = DOUBLEW;
     wstack[anz_wstack++].w.d = d;
+    return false;
+  }
+  else
+    return true;
+}
+
+
+/***************************************************************************************/
+/* int pushnonew(void)                                                                 */
+/*                 return : true bei Fehler Stack voll                                 */
+/*     pushnonew legt einen ungültigen-Wert auf den Operandenstack                     */
+/***************************************************************************************/
+int pushnonew(void)
+{
+  LOG(1, "pushnonew.\n");
+
+  if( anz_wstack < MAXANZWERTE )
+  { wstack[anz_wstack++].type = NONEW;
     return false;
   }
   else
@@ -420,9 +447,7 @@ int pushop(char **s, int *op_flag)
   *op_flag = false;
 
   if( op == ')' )                                 /* Klammer zu?                       */
-  { if( anz_ops && opstack[anz_ops-1] == ':' )
-      anz_ops--;
-    while( anz_ops && opstack[anz_ops-1] != '(' )  /* Stack bis '(' abarbeiten       */
+  { while( anz_ops && opstack[anz_ops-1] != '(' ) /* Stack bis '(' abarbeiten          */
       if( calc() )
         break;
     if( anz_ops && opstack[anz_ops-1] == '(' )
@@ -430,38 +455,51 @@ int pushop(char **s, int *op_flag)
     *op_flag = true;
     return false;
   }
-  else if( op == ':' )
-  { while( anz_ops && getprio(op) > getprio(opstack[anz_ops-1]) )
-      if( calc() )
-        break;
-    if( anz_ops && opstack[anz_ops-1] == '?' )
-      opstack[anz_ops-1] = ':';
-    else if( anz_ops && opstack[anz_ops-1] == ':' )
-      anz_ops--;
-    return false;
-  }
-  else if( anz_ops && opstack[anz_ops-1] == ':' )
-    return false;
-  else if( op == '?' )
-  { while( anz_ops && getprio(op) >= getprio(opstack[anz_ops-1]) )
-      if( calc() )
-        break;
-    if( poplong() )
-      op = '?';
-    else
-      op = ':';
-  }
   else
   { while( anz_ops && getprio(op) >= getprio(opstack[anz_ops-1]) )
       if( calc() )
         break;
   }
 
-  if( anz_ops && opstack[anz_ops-1] == ':' )
+  if( op == T_DOPPELPUNKT )
+  { if( skipcalc_opstack_pos )
+    { LOG(19, "pushop, anz_ops: %d, skipcalc_opstack_pos: %d, topop: %c.\n",
+          anz_ops, skipcalc_opstack_pos, opstack[skipcalc_opstack_pos-1]);
+      if( opstack[skipcalc_opstack_pos-1] == T_FRAGEZEICHEN && skipcalc_opstack_pos == anz_ops )
+      { skipcalc_opstack_pos = 0;
+        anz_ops--;
+      }
+    }
+    else if( anz_ops && opstack[anz_ops-1] == T_FRAGEZEICHEN )
+    { skipcalc_opstack_pos = anz_ops;
+    }
+    else
+      logging(_("Error in expression - ':' without '?'\n"));
     return false;
+  }
+
 
   if( anz_ops < MAXANZOPS )
-  { opstack[anz_ops++] = op;
+  { opstack[anz_ops++] = op;                      // Operanden auf Stack
+    if( ! skipcalc_opstack_pos && anz_wstack )
+    { if( op == T_STERN )
+      { if( !wert2long(wstack[anz_wstack-1]) )
+          skipcalc_opstack_pos = anz_ops;
+      }
+      else if( op == T_UNDUND )
+      { if( !wert2bool(wstack[anz_wstack-1]) )
+          skipcalc_opstack_pos = anz_ops;
+      }
+      else if( op == T_ODERODER )
+      { if( wert2bool(wstack[anz_wstack-1]) )
+          skipcalc_opstack_pos = anz_ops;
+      }
+      else if( op == T_FRAGEZEICHEN )
+      { if( ! poplong() )
+          skipcalc_opstack_pos = anz_ops;
+      }
+    }
+    LOG(11, "pushop, skipcalc_opstack_pos: %d.\n", skipcalc_opstack_pos);
     return false;
   }
   else
@@ -732,7 +770,7 @@ int calc_double(char op)
     case T_STERN:             pushdouble(dl * dr);
                               break;
     case T_GETEILT:           if( dr == 0 )
-                                pushlong(0);
+                                pushnonew();
                               else
                                 pushdouble(dl/dr);
                               break;
@@ -830,7 +868,7 @@ int calc_long(char op)
                                 pushlong(ll % lr);
                               break;
     case T_GETEILT:           if( lr == 0 )
-                                pushlong(0);
+                                pushnonew();
                               else
                                 pushlong(ll / lr);
                               break;
@@ -885,71 +923,82 @@ int calc_long(char op)
 /***************************************************************************************/
 /* int calc(void)                                                                      */
 /*          return: true, wenn nichts mehr zu berechnen ist                            */
-/*     calc berechnet Ergebnis aus obersten Operanden und oberstem Operaator           */
+/*     calc berechnet Ergebnis aus obersten Operanden und oberstem Operator            */
 /***************************************************************************************/
 int calc(void)
 { char op;
   wtype wl, wr;
 
-  LOG(1, "calc, anz_wstack: %d, top: %s, next: %s.\n", anz_wstack,
+  LOG(1, "calc, anz_wstack: %d, skipcalc: %d, top: %s, next: %s.\n", anz_wstack,
+      skipcalc_opstack_pos,
       anz_wstack ? wert2string(wstack[anz_wstack-1]) : "",
       anz_wstack >= 2 ? wert2string(wstack[anz_wstack-2]) : "");
   LOG(1, "calc, anz_opstack: %d, top: %c.\n", anz_ops,
       anz_ops ? opstack[anz_ops-1] : '#');
 
-  if( (op = popop()) )
-  { if( is_unary_op(op) && anz_wstack >= 1 )
-    { LOG(3, "calc, is_unary_op && anz_wstack >= 1\n");
-      if( is_long_op(op) || nextwtype() == LONGW )
-        calc_long(op);
-      else
-        calc_double(op);
-      return false;
-    }
-    else if( anz_wstack >= 2 )
-    { LOG(3, "calc, anz_wstack >= 2\n");
-      wr = nextwtype();
-      wl = nextnextwtype();
-
-      if( is_string_op(op) )
-        calc_string(op);
-      else if( is_long_op(op) )
-        calc_long(op);
-      else
-      { LOG(5, "calc, anz_wstack >= 2, else\n");
-        if( !is_calc_op(op)
-            && (wl == STRINGW || wr == STRINGW) )
-          calc_string(op);
-        else if( wl == DOUBLEW || wr == DOUBLEW )
-          calc_double(op);
-        else if( wl == LONGW || wr == LONGW )
+  if( ! anz_ops )
+    return true;
+  else if( skipcalc_opstack_pos && anz_ops >= skipcalc_opstack_pos )
+  { if( skipcalc_opstack_pos == anz_ops )
+      skipcalc_opstack_pos = 0;
+    popop();
+    return false;
+  }
+  else
+  { if( (op = popop()) )
+    { if( is_unary_op(op) && anz_wstack >= 1 )
+      { LOG(3, "calc, is_unary_op && anz_wstack >= 1\n");
+        if( is_long_op(op) || nextwtype() == LONGW )
           calc_long(op);
-        else if( is_calc_op(op) )
-        { LOG(7, "calc, anz_wstack >= 2, else, is_calc_op\n");
-          if( test_long_wert(wstack[anz_wstack-1])
-              && test_long_wert(wstack[anz_wstack-2]) )
-          { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, test_long\n");
-            calc_long(op);
-          }
-          else if( test_double_wert(wstack[anz_wstack-1])
-                   || test_double_wert(wstack[anz_wstack-2]) )
-          { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, test_double\n");
+        else
+          calc_double(op);
+        return false;
+      }
+      else if( anz_wstack >= 2 )
+      { LOG(3, "calc, anz_wstack >= 2\n");
+        wr = nextwtype();
+        wl = nextnextwtype();
+    
+        if( is_string_op(op) )
+          calc_string(op);
+        else if( is_long_op(op) )
+          calc_long(op);
+        else
+        { LOG(5, "calc, anz_wstack >= 2, else\n");
+          if( !is_calc_op(op)
+              && (wl == STRINGW || wr == STRINGW) )
+            calc_string(op);
+          else if( wl == DOUBLEW || wr == DOUBLEW )
             calc_double(op);
+          else if( wl == LONGW || wr == LONGW )
+            calc_long(op);
+          else if( is_calc_op(op) )
+          { LOG(7, "calc, anz_wstack >= 2, else, is_calc_op\n");
+            if( test_long_wert(wstack[anz_wstack-1])
+                && test_long_wert(wstack[anz_wstack-2]) )
+            { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, test_long\n");
+              calc_long(op);
+            }
+            else if( test_double_wert(wstack[anz_wstack-1])
+                     || test_double_wert(wstack[anz_wstack-2]) )
+            { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, test_double\n");
+              calc_double(op);
+            }
+            else
+            { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, else\n");
+              calc_long(op);
+            }
           }
           else
-          { LOG(9, "calc, anz_wstack >= 2, else, is_calc_op, else\n");
-            calc_long(op);
-          }
+            calc_string(op);
         }
-        else
-          calc_string(op);
+        LOG(2, "/calc false, anz_wstack: %d, top: %s, next: %s.\n", anz_wstack,
+            anz_wstack ? wert2string(wstack[anz_wstack-1]) : "",
+            anz_wstack >= 2 ? wert2string(wstack[anz_wstack-2]) : "");
+        LOG(2, "/calc false, anz_opstack: %d, top: %c.\n", anz_ops,
+            anz_ops ? opstack[anz_ops-1] : '#');
+        return false;
       }
-      LOG(2, "/calc false, anz_wstack: %d, top: %s, next: %s.\n", anz_wstack,
-          anz_wstack ? wert2string(wstack[anz_wstack-1]) : "",
-          anz_wstack >= 2 ? wert2string(wstack[anz_wstack-2]) : "");
-      LOG(2, "/calc false, anz_opstack: %d, top: %c.\n", anz_ops,
-          anz_ops ? opstack[anz_ops-1] : '#');
-      return false;
     }
   }
   LOG(2, "/calc true, anz_wstack: %d, top: %s, next: %s.\n", anz_wstack,
@@ -983,6 +1032,7 @@ int berechne(wert *w, char *f)
   b = f;
   anz_ops = 0;
   anz_wstack = 0;
+  skipcalc_opstack_pos = 0;
 
   while( *b )
   { while( *b == ' ' || *b == '\n' )
@@ -1018,35 +1068,55 @@ int berechne(wert *w, char *f)
       else
 #endif  /* WITH_GETTEXT */
       if( 0 <= (nf = is_x2w_command_z(&b, command_progs)) )
-      { if( do_x2w_command(&b, command_progs[nf]) )
-          lwert = 0;
+      { if( skipcalc_opstack_pos )
+          skip_x2w_command(&b, command_progs[nf]);
         else
-          lwert = 1;
+        { if( do_x2w_command(&b, command_progs[nf]) )
+            lwert = 0;
+          else
+            lwert = 1;
+        }
         parflag = 2;
       }
       else if( 0 <= (nf = is_x2w_list_command_z(&b, command_list_progs)) )
-      { if( do_x2w_list_command(&b, command_list_progs[nf]) )
-          lwert = 0;
+      { if( skipcalc_opstack_pos )
+          skip_x2w_list_command(&b, command_list_progs[nf]);
         else
-          lwert = 1;
+        { if( do_x2w_list_command(&b, command_list_progs[nf]) )
+            lwert = 0;
+          else
+            lwert = 1;
+        }
         parflag = 2;
       }
       else if( 0 <= (nf = is_scan_command_z(&b, scan_progs)) )
-      { p = swert;
-        do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_progs[nf], QF_NONE);
-        *p = '\0';
+      { if( skipcalc_opstack_pos )
+          skip_scan_command(&b, scan_progs[nf]);
+        else
+        { p = swert;
+          do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_progs[nf], QF_NONE);
+          *p = '\0';
+        }
         parflag = 3;
       }
       else if( 0 <= (nf = is_scan_command_z(&b, scan_send_progs)) )
-      { p = swert;
-        do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_send_progs[nf], QF_NONE);
-        *p = '\0';
+      { if( skipcalc_opstack_pos )
+          skip_scan_command(&b, scan_progs[nf]);
+        else
+        { p = swert;
+          do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_send_progs[nf], QF_NONE);
+          *p = '\0';
+        }
         parflag = 3;
       }
       else if( 0 <= (nf = is_scan_command_z(&b, scan_send_progs_out)) )
-      { p = swert;
-        do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_send_progs_out[nf], QF_NONE);
-        *p = '\0';
+      { if( skipcalc_opstack_pos )
+          skip_scan_command(&b, scan_progs[nf]);
+        else
+        { p = swert;
+          do_scan_command(&p, &b, MAX_ZEILENLAENGE, scan_send_progs_out[nf], QF_NONE);
+          *p = '\0';
+        }
         parflag = 3;
       }
       else
@@ -1063,10 +1133,14 @@ int berechne(wert *w, char *f)
       parflag = 1;
     }
     else if( *b == SHELL_INLINE || *b == SHELL_ESCAPE )
-    { p = swert;
-      b++;
-      scan_shell(&p, &b, MAX_ZEILENLAENGE, *(b-1));
-      *p = '\0';
+    { if( skipcalc_opstack_pos )
+        scan_shell_skip(&b, *(b-1));
+      else
+      { p = swert;
+        b++;
+        scan_shell(&p, &b, MAX_ZEILENLAENGE, *(b-1));
+        *p = '\0';
+      }
       parflag = 3;
     }
 
@@ -1093,9 +1167,9 @@ int berechne(wert *w, char *f)
         return false;
     }
     else
-    { if( anz_ops && opstack[anz_ops-1] == ':' )       /* solange wie ':' auf OP-Stack */
+    { if( skipcalc_opstack_pos )
       { if( !parflag )
-          skip(&b);                                    /* alles skippen                */
+          skip(&b);
       }
       else if( parflag == 1 )
         pushwert(wwert);
@@ -1123,8 +1197,8 @@ int berechne(wert *w, char *f)
         strcpyn_str(parwert, &p, OPS " \t", MAX_ZEILENLAENGE);
         LOG(4, "berechne, parwert: %s.\n", parwert);
         if( test_long(parwert) )
-        {  if( pushlong(getlong(&b)) )
-             return false;
+        { if( pushlong(getlong(&b)) )
+            return false;
         }
         else if( test_double(parwert) )
         { if( pushdouble(getdouble(&b)) )
@@ -1140,7 +1214,7 @@ int berechne(wert *w, char *f)
     LOG(3, "berechne, b: %s, opstack: %c.\n", b, anz_ops ? opstack[anz_ops-1] : ' ');
   }
 
-  while( !calc() )
+  while( anz_ops && !calc() )
     ;
   LOG(2, "/berechne, anz_wstack: %d, Wert: %s.\n",
       anz_wstack, wert2string(wstack[0]));
