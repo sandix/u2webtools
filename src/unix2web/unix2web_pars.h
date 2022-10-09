@@ -111,12 +111,15 @@
 #define OPT_DAEMON              'D'  /* als Daemon starten                             */
 #define OPT_DAEMON_PID           'p' /* -Dp <path> write Daemon pid to <path>          */
 #define OPT_SKIP_EMPTY          'E'  /* Leere Parameter nicht an Programme übergeben   */
-#define OPT_LOGFILE             'F'  /****** Nur im DEBUG-Mode   ***********************/
-                                     /* -Ft + time siehe -At                           */
+#define OPT_FLUSH_MODE          'F'  /* Flush-Mode einstellen                          */
+#define OPT_FLUSH_MODE_HTTP      'h' /* -Fh flush nach http- aber vor html-Header      */
+                                     /* -F flush nach Beginn html-Header               */
 #define OPT_BACKLOG             'G'  /* Num Backlog in listen                          */
 #define OPT_HEADER              'H'  /* keinen HTTP-Header senden                      */
 #define OPT_TEXTDOMAIN          'I'  /* -I <domain>, Internationalisierung: Textdomain */
 #define OPT_TEXTDOMAINDIR        'p' /* -Ip <pfad>, std: /usr/share/locale             */
+#define OPT_LOGFILE             'J'  /****** Nur im DEBUG-Mode   ***********************/
+                                     /* -Jt + time siehe -At                           */
 #define OPT_LISTEN_IP           'L'  /* -L <IP-Adresse>, die Listen-IP-Adresse         */
 #define OPT_LONGLOG             'M'  /****** Nur im DEBUG-Mode   ***********************/
 #define OPT_NO_OPTIONS          'N'  /* Methode OPTIONS nicht erlaubt                  */

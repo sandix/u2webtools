@@ -437,10 +437,10 @@ int u2w_put(FILE *ptr)
           }
 
           /*****************************************************************************/
-          /* kein HTTP-Head Kommando, es kann der HTML-Header gesendet werden          */
+          /* kein HTTP-Head Kommando, es kann der HTML-Header begonnen werden          */
           /*****************************************************************************/
 
-          LOG(55, "u2w_put, html_head_flag: %d, http_head_u2w_mode: %d.\n",
+          LOG(35, "u2w_put, html_head_flag 1: %d, http_head_u2w_mode: %d.\n",
               html_head_flag, http_head_u2w_mode);
           if( html_head_flag == 0 && !http_head_u2w_mode )
           { http_head_flag |= 3;                 /* ab hier keine HTTP-Header-Daten    */
@@ -455,10 +455,12 @@ int u2w_put(FILE *ptr)
             }
             else
               html_head_flag = 2;
+            if( flushmode == 1 )
+              send_chunk();
           }
 
           /*****************************************************************************/
-          /* ab hier Kommandos, die Ausgaben nach dem HTML-Header senden               */
+          /* ab hier Kommandos, die Ausgaben des HTML-Headers senden                   */
           /*****************************************************************************/
 
           if( tblid == T_U2W_PUT_HEADER )
@@ -472,7 +474,7 @@ int u2w_put(FILE *ptr)
           }
 
           /*****************************************************************************/
-          /* erst mal den HTML-Header senden                                           */
+          /* HTML-Header beenden und senden                                            */
           /*****************************************************************************/
 
           LOG(15, "u2w_put, Html-Header, html_head_flag: %d, parflag: %d.\n",
@@ -488,6 +490,8 @@ int u2w_put(FILE *ptr)
               parflag = 2;
             }
             html_head_flag = 2;
+            if( flushmode == 2 )
+              send_chunk();
           }
 
           /*****************************************************************************/
@@ -659,10 +663,10 @@ int u2w_put(FILE *ptr)
             }
 
             /***************************************************************************/
-            /* kein HTTP-Head Kommando, es kann der HTML-Header gesendet werden        */
+            /* kein HTTP-Head Kommando, es kann der HTML-Header begonnen werden        */
             /***************************************************************************/
 
-            LOG(35, "u2w_put, html_head_flag: %d, http_head_u2w_mode: %d.\n",
+            LOG(35, "u2w_put, html_head_flag 2: %d, http_head_u2w_mode: %d.\n",
                 html_head_flag, http_head_u2w_mode);
             if( html_head_flag == 0 && !http_head_u2w_mode )
             { http_head_flag |= 3;               /* ab hier keine HTTP-Header-Daten    */
@@ -676,10 +680,12 @@ int u2w_put(FILE *ptr)
               }
               else
                 html_head_flag = 2;
+              if( flushmode == 1 )
+                send_chunk();
             }
 
             /***************************************************************************/
-            /* ab hier Kommandos, die Ausgaben nach dem HTTP-Header senden             */
+            /* ab hier Kommandos, die Ausgaben des HTTP-Headers senden                 */
             /***************************************************************************/
 
             if( tblid == T_U2W_PUT_HEADER )
@@ -693,7 +699,7 @@ int u2w_put(FILE *ptr)
             }
 
             /***************************************************************************/
-            /* erst mal den HTML-Header senden                                         */
+            /* HTML-Header beenden und senden                                          */
             /***************************************************************************/
 
             LOG(15, "u2w_put, Html-Header, html_head_flag: %d, parflag: %d.\n",
@@ -709,6 +715,8 @@ int u2w_put(FILE *ptr)
                 parflag = 2;
               }
               html_head_flag = 2;
+              if( flushmode == 2 )
+                send_chunk();
             }
 
             /***************************************************************************/
@@ -808,6 +816,8 @@ int u2w_put(FILE *ptr)
 #endif
           if( u2w_send_http_header() )
             return true;
+          if( flushmode == 1 )
+            send_chunk();
 
           if( headflag )                                 /* Methode HEAD?              */
             return false;                                /* nur HTTP Header senden     */
@@ -838,6 +848,8 @@ int u2w_put(FILE *ptr)
             }
             html_head_flag = 2;
           }
+          if( flushmode == 2 )
+            send_chunk();
         }
 #endif
 

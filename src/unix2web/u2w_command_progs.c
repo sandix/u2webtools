@@ -1419,20 +1419,6 @@ short u2w_check_cred(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 
 
 /***************************************************************************************/
-/* short u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])          */
-/*              int pa: Anzahl Parameter in prg_pars                                   */
-/*              char prg_pars: übergebene Funktionsparameter                           */
-/*              return: true bei Fehler                                                */
-/*     u2w_flush chunk-Puffer an den Browser schicken                                  */
-/***************************************************************************************/
-short u2w_flush(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
-{
-  send_chunk();
-  return false;
-}
-
-
-/***************************************************************************************/
 /* short u2w_timeout(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])        */
 /*              int pa: Anzahl Parameter in prg_pars                                   */
 /*              char prg_pars: übergebene Funktionsparameter                           */

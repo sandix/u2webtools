@@ -139,7 +139,6 @@ command_prog_type command_progs[] =
   D50(LOGGING     , u2w_logging  , get_pars    , P1,  P1_9),
 #ifdef WEBSERVER
   D50(CHECK_CRED  , u2w_check_cred, get_pars   , P12, P12),
-  D50(FLUSH       , u2w_flush    , get_pars    , 0,    0),
   D50(TIMEOUT     , u2w_timeout  , get_pars    , P1,  P1),
   D50(CSS         , u2w_css      , get_pars    , P1, P12),
   D50(DELONEXIT   , u2w_delonexit, get_pars    , P1,  P1),
@@ -552,6 +551,7 @@ u2w_put_command_type u2w_put_commands[] =
 { { PRE_OFF       , do_pre_off       , PCU2WFLAG },
   /* PRE_OFF muss an erster Stelle stehen                         */
   { PRE_ON        , do_pre_on        , PCU2WFLAG },
+  { FLUSH         , do_flush         , PCU2WFLAG },
   { SHELLMENU     , do_shellmenu     , PCU2WFLAG },
   { SUBFILE       , do_subfile       , PCU2WFLAG },
   { EXITMENU      , do_exitmenu      , PCU2WFLAG },

@@ -22,6 +22,7 @@ int send_chunk(void)
 
   LOG(10, "send_chunk, http_head_flag: %d, chunk_header_flag: %d, http_v: %d\n",
       http_head_flag, chunk_header_flag, http_v);
+  LOG(35, "send_chunk, chunkpointer-chunkbuffer: %ld.\n", chunkpointer - chunkbuffer);
 
   if( chunkpointer > chunkbuffer )
   { if( http_head_flag < 4 )
@@ -60,6 +61,29 @@ int send_chunk(void)
     }
     chunkpointer = chunkbuffer;
   }
+  else if( http_head_flag < 4 )
+  { http_head_flag = 7;
+    if( http_v >= 2 )
+    { if( keepalive_flag )
+      { if( bsend("Connection: Keep-Alive" CRLF) )
+          return true;
+      }
+      else
+      { if( bsend("Connection: close" CRLF) )
+          return true;
+      }
+      if( bsend("Transfer-Encoding: chunked" CRLF CRLF) )
+        return true;
+      chunk_header_flag = true;
+    }
+    else if( http_v )
+    { if( bsend("Connection: close" CRLF CRLF) )
+        return true;
+      keepalive_flag = false;
+      chunk_header_flag = false;
+    }
+  }
+
   return false;
 }
 

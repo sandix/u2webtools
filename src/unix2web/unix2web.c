@@ -170,6 +170,9 @@ short verzeichnis_mode = VZ_NO_CHANGE;/* VZ_NO_CHANGE: root des Servers wechselt
                                      /* VZ_HOME: root des Servers ist HOME des users   */
                                      /* VZ_USER: root des Servers ist .../user         */
                                      /* VZ_PWD:  root ist .../<pfad_aus_.passwd>       */
+short flushmode = 0;                 /* 0: flush erst, wenn Puffer voll                */
+                                     /* 1: flush, direkt vor html-Header               */
+                                     /* 2: nach html-Header                            */
 char get_home[HOME_LENGTH];          /* Root des Servers für != PUT                    */
 char put_home[HOME_LENGTH];          /* Root des Servers für PUT                       */
 
@@ -365,7 +368,7 @@ void usage(char *prg, char *msg, char *msgpar)
 #endif
                                        " [-?]"
 #ifdef DEBUG
-                "\n                       [-A[t]] [-T] [-F dat.c] [-M]"
+                "\n                       [-A[t]] [-T] [-J dat.c] [-M]"
 #endif
           " path [par=value ...]\n", p);
 
@@ -434,7 +437,7 @@ fputs("\n -A       ", stdout);
           fputs(_("logging of all functions"), stdout);
 fputs("\n -At      ", stdout);
           fputs(_("logging of all functions with seconds"), stdout);
-fputs("\n -F dat.c ", stdout);
+fputs("\n -J dat.c ", stdout);
           fputs(_("logging of functions from sourcecode file dat.c"), stdout);
 fputs("\n -M       ", stdout);
           fputs(_("verbose logging"), stdout);
@@ -479,7 +482,7 @@ fputs("\n -R       ", stdout);
 #ifdef HAS_DAEMON
           "                 [-D] [-Dp path]\n"
 #endif
-          "                 [-E] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]\n"
+          "                 [-E] [-F|-Fh] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]\n"
 #ifdef WITH_MMAP
           "                 [-Q[cCqQsSrReEtUpPAf]]\n"
 #endif
@@ -649,6 +652,10 @@ fputs("\n -Dp path ", stdout);
 #endif
 fputs("\n -E       ", stdout);
           fputs(_("ignore empty pars on calling programs"), stdout);
+fputs("\n -F       ", stdout);
+          fputs(_("flush after html-header"), stdout);
+fputs("\n -Fh      ", stdout);
+          fputs(_("flush after http-header"), stdout);
 fputs("\n -G bcklg ", stdout);
           fputs(_("set backlog in listen to bcklg"), stdout);
 fputs("\n -H       ", stdout);
@@ -710,7 +717,7 @@ fputs("\n -?       ", stdout);
 #ifdef DEBUG
 fputs("\n -A       ", stdout);
           fputs(_("logging of all functions"), stdout);
-fputs("\n -F dat.c ", stdout);
+fputs("\n -J dat.c ", stdout);
           fputs(_("logging of functions from sourcecode file dat.c"), stdout);
 fputs("\n -M       ", stdout);
           fputs(_("verbose logging"), stdout);
@@ -1118,6 +1125,8 @@ int main(int argc, char **argv)
                            set_get_home = argv[options];
                          }
                          break;
+      case OPT_FLUSH_MODE: flushmode = argv[options][2] == OPT_FLUSH_MODE_HTTP ? 1 : 2;
+                         break;
 #ifdef WITH_HTTPS
       case OPT_SSL:      ssl_mode = ssl_mode | SSL_MODE_ON;
                          if( argv[options][2] == OPT_SSL_CERT_FILE )
@@ -1421,6 +1430,7 @@ int main(int argc, char **argv)
 #endif
 
   LOG(200, "main, vor gethostname\n");
+  LOG(100, "main, flushmode: %d.\n", flushmode);
 
   gethostname(hostname, MAXHOSTNAMELEN);         /* Servername, wenn kein Host:        */
   snprintf(myport, 6, "%d", port);

@@ -49,3 +49,7 @@ PRGCS = httpget.c \
 PRGHS = ${MAININCLUDE}
 
 include Makefile.all
+
+httpget: all
+
+copyhttget: copybin

@@ -88,7 +88,7 @@ while getopts An:v:V:sSu:g:rBDd? op; do
    u) FUSER=$OPTARG;;
    g) FGROUP=$OPTARG;;
    D) D=_dataport;;
-   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir>
+   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
   -A Appliance
   -B only binaries
   -D Dataport package
@@ -99,7 +99,10 @@ while getopts An:v:V:sSu:g:rBDd? op; do
   -S source and binary package
   -u set files to <user>
   -v set version to <version>
-  -V set special version to <sv>"
+  -V set special version to <sv>
+  <spec> Specfile
+  <outputdir> write package or binaries to <outputdir>
+  [<program>| build only binary <program> (sets -B)"
       exit 0;;
   esac
 done
@@ -115,9 +118,10 @@ fi
 SPECFILE="$1"
 SPECFILENAME=$(basename "$SPECFILE")
 OUTPUTDIR=$(readlink -f "$2")
+BUILDPROGRAM="$3"
 #
-if [[ $# -ne 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
-  echo "usage: `basename $0` [-C] [-d] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] <spec> <outputdir>"
+if [[ $# -lt 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
+  echo "usage: `basename $0` [-C] [-d] [-D] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] <spec> <outputdir> [<program>]"
   exit 1
 fi
 #
@@ -454,14 +458,16 @@ fi
 ###############################################################################
 # Only binaries
 ###############################################################################
-if [[ -n "$BINFILES" ]]; then
+if [[ -n "$BINFILES$BUILDPROGRAM" ]]; then
   if cd "$TMPDIR/$NAME/SRC"; then
     export OUTPUTDIR
     if [[ -n "$MAKEDEFINE" ]]; then
       eval export $MAKEDEFINE
     fi
     for i in *; do
-      (cd $i && PREFIX="$OUTPUTDIR" make && PREFIX="$OUTPUTDIR" make copybin)
+      if [[ -z "$BUILDPROGRAM" ]] || grep -q "BINFILE[ ?]*= *$BUILDPROGRAM[^a-zA-Z_-]" $i/Makefile; then 
+        (cd $i && PREFIX="$OUTPUTDIR" make $BUILDPROGRAM && PREFIX="$OUTPUTDIR" make copy${BUILDPROGRAM:-bin})
+      fi
     done
   else
     echo "Directory '$TMPDIR/$NAME' not found."

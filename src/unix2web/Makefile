@@ -38,3 +38,21 @@ clean:
 	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter clean
 	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter_mysql clean
 	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd clean
+
+unix2webd:
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd${MYSQL}
+
+u2w_interpreter:
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter${MYSQL}
+
+u2w_passwd:
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd
+
+copyunix2webd:
+	BINFILE=unix2webd${DEBUGEXT} make -f Makefile.unix2webd${MYSQL} copybin
+
+copyu2w_interpreter:
+	BINFILE=u2w_interpreter${DEBUGEXT} make -f Makefile.interpreter${MYSQL} copybin
+
+copyu2w_passwd:
+	BINFILE=u2w_passwd${DEBUGEXT} make -f Makefile.u2w_passwd copybin
