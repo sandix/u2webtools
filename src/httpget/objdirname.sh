@@ -18,7 +18,7 @@ if [[ `uname -s` = "SunOS" ]]
     shift
   done
 else  
-  if uname -o | grep -qi cygwin
+  if uname -s | grep -qi cygwin
    then
     echo "Cygwin"
     exit

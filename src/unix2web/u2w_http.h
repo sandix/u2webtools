@@ -62,6 +62,8 @@
 #define CONFLICT_TEXT _("Unable to write file. Probably file system fulll.")
 
 #define ERROR_HTTP_HEADER "HTTP/1.1 %s %s" CRLF "Server: unix2web %s" CRLF "Connection: %s" CRLF "Content-Length: %d" CRLF "%s" CRLF "%s"
+#define ERROR_HTTP_HEADER_NO_PRGVERS "HTTP/1.1 %s %s" CRLF "Connection: %s" CRLF "Content-Length: %d" CRLF "%s" CRLF "%s"
+
 
 #define OPTIONS_RETURN "HTTP/1.1 200 OK" CRLF "Date: %s" CRLF "Server: unix2web" CRLF "Connection: %s" CRLF "Content-Length: 0" CRLF "Allow: %sOPTIONS%s%s%s" CRLF CRLF
 

@@ -24,14 +24,14 @@ else
     exit
   fi
   #
-  LIBDIRS="$(./get_dirs.sh /etc/ld.so.conf)"
+  LIBDIRS="/usr/lib /usr/lib64 `./get_dirs.sh /etc/ld.so.conf`"
   if [[ -x /bin/rpm ]]
    then
     while [[ $# -gt 0 ]]
      do
       for L in ${1//,/ }
        do
-        rpm -qf $(find ${LIBDIRS:-/usr/lib /usr/lib64} -name "lib${L#-l}.so*" 2>/dev/null | sort | head -1) | sort | head -1
+        rpm -qf $(find $LIBDIRS -name "lib${L#-l}.so*" 2>/dev/null | sort | head -1) | sort | head -1
       done
       shift
     done
@@ -39,14 +39,14 @@ else
    then
     while [[ $# -gt 0 ]]
      do
-      dpkg -S $(find ${LIBDIRS:-/usr/lib /usr/lib64} -name "lib${1#-l}.so*" 2>/dev/null | sort | head -1) | head -1 | awk -F ':' '{print $1}'
+      dpkg -S $(find $LIBDIRS -name "lib${1#-l}.so*" 2>/dev/null | sort | head -1) | head -1 | awk -F ':' '{print $1}'
       shift
     done
   elif which pacman >/dev/null 2>&1
    then
     while [[ $# -gt 0 ]]
      do
-      pacman -Qo $(find ${LIBDIRS:-/usr/lib /usr/lib64} -name "lib${1#-l}.so*" 2>/dev/null | sort | head -1) | head -1 | sed 's/.*is owned by //;s/ /-/g'
+      pacman -Qo $(find $LIBDIRS -name "lib${1#-l}.so*" 2>/dev/null | sort | head -1) | head -1 | sed 's/.*is owned by //;s/ /-/g'
       shift
     done
   fi

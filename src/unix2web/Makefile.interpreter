@@ -1,7 +1,9 @@
 ###############################################
 # LINUX Interpreter
 
-BINFILE ?= u2w_interpreter${DEBUGEXT}
+BINFILE ?= u2w_interpreter
+
+BINFILE := ${BINFILE}${DEBUGEXT}
 
 MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -DINTERPRETER
 

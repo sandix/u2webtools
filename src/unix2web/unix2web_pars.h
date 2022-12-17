@@ -34,6 +34,8 @@
 #define OPT_KEEPALIVE           'k'  /* -k Keepalive erlaubt                           */
 #define OPT_NORMLOG             'l'  /* Logging einschalten                            */
 #define OPT_LOGCONNECTION        'c' /* -lc connections loggen                         */
+#define OPT_LOGCONNECTIONLONG    'C' /* -lC <path> connections loggen                  */
+#define OPT_LOGCONNECTIONFORMAT  'F' /* -lF 'formatstring' für -lC                     */
 #define OPT_LOGCMDERRORS         'e' /* -le Fehler bei #...# und `...` ins Logfile     */
 #define OPT_NOCMDERRORS          'E' /* -lE Fehler bei #...# und `...` nicht ausgeben  */
 #define OPT_LOGLEVEL             'l' /* -ll <level> Loglevel ändern                    */
@@ -105,7 +107,7 @@
                                      /*   def ist MAX_POST_CONTENT_SIZE 204800         */
 #define OPT_LOGALL              'A'  /****** Nur im DEBUG-Mode   ***********************/
 #define OPT_LOGALL_TIME          't' /****** Nur DEBUG: -At mit Sekunden               */
-#define OPT_NO_BROWSERVARS      'B'  /* -B Browser/CMD-Vars können nur mit %bpar/%cpar */
+#define OPT_NO_BROWSERVARS      'B'  /* -B Browser/CMD-Vars können nur mit %bpar       */
                                      /*    gelesen werden.                             */
 #define OPT_CHARSET             'C'  /* -C <u2w-charset> Characterset setzen           */
 #define OPT_DAEMON              'D'  /* als Daemon starten                             */
@@ -116,6 +118,7 @@
                                      /* -F flush nach Beginn html-Header               */
 #define OPT_BACKLOG             'G'  /* Num Backlog in listen                          */
 #define OPT_HEADER              'H'  /* keinen HTTP-Header senden                      */
+#define OPT_HEADER_PRGVERS       'p' /* Programm und Version nicht im Header senden    */
 #define OPT_TEXTDOMAIN          'I'  /* -I <domain>, Internationalisierung: Textdomain */
 #define OPT_TEXTDOMAINDIR        'p' /* -Ip <pfad>, std: /usr/share/locale             */
 #define OPT_LOGFILE             'J'  /****** Nur im DEBUG-Mode   ***********************/

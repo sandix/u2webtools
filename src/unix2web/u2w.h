@@ -189,12 +189,16 @@ int snprintf(char *, size_t, char *, ...);
 #define LOGCONNECTION      2
 #define LOGCMDERRORS       4
 #define LOGNOCMDERRORS     8
+#define LOGCONNECTIONLONG 16
 #ifdef DEBUG
-#define LONGLOG          0x10
+#define LONGLOG         0x100
 #define LOGSENDDATA   0x40000
 #define LOGREADDATA   0x80000
 #define LOGALLTIME   0x100000
 #endif
+
+#define NO_HEADER_PRGVERS   1
+#define NO_HEADER          15
 
 
 /***************************************************************************************/

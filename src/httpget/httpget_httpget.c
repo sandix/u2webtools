@@ -274,9 +274,9 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
   }
 
 #ifdef WITH_IPV6
+  hoststr = h;
   if( strchr(h, '.') )                            /* IP-V 4?                           */
-  { hoststr = h;
-    if( (p = strchr(h, ':')) )
+  { if( (p = strchr(h, ':')) )
     { *p = '\0';
       portstr = p+1;
     }
@@ -307,12 +307,11 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
       }
     }
     else if( (p = strchr(h, ':')) )
-    { hoststr = h;
-      *p++ = '\0';
+    { *p++ = '\0';
       portstr = p;
     }
     else
-    { hoststr = h;
+    {
 #ifdef WITH_HTTPS
       if( opt_ssl_mode )
         portstr = PORTHTTPS_S;
@@ -489,10 +488,10 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
             *r = '\0';
           if( *q == '*' )
           { q++;
-            r = hoststr + strlen(hoststr) - strlen(q);
+            r = h + strlen(h) - strlen(q);
           }
           else
-            r = hoststr;
+            r = h;
           if( strcasecmp(r, q) )
             return ERROR_SSL_VERIFY;
         }

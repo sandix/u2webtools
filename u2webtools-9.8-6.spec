@@ -204,6 +204,13 @@ else
 fi
 
 %changelog
+* Sat Dec 17 2022 sandix@universal-logging-system.org
+  Neu: -Hp  Programmname und Version nicht im HTTP-Header senden
+* Tue Dec  6 2022 sandix@universal-logging-system.org
+  Neu: -lC <path>  Connectionlog in <path> schreiben
+       -lF <format>  Format für das Connectionlog
+* Sun Oct  9 2022 sandix@universal-logging-system.org
+- unix2webd: new switch -F / -Fh - send chunk after html / http Header
 * Tue Oct  4 2022 sandix@universal-logging-system.org
 - u2w_calc: calculation uses short-circuit evaluation for 0 *, true ||, false && and <exp> ? <exp> : <exp>
 * Mon Sep 26 2022 sandix@universal-logging-system.org

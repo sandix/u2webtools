@@ -59,11 +59,13 @@ int send_http_header(char *ct, char *ts, int expires_flag, unsigned LONGWERT cl,
   extern char *versionstring;
   int i;
 
-  LOG(20, "send_http_header, cl: " ULONGFORMAT ", header_flag: %d, http_v: %d.\n",
-      cl, header_flag, http_v);
+  LOG(20, "send_http_header, cl: " ULONGFORMAT ", no_header_flag: %d, http_v: %d.\n",
+      cl, no_header_flag, http_v);
 
-  if( !header_flag || !http_v )
+  if( no_header_flag == NO_HEADER || !http_v )
+  { http_head_flag = 7;
     return false;
+  }
 
   if( httpnum || httpdesc )
     dosendf("HTTP/1.1 %d %s" CRLF, httpnum > 0 ? httpnum : 200,
@@ -75,8 +77,14 @@ int send_http_header(char *ct, char *ts, int expires_flag, unsigned LONGWERT cl,
   strcpyn(tss, ts, 128);
   time(&tt);
 
-  if( dosendf("Date: %s" CRLF "Server: unix2web/%s" CRLF, httptime(gmtime(&tt)), versionstring) )
-    return true;
+  if( no_header_flag & NO_HEADER_PRGVERS )
+  { if( dosendf("Date: %s" CRLF, httptime(gmtime(&tt))) )
+      return true;
+  }
+  else
+  { if( dosendf("Date: %s" CRLF "Server: unix2web/%s" CRLF, httptime(gmtime(&tt)), versionstring) )
+      return true;
+  }
 
   if( expires_flag )
     if( dosendf("Expires: %s" CRLF, httptime(gmtime(&tt))) )

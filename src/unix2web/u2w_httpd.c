@@ -55,6 +55,9 @@ int do_httpd(void)
     return 1;
   }
 
+  if( logflag & LOGCONNECTIONLONG )
+    connectionlogging(clientip);
+
   if( !keepalive_found && !digestnum && keepalive_flag )
     keepalive_flag = 0;
   LOG(21, "do_httpd, keepalive_flag: %d, keepalive_found: %d.\n",

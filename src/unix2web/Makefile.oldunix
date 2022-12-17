@@ -1,7 +1,9 @@
 ###############################################
 # LINUX
 
-BINFILE ?= unix2webd${DEBUGEXT}
+BINFILE ?= unix2webd
+
+BINFILE := ${BINFILE}${DEBUGEXT}
 
 MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -DOLDUNIX
 

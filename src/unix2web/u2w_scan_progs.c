@@ -564,6 +564,7 @@ short do_clientip(int pa, char **out, long n,
 }
 
 
+#ifdef WITH_IPV6
 /***************************************************************************************/
 /* short do_clientip6(int pa, char **out, long n,                                      */
 /*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
@@ -581,6 +582,7 @@ short do_clientip6(int pa, char **out, long n,
 #endif
   return false;
 }
+#endif
 
 
 /***************************************************************************************/
@@ -613,7 +615,9 @@ short do_var_ok(int pa, char **out, long n,
 /***************************************************************************************/
 short do_thisfile(int pa, char **out, long n,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
-{ strqcpyn_z(out, clientgetfile, n, qf_strings[quote]);
+{ LOG(60, "do_thisfile, clientgetfile: %s\n", clientgetfile ? clientgetfile : "");
+  if( clientgetfile && *clientgetfile )
+    strqcpyn_z(out, clientgetfile, n, qf_strings[quote]);
   return false;
 }
 

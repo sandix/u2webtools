@@ -45,9 +45,6 @@ void init_global_vars(void)
   akt_tablecols = 0;                 /* aktuelle Spalten einer Tabelle                 */
   newlineflag = true;                /* Formularfelder stehen auf neuen Zeilen         */
 
-
-  header_flag = true;                /* true, HTTP-Header wird gesendet                */
-
   menu = NOMENU;                     /* Position auf Menueseite                        */
 
   skip_empty_flag = skip_empty_flag_def;
@@ -98,13 +95,18 @@ void sig_handler(int signum)
     term_flag += 2;
   else if( signum == SIGHUP )
     read_inifile();
-#ifdef CYGWIN
   else if( signum == SIGTERM )
-  { if( servicestopjob )
+  {
+#ifdef CYGWIN
+    if( servicestopjob )
       system(servicestopjob);
     exit(0);
-  }
+#else
+    if( pidfile && *pidfile )
+      unlink(pidfile);
+    exit(0);
 #endif
+  }
   else if( signum == SIGUSR1 )
   {
 #ifdef WITH_MMAP
@@ -473,18 +475,6 @@ void unix2web(int port, int backlog)
       exit(1);
     }
 
-#ifdef HAS_DAEMON
-    if( pidfile && *pidfile )
-    { if( NULL == (ptr_pidfile = fopen(pidfile, "w")) )
-      { logging(_("Error on opening Pidfile %s.\n"), pidfile);
-        exit(2);
-      }
-      fprintf(ptr_pidfile, "%d\n", getpid());
-      fclose(ptr_pidfile);
-    }
-
-#endif
-
 #ifdef WITH_MMAP
     parentpid = getpid();
 #endif
@@ -494,19 +484,19 @@ void unix2web(int port, int backlog)
     signal(SIGQUIT, sig_handler);
     signal(SIGUSR1, sig_handler);
     signal(SIGUSR2, sig_handler);
-#ifdef CYGWIN
     signal(SIGTERM, sig_handler);
-#endif
 
 #ifndef CYGWIN
     if( set_user_mode == STARTSETUSER && defuser )
     { struct passwd *pass;
 
       if( (pass = getpwnam(defuser)) != NULL )
-      { if( pidfile && *pidfile )
-          chown(pidfile, pass->pw_uid, pass->pw_gid);
-        if( logpath[0] )
+      { if( logpath[0] )
           chown(logpath, pass->pw_uid, pass->pw_gid);
+#ifdef WEBSERVER
+        if( longlogpath[0] )
+          chown(longlogpath, pass->pw_uid, pass->pw_gid);
+#endif
         if( change_user(pass, true) )          /* User auf defuser wechseln            */
         { logging(_("Error on change user to %s.\n"), defuser);
           exit(3);
@@ -516,6 +506,17 @@ void unix2web(int port, int backlog)
       { logging(_("Error on change user to %s.\n"), defuser);
         exit(3);
       }
+    }
+#endif
+
+#ifdef HAS_DAEMON
+    if( pidfile && *pidfile )
+    { if( NULL == (ptr_pidfile = fopen(pidfile, "w")) )
+      { logging(_("Error on opening Pidfile %s.\n"), pidfile);
+        exit(2);
+      }
+      fprintf(ptr_pidfile, "%d\n", getpid());
+      fclose(ptr_pidfile);
     }
 #endif
 

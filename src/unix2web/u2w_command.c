@@ -279,7 +279,9 @@ scan_prog_type scan_progs[] =
   D40(PRINTUSER     , do_printuser       , 0,    0),
   D40(PRINTPWD      , do_printpwd        , 0,    0),
   D40(CLIENTIP      , do_clientip        , 0,    0),
+#ifdef WITH_IPV6
   D40(CLIENTIP6     , do_clientip6       , 0,    0),
+#endif
   D40(VAR_OK        , do_var_ok          , 0,    0),
   D40(THISFILE      , do_thisfile        , 0,    0),
   D40(MYHOST        , do_myhost          , 0,    0),
@@ -551,7 +553,9 @@ u2w_put_command_type u2w_put_commands[] =
 { { PRE_OFF       , do_pre_off       , PCU2WFLAG },
   /* PRE_OFF muss an erster Stelle stehen                         */
   { PRE_ON        , do_pre_on        , PCU2WFLAG },
+#ifdef WEBSERVER
   { FLUSH         , do_flush         , PCU2WFLAG },
+#endif
   { SHELLMENU     , do_shellmenu     , PCU2WFLAG },
   { SUBFILE       , do_subfile       , PCU2WFLAG },
   { EXITMENU      , do_exitmenu      , PCU2WFLAG },

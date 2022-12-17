@@ -434,7 +434,7 @@ if [[ -s $FILESLIST ]]; then
   done >$FILESLIST.a
 fi
 if [[ -d $BD/$NAME/SRC ]]; then
-  awk -v FUSER=${FUSER:--} -v FGROUP=${FGROUP:--} -F '[ \t]*:?[= ][ \t]*' '$NF > 1 && $1 ~ "^[ \t]*BINFILE[0-9]?$" {print "%attr(755,"FUSER","FGROUP") /usr/bin/" $2}' $BD/$NAME/SRC/*/Makefile | sort -u >>$FILESLIST.a
+  awk -v FUSER=${FUSER:--} -v FGROUP=${FGROUP:--} -F '[ \t]*[:?]?[= ][ \t]*' '$NF > 1 && $1 ~ "^[ \t]*BINFILE[0-9]?$" {print "%attr(755,"FUSER","FGROUP") /usr/bin/" $2}' $BD/$NAME/SRC/*/Makefile | sort -u >>$FILESLIST.a
 fi
 if [[ -d $BD/$NAME/MAN ]]; then
   find $BD/$NAME/MAN -type f | while read i; do

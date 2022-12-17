@@ -37,10 +37,16 @@ int send_error_page(char *num, char *desc, char *http, char *text)
     status_counter->errors++;
 #endif
 
-  if( http_v )
-    return dosendf(ERROR_HTTP_HEADER, num, desc, versionstring,
-                   keepalive_flag ? "Keep-Alive" : "close",
-                   strlen(zeile), http, zeile);
+  if( http_v && no_header_flag != NO_HEADER )
+  { if( no_header_flag & NO_HEADER_PRGVERS )
+      return dosendf(ERROR_HTTP_HEADER_NO_PRGVERS, num, desc,
+                     keepalive_flag ? "Keep-Alive" : "close",
+                     strlen(zeile), http, zeile);
+    else
+      return dosendf(ERROR_HTTP_HEADER, num, desc, versionstring,
+                     keepalive_flag ? "Keep-Alive" : "close",
+                     strlen(zeile), http, zeile);
+  }
   else
     return dosend(zeile);
 }

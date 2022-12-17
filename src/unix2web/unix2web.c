@@ -156,7 +156,7 @@ set_group_type set_user_group_flag = USERORIGGROUP;  /* USERORIGGROUP: eigene Gr
                                                      /* USERALLGROUPS: alle Gruppen    */
 gid_t set_user_group;                /* groupid bei set_user_group_flag == USERGROUPSET*/
 
-short header_flag = true;            /* true, HTTP-Header wird gesendet                */
+short no_header_flag = 0;            /* Elemente des Headers nicht ausgeben            */
 short keepalive_flag = false;        /* true, Keep-Alive vom Browser gewünscht/erlaubt */
 short upload_flag = false;           /* true, es werden Uploads mit PUT erlaubt        */
 short upload_x2w_flag = false;       /* true, Uploads mit PUT von .?2w Dateien erlaubt */
@@ -197,6 +197,9 @@ int fcntlmode;
 #endif
 
 int sh;                              /* Sockethandle auf Datenstrom vom Browser        */
+
+char longlogpath[MAX_PATH_LEN] ={'\0'};  /* Dateiname für logging, "" -> stderr        */
+char *longlogformat = NULL;          /* Format der Log-Zeilen bei -lC                  */
 
 #endif  /* #ifdef WEBSERVER */
 
@@ -458,7 +461,7 @@ fputs("\n -R       ", stdout);
     printf(msg, msgpar);
   printf("usage: %9s [-a] [-b path] [-bb] [-d] [-e path|-er path]\n", p);
   fputs(    "                 [-f] [-fc] [-fD] [-fp path] [-fP] [-fS size] [-g|-gg [-gf path]] [-gn]\n"
-            "                 [-h home] [-hH] [-hU name] [-i path] [j] [-k] [-l|-lp path] [-lc] [-lE]\n"
+            "                 [-h home] [-hH] [-hU name] [-i path] [j] [-k] [-l|-lp path] [-lc] [-lC path] [-lF form] [-lE]\n"
             "                 "
 #ifdef MAYDBCLIENT
                               "[-me] [-mp port] "
@@ -539,6 +542,10 @@ fputs("\n -l       ", stdout);
           fputs(_("switch logging on"), stdout);
 fputs("\n -lc      ", stdout);
           fputs(_("log connections"), stdout);
+fputs("\n -lC path ", stdout);
+          fputs(_("log detailed connectioninfos to file path"), stdout);
+fputs("\n -lF form ", stdout);
+          fputs(_("format for detailed connectioninfos"), stdout);
 /*************************** noch nicht implementiert
 fputs("\n -le      ", stdout);
           fputs(_("write cmd errors into logfile"), stdout);
@@ -660,6 +667,8 @@ fputs("\n -G bcklg ", stdout);
           fputs(_("set backlog in listen to bcklg"), stdout);
 fputs("\n -H       ", stdout);
           fputs(_("send no HTTP-header"), stdout);
+fputs("\n -Hp      ", stdout);
+          fputs(_("do'nt send program and version in HTTP-header"), stdout);
 #ifdef WITH_GETTEXT
 fputs("\n -I td    ", stdout);
           fputs(_("set textdomain to td"), stdout);
@@ -1026,7 +1035,10 @@ int main(int argc, char **argv)
                          break;
       case OPT_SEC:      sec_flag = true;      /* -P, bei jeder Seite PWD und PASS     */
 		         break;
-      case OPT_HEADER:   header_flag = false;  /* keinen HTTP-Header senden            */
+      case OPT_HEADER:   if( argv[options][2] == OPT_HEADER_PRGVERS )
+                           no_header_flag |= NO_HEADER_PRGVERS;
+                         else
+                           no_header_flag = NO_HEADER;  /* keinen HTTP-Header senden     */
                          break;
       case OPT_BINPATH:  if( argv[options][2] == OPT_BIN_NOFLUSH )
                            buffer_programdata = true;
@@ -1260,6 +1272,32 @@ int main(int argc, char **argv)
                            strcpyn(logpath, argv[options], MAX_PATH_LEN);
 #endif
                          }
+#ifdef WEBSERVER
+                         else if( argv[options][2] == OPT_LOGCONNECTIONFORMAT )
+                         { if( argc < ++options+1 || !*argv[options] )
+                           { usage(argv[0], _("Error: option %s, missing value.\n"), argv[options-1]);
+                             return 3;
+                           }
+                           logflag |= LOGCONNECTIONLONG;
+                           longlogformat = argv[options];
+                           break;
+                         }
+                         else if( argv[options][2] == OPT_LOGCONNECTIONLONG )
+                         { if( argc < ++options+1 )
+                           { usage(argv[0], _("Error: option %s, missing value.\n"), argv[options-1]);
+                             return 3;
+                           }
+                           logflag |= LOGCONNECTIONLONG;
+                           if( argv[options][0] == '/' )
+                             strcpyn(longlogpath, argv[options], MAX_PATH_LEN);
+                           else
+                           { strcpyn(longlogpath, get_home, MAX_PATH_LEN);
+                             strcatn(longlogpath, "/", MAX_PATH_LEN);
+                             strcatn(longlogpath, argv[options], MAX_PATH_LEN);
+                           }
+                           break;
+                         }
+#endif
                          else if( argv[options][2] == OPT_LOGCONNECTION )
                            logflag |= LOGCONNECTION;
                          else if( argv[options][2] == OPT_LOGCMDERRORS )
@@ -1389,7 +1427,7 @@ int main(int argc, char **argv)
 
   time(&starttime);
 
-  LOG(200, "main, nach getopts, logflag: %ld\n", logflag);
+  LOG(90, "main, nach getopts, logflag: %lx\n", logflag);
 
 
 #ifdef WITH_GETTEXT

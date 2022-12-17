@@ -19,7 +19,9 @@
 #
 PRG = httpget
 
-BINFILE ?= httpget${DEBUGEXT}
+BINFILE ?= httpget
+
+BINFILE := ${BINFILE}${DEBUGEXT}
 
 CC ?= gcc
 

@@ -11,6 +11,7 @@
 /* Anfang globale Variablen */
 #ifdef WEBSERVER
 char httpheader[MAX_HTTPHEADER_SIZE];        /* Platz fuer HTTP-Header                 */
+unsigned LONGWERT content_length;            /* Content-length                         */
 #endif
 /* Ende globale Variablen */
 
@@ -21,7 +22,6 @@ char *content_buffer;
 char *content_malloc_buffer = NULL;
 unsigned long content_buffer_size;
 char *read_header_pos;                       /* aktuelle Leseposition                  */
-unsigned LONGWERT content_length;            /* Content-length                         */
 static unsigned LONGWERT content_received;   /* Content received (pro Chunk)           */
 long bytes_in_content_buffer;                /* Anzahl Zeichen im buffer               */
 int read_chunk_flag;                         /* true, Chunks lesen                     */
