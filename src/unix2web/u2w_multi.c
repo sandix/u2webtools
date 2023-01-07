@@ -29,6 +29,9 @@ char *datname(char *path)
 }
 
 
+char *read_multip_p;                              /* Pointer auf gelesene Zeichen      */
+char *read_multip_b;                              /* Inputpuffer von read_http gesetzt */
+long read_multip_nb;                              /* Anzahl Zeichen im Inputpuffer     */
 /***************************************************************************************/
 /* int read_multipart(char *puffer, long n, long *nb, char *term)                      */
 /*                    char *puffer: Platz für die gelesene Zeile                       */
@@ -45,9 +48,6 @@ char *datname(char *path)
 /***************************************************************************************/
 int read_multipart(char *puffer, long n, long *gb, char *term)
 { char *pp;                                       /* Pointer auf puffer                */
-  static char *p = NULL;                          /* Pointer auf gelesene Zeichen      */
-  static char *b = NULL;                          /* Inputpuffer von read_http gesetzt */
-  static long nb = 0;                             /* Anzahl Zeichen im Inputpuffer     */
   char multipart_term_start[MAX_BOUNDARY_LEN];
   char *pm, *m;
 
@@ -55,26 +55,29 @@ int read_multipart(char *puffer, long n, long *gb, char *term)
   *gb = 0;
 
   LOG(1, "read_multipart, term: %s.\n", term);
-  LOG(21, "read_multipart, p-b: %ld, nb: %ld.\n", (long)(p-b), nb);
+  LOG(21, "read_multipart, p-b: %ld, nb: %ld.\n", (long)(read_multip_p-read_multip_b),
+      read_multip_nb);
   if( *term )                                     /* Multipart term angegeben?         */
   { int termlen;
 
     LOG(3, "read_multipart, then fall.\n");       /* Boundary-Inhalt lesen             */
     termlen = strlen(term);
     for(;;)
-    { LOG(20, "read_multipart - for, p-b: %ld, nb: %ld, n: %ld.\n", p-b, nb, n);
-      while( p - b < nb )                         /* noch Zeichen im Puffer?           */
-      { if( *p != *term )                         /* nicht 1. Z. der Endemarke         */
-        { *pp++ = *p++;                           /* Zeichen übertragen                */
+    { LOG(20, "read_multipart - for, p-b: %ld, nb: %ld, n: %ld.\n",
+          read_multip_p-read_multip_b, read_multip_nb, n);
+      while( read_multip_p - read_multip_b < read_multip_nb )/* noch Zeichen im Puffer?*/
+      { if( *read_multip_p != *term )             /* nicht 1. Z. der Endemarke         */
+        { *pp++ = *read_multip_p++;               /* Zeichen übertragen                */
           if( ++(*gb) >= n )                      /* zählen und Ausgabepuffer voll?    */
             return 1;                             /* ja, zurück                        */
         }
-        else if( p - b < nb - 1 && *(p+1) != *(term+1) )
-        { *pp++ = *p++;                           /* Zeichen übertragen                */
+        else if( read_multip_p - read_multip_b < read_multip_nb - 1
+                 && *(read_multip_p+1) != *(term+1) )
+        { *pp++ = *read_multip_p++;               /* Zeichen übertragen                */
           if( ++(*gb) >= n )                      /* zählen und Ausgabepuffer voll?    */
             return 1;                             /* ja, zurück                        */
-          if( *p != *term )
-          { *pp++ = *p++;                         /* Zeichen übertragen                */
+          if( *read_multip_p != *term )
+          { *pp++ = *read_multip_p++;             /* Zeichen übertragen                */
             if( ++(*gb) >= n )                    /* zählen und Ausgabepuffer voll?    */
               return 1;                           /* ja, zurück                        */
           }
@@ -82,30 +85,33 @@ int read_multipart(char *puffer, long n, long *gb, char *term)
         else
         {                                         /* nein, 1. Zeichen Endemarke        */
           LOG(100, "read_multipart, len(p): %d, len(term): %d, nb-(p-b): %d.\n",
-              strlen(p), strlen(term), nb-(p-b));
-          if( nb - (p-b) < termlen )              /* ggf. Anfang von term im Pufer     */
+              strlen(read_multip_p), strlen(term),
+              read_multip_nb-(read_multip_p-read_multip_b));
+                                                  /* ggf. Anfang von term im Pufer     */
+          if( read_multip_nb - (read_multip_p-read_multip_b) < termlen )
           { LOG(100, "read_multipart, if %d >= %d.\n",
                 *gb + termlen, n);
             if( *gb + termlen >= n )              /* wenn Term-Puffer nicht passt      */
               return 1;                           /* erst mal zurück                   */
             pm = m = multipart_term_start;        /* Termtest start merken             */
-            while( (nb - (p-b)) + (m - pm) < termlen )
-            { while( p - b < nb )
-                *m++ = *p++;
+            while( (read_multip_nb - (read_multip_p-read_multip_b)) + (m-pm) < termlen )
+            { while( read_multip_p - read_multip_b < read_multip_nb )
+                *m++ = *read_multip_p++;
               LOG(50, "read_multipart - neue Daten lesen, m-pm: %ld, termb:\n%.20s.\n",
        	          m - pm, multipart_term_start);
               LOG(50, "read_multipart - neue Daten lesen, m-pm: %ld, termb: %s.\n",
        	          m - pm, hexstring(multipart_term_start, m-multipart_term_start));
-              if( 0 >= (nb = read_http(&b, 1)) )  /* Puffer neu füllen                 */
+                                                  /* Puffer neu füllen                 */
+              if( 0 >= (read_multip_nb = read_http(&read_multip_b, 1)) )
               { while( pm < m )                   /* nichts gelesen, dann term_start   */
                 { *pp++ = *pm++;                  /* auch zurück                       */
                   if( ++(*gb) >= n )              /* zählen und Ausgabepuffer voll?    */
                     return 1;
                 }
                 *pp = '\0';
-                return nb;                        /* es wurde nichts gelesen           */
+                return read_multip_nb;            /* es wurde nichts gelesen           */
               }
-              p = b;
+              read_multip_p = read_multip_b;
             }
             while( pm < m )                       /* Zwischenpuffer ausgeben           */
             { if( *pm != *term )
@@ -113,7 +119,8 @@ int read_multipart(char *puffer, long n, long *gb, char *term)
                 if( ++(*gb) >= n )                /* zählen und Ausgabepuffer voll?    */
                   return 1;                       /* ja, zurück                        */
               }
-              else if( str_starts_conc(pm, m, p, term) )  /* Endemarke gefunden?       */
+                                                  /* Endemarke gefunden?               */
+              else if( str_starts_conc(pm, m, read_multip_p, term) )
               { *pp = '\0';                       /* ja                                */
                 return 0;
               }
@@ -125,56 +132,49 @@ int read_multipart(char *puffer, long n, long *gb, char *term)
             }
           }
           else
-          { if( str_starts(p, term) )             /* Endemarkierung gefunden?          */
+          { if( str_starts(read_multip_p, term) ) /* Endemarkierung gefunden?          */
             { *pp = '\0';
               return 0;                           /* ja                                */
             }
-            *pp++ = *p++;                         /* 1. Z. der Endem. überlesen        */
+            *pp++ = *read_multip_p++;             /* 1. Z. der Endem. überlesen        */
             if( ++(*gb) >= n )                    /* zählen und Ausgabepuffer voll?    */
               return 1;                           /* ja, zurück                        */
           }
         }
       }                                           /* ende while - Puffer leer          */
-      if( 0 >= (nb = read_http(&b, 1)) )          /* Puffer neu füllen                 */
+      if( 0 >= (read_multip_nb = read_http(&read_multip_b, 1)) ) /* Puffer neu füllen  */
       { *pp = '\0';
-        return nb;                                /* es wurde nichts gelesen           */
+        return read_multip_nb;                    /* es wurde nichts gelesen           */
       }
-      p = b;
-      LOG(10, "read_multipart - read_http 1, b: %ld, nb: %ld.\n", b, nb);
+      read_multip_p = read_multip_b;
+      LOG(10, "read_multipart - read_http 1, b: %ld, nb: %ld.\n",
+          read_multip_b, read_multip_nb);
     }  /* for(;;) */
   }
   else                                            /* Term nicht angegeben, dann        */
   {                                               /* Boundary-Header lesen             */
-    LOG(3, "read_multipart, else fall, nb: %ld.\n", nb);
+    LOG(3, "read_multipart, else fall, nb: %ld.\n", read_multip_nb);
     for(;;)
-    { while( p - b < nb && *gb < 4 && *gb < n )   /* 4 Zeichen lesen                   */
-      { *pp++ = *p++;                             /* Zeichen übernehmen                */
-        (*gb)++;                                  /* Zeichen zählen                    */
-      }
-      while( p - b < nb )                         
+    { while( read_multip_p - read_multip_b < read_multip_nb )                         
       { if( *gb >= n )                            /* kein Platz im Ausgabepuffer?      */
           return 1;                               /* ja, zurück                        */
-        *pp++ = *p++;                             /* Zeichen übernehmen                */
+        *pp++ = *read_multip_p++;                 /* Zeichen übernehmen                */
         (*gb)++;                                  /* Zeichen zählen                    */
-        LOG(100, "read_multipart, letzte 4 Z.: %x.%x.%x.%x\n",
-            *(pp-4), *(pp-3), *(pp-2), *(pp-1));
-        LOG(100, "read_multipart, letzte 4 Z.: %c.%c.%c.%c\n",
-            *(pp-4) > ' ' ? *(pp-4) : ' ', *(pp-3) > ' ' ? *(pp-3) : ' ',
-            *(pp-2) > ' ' ? *(pp-2) : ' ', *(pp-1) > ' ' ? *(pp-1) : ' ');
-        if( *(pp-4) == '\xd' &&  *(pp-3) == '\xa' /* CRLFCRLF gefunden?                */
+        if( *gb >= 4
+            && *(pp-4) == '\xd' &&  *(pp-3) == '\xa' /* CRLFCRLF gefunden?             */
             &&  *(pp-2) == '\xd' &&  *(pp-1) == '\xa' )
         { *pp = '\0';
           return 0;                               /* ja, dann zurück                   */
         }
       }
-      LOG(3, "read_multipart, lesen weiterer Daten.\n");
-      if( 0 >= (nb = read_http(&b, 2)) )
+      LOG(5, "read_multipart, lesen weiterer Daten.\n");
+      if( 0 >= (read_multip_nb = read_http(&read_multip_b, 2)) )
       { *pp = '\0';
-        return nb;
+        return read_multip_nb;
       }
       LOG(10, "read_multipart - read_http 2, b: %ld, nb: %ld, gb: %ld, n: %ld.\n",
-          b, nb, *gb, n);
-      p = b;
+          read_multip_b, read_multip_nb, *gb, n);
+      read_multip_p = read_multip_b;
     }
   }
 }
@@ -234,6 +234,10 @@ int get_multiparts(char *boundary)
   { LOG(1, "get_multiparts, KEIN boundary.\n");
     return false;
   }
+
+  read_multip_p = NULL;                           /* Pointer auf gelesene Zeichen      */
+  read_multip_b = NULL;                           /* Inputpuffer von read_http gesetzt */
+  read_multip_nb = 0;                             /* Anzahl Zeichen im Inputpuffer     */
 
   LOG(1, "get_multiparts, boundary: %s.\n", boundary);
 

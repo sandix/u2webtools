@@ -8,6 +8,9 @@
 
 #include "u2w.h"
 
+#ifdef WITH_REGEX
+#include <regex.h>
+#endif
 
 /***************************************************************************************/
 /* short u2w_list(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_LEN],  */
@@ -660,6 +663,29 @@ short u2w_isset(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
   }
   return true;
 }
+
+
+#ifdef WITH_REGEX
+/***************************************************************************************/
+/* short u2w_isregexp(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])       */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*              return: true bei Fehler                                                */
+/*     u2w_isregexp prüft, ob die Variable eine gültige regular Expression ist         */
+/***************************************************************************************/
+short u2w_isregexp(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
+{
+  if( prg_pars[0][0] )
+  { regex_t re;
+    LOG(10, "u2w_isregexp, p: %s.\n", prg_pars[0]);
+    if( 0 != regcomp(&re, prg_pars[0], REG_EXTENDED|REG_NOSUB) )
+      return true;
+    regfree(&re);
+  }
+  LOG(20, "/u2w_isregexp, return true");
+  return false;
+}
+#endif
 
 
 /***************************************************************************************/

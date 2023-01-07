@@ -68,12 +68,12 @@ DEBIANBASE=/dev/shm/$(id -un)-deb
 #
 TAREXCLUDE='--exclude=.*.swp'
 #
-unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES
+unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES DONTRM
 FUSER="root"
 FGROUP="root"
 SOURCEFLAG=0
 #
-while getopts An:v:V:sSu:g:rBDd? op; do
+while getopts An:v:V:sSu:g:RBDd? op; do
   case "$op" in
    A) APPLIANCE="-appliance";;
    B) BINFILES=1;;
@@ -88,13 +88,15 @@ while getopts An:v:V:sSu:g:rBDd? op; do
    u) FUSER=$OPTARG;;
    g) FGROUP=$OPTARG;;
    D) D=_dataport;;
-   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
+   R) DONTRM=1;;
+   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-R] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
   -A Appliance
   -B only binaries
   -D Dataport package
   -d Debug package
   -g set group to <grp>
   -n set name to <name>
+  -R don't delete temporary files
   -s only source package
   -S source and binary package
   -u set files to <user>
@@ -108,13 +110,6 @@ while getopts An:v:V:sSu:g:rBDd? op; do
 done
 shift $(( $OPTIND - 1))
 #
-if grep -q 'BuildArch: *noarch' "$1"; then
-  MACHINE=noarch
-  FILES=""
-else
-  MACHINE=`uname -m`
-fi
-#
 SPECFILE="$1"
 SPECFILENAME=$(basename "$SPECFILE")
 OUTPUTDIR=$(readlink -f "$2")
@@ -125,8 +120,18 @@ if [[ $# -lt 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
   exit 1
 fi
 #
-if uname -v | egrep -qi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
+if uname -v | grep -Eqi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
   DEB=_debian
+fi
+#
+if grep -q 'BuildArch: *noarch' "$1"; then
+  MACHINE=noarch
+  FILES=""
+elif [[ "$DEB" = "_debian" ]]; then
+  machine=$(uname -m)
+  MACHINE=${machine/x86_64/amd64}
+else
+  MACHINE=`uname -m`
 fi
 #
 if [[ ${1##*-} = "0.spec" ]]; then
@@ -205,7 +210,7 @@ elif [[ -z "$DISTRV" ]]; then
     DISTRV="el$(sed -n 's/^[^0-9]*\([0-9]*\)[.].*/\1/p' /etc/redhat-release)"
     DISTRO="$(sed -n 's/\(Red Hat .* Linux.*\)[.].*/\1/p' /etc/redhat-release)"
   elif [[ -f /etc/os-release ]]; then
-    if fgrep -q SLES /etc/os-release; then
+    if grep -Fq SLES /etc/os-release; then
       DISTRV="$(sed -n 's/^NAME="\([^" ]*\)[" ].*/\1/p' /etc/os-release)$(sed -n 's/^VERSION="\([0-9]*\).*"/\1/p' /etc/os-release)"
     else
       DISTRV="$(sed -n 's/^NAME="\([^" ]*\)[" ].*/\L\1/p' /etc/os-release)$(sed -n 's/^VERSION="\([0-9]*\).*"/\1/p' /etc/os-release)"
@@ -299,7 +304,11 @@ STARTDIR=$(pwd)
 if [[ -n "$SOURCE" ]]; then
   BD=$TMPDIR
   if mkdir -p "$TMPDIR" && cd "$WD"; then
-    cp -a files "$TMPDIR/$NAME"
+    if [[ -d files ]]; then
+      cp -a files "$TMPDIR/$NAME"
+    else
+      mkdir -p "$TMPDIR/$NAME"
+    fi
     [[ -d src ]] && cp -a src "$TMPDIR/$NAME/SRC"
     if [[ -f PREP.seds ]]; then
       FNSED="`head -1 PREP.seds`"
@@ -383,12 +392,12 @@ mkdir -p $BUILDDIR/BUILD $BUILDDIR/RPMS $BUILDDIR/SOURCES $BUILDDIR/SPECS $BUILD
 #
 CFGFILES=`grep '^%config ' $SPECFILE | sed 's/%config /-e /'`
 if [[ -n "$CFGFILES" ]]; then
-  (cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME) | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | egrep -v '/$|^/SRC/|^/MAN/' | grep -v $CFGFILES >$FILESLIST
+  (cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME) | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | grep -Ev '/$|^/SRC/|^/MAN/' | grep -v $CFGFILES >$FILESLIST
 elif [[ -n "$SOURCE" ]]; then
   ( if [[ -n "$FUSER$FGROUP" ]]; then
       echo "%defattr(-,${FUSER:--},${FGROUP:--})"
       ( if cd $BD/$NAME; then
-          DIRS=`find * -type d -name "$DIRSEARCH*" | egrep -v '^SRC/|^/MAN/'`
+          DIRS=`find * -type d -name "$DIRSEARCH*" | grep -Ev '^SRC/|^/MAN/'`
           if [[ -z "$DIRS" ]]; then
             DIRS=`find * -type f | sed 's|[^/]*$||' | sort | head -1 | sed 's|/$||'`
           fi
@@ -406,7 +415,7 @@ elif [[ -n "$SOURCE" ]]; then
         fi
       )
     fi
-    cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | egrep -v '/$|^/SRC/|^/MAN/'
+    cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | grep -Ev '/$|^/SRC/|^/MAN/'
   ) >$FILESLIST
 fi
 #
@@ -539,7 +548,7 @@ distclean:
 #
 install:
 	mkdir -p \$(DESTDIR)/usr/bin
-	cp -a \`ls|egrep -v 'debian|SRC|Makefile|MAKE.sh'\` \$(DESTDIR)/
+	cp -a \`ls|grep -Ev 'debian|SRC|Makefile|MAKE.sh'\` \$(DESTDIR)/
 	DESTDIR=\$(DESTDIR) ./MAKE.sh install
 EOF
   else
@@ -816,4 +825,8 @@ else
   fi
 fi
 #
-rm -rf $TMPDIR
+if [[ -n "$DONTRM" ]]; then
+  echo "$TMPDIR not deltete"
+else
+  rm -rf $TMPDIR
+fi

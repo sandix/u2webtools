@@ -110,20 +110,20 @@ void connectionlogging(char *ipaddress)
       { char *z;
 
         LOG(30, "connectionlogging, longlogformat: %s\n", longlogformat);
-        z = zeile + sprintf(zeile, "%04d-%02d-%02d %02d:%02d:%02d %d " ULONGFORMAT " ",
+        z = zeile + sprintf(zeile, "%04d-%02d-%02d %02d:%02d:%02d %d %s " ULONGFORMAT " ",
                             tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
                             tm->tm_hour, tm->tm_min, tm->tm_sec,
-                            (int)getpid(), content_length);
+                            (int)getpid(), methodstr, content_length);
         LOG(40, "connectionlogging, zeile: %s\n", zeile);
         scan_to_teil(z, longlogformat, MAX_ZEILENLAENGE-40);
         fprintf(ptr, "%s\n", zeile);
       }
       else
       { LOG(30, "connectionlogging, else\n");
-        fprintf(ptr, "%04d-%02d-%02d %02d:%02d:%02d %d " ULONGFORMAT " %s %s\n",
+        fprintf(ptr, "%04d-%02d-%02d %02d:%02d:%02d %d %s " ULONGFORMAT " %s %s\n",
                 tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
                 tm->tm_hour, tm->tm_min, tm->tm_sec, (int)getpid(),
-                content_length, ipaddress, clientgetpath ? clientgetpath : "");
+                methodstr, content_length, ipaddress, clientgetpath ? clientgetpath : "");
       }
       fclose(ptr);
     }

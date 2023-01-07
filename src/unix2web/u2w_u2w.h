@@ -82,6 +82,7 @@
                                       /* LANG=<lang> und ruft setlocale(LC_ALL, "") auf*/
 #define GETPID       "pid"            /* %pid PID des Prozesses                        */
 #define GETPPID      "ppid"           /* %ppid PID des Parent Prozesses                */
+#define ISREGEXP     "isregexp"       /* %isregexp auf Regexp prüfen                   */
 
 /***************************************************************************************/
 /* Befehle, die mit % beginnen                                                         */

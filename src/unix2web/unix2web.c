@@ -1421,7 +1421,7 @@ int main(int argc, char **argv)
 #ifdef WEBSERVER
 #ifdef HAS_DAEMON
   if( daemonflag && !logpath[0] )
-    logflag = NOLOG;
+    logflag &= LOGCONNECTIONLONG;
 #endif
 #endif
 

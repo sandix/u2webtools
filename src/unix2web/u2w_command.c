@@ -100,6 +100,9 @@ command_prog_type command_progs[] =
   D50(LLET_PLUSS  , u2w_llet_pluss,get_letpars , P12, P12),
   D50(EVAL        , u2w_eval     , get_evalpars, P1,  P1),
   D50(ISSET       , u2w_isset    , get_pars    , P1,  P1),
+#ifdef WITH_REGEX
+  D50(ISREGEXP    , u2w_isregexp , get_pars    , P1,  P1),
+#endif
   D50(SETQUOTE    , u2w_setquote , get_pars    , P1,  P12),
   D53(STORE       , u2w_store    , get_pars    , P12, P12,
       QF_NOPARWERT,QF_NONE,QF_NONE),
