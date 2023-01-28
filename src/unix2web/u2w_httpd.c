@@ -55,9 +55,6 @@ int do_httpd(void)
     return 1;
   }
 
-  if( logflag & LOGCONNECTIONLONG )
-    connectionlogging(clientip);
-
   if( !keepalive_found && !digestnum && keepalive_flag )
     keepalive_flag = 0;
   LOG(21, "do_httpd, keepalive_flag: %d, keepalive_found: %d.\n",
@@ -407,6 +404,9 @@ int do_httpd(void)
       return !keepalive_flag;
     }
 
+    if( logflag & LOGCONNECTIONLONG )
+      connectionlogging(clientip);
+
     if( method == PUT )
       read_content();
     else if( method == POST && multipart_flag )  /* POST Daten einlesen                */
@@ -504,7 +504,6 @@ int do_httpd(void)
     return !keepalive_flag;
   }
 
-
   strcpyn(home, getfile, HOME_LENGTH);
   if( NULL != (p = strrchr(home, '/')) )
     *p = '\0';
@@ -520,6 +519,8 @@ int do_httpd(void)
                     if( ssl_mode )
                       fcntl(sh, F_SETFL, fcntlmode);
 #endif
+                    if( logflag & LOGCONNECTIONLONG )
+                      connectionlogging(clientip);
                     send_method_not_allowed();
                     break;
     case OPTIONS:
@@ -531,6 +532,8 @@ int do_httpd(void)
                       send_method_not_allowed();
                     else
                       send_options(read_flag, read_flag, write_flag && upload_flag);
+                    if( logflag & LOGCONNECTIONLONG )
+                      connectionlogging(clientip);
                     break;
     case TRACE:
 #ifdef WITH_HTTPS
@@ -544,6 +547,8 @@ int do_httpd(void)
                       if( http_head_flag & 1 )
                         send_last_chunk();
                     }
+                    if( logflag & LOGCONNECTIONLONG )
+                      connectionlogging(clientip);
                     break;
     case PUT:
 #ifdef WITH_HTTPS
@@ -558,6 +563,8 @@ int do_httpd(void)
                     }
                     else
                       send_method_not_allowed();
+                    if( logflag & LOGCONNECTIONLONG )
+                      connectionlogging(clientip);
                     break;
     case GET:
 #ifdef WITH_MMAP
@@ -634,6 +641,9 @@ int do_httpd(void)
         else
           query_string = "";
 #endif
+
+        if( logflag & LOGCONNECTIONLONG )
+          connectionlogging(clientip);
 
 #ifdef WITH_HTTPS
         if( ssl_mode )

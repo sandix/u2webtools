@@ -1,22 +1,22 @@
 Summary: Unix2Web Tools
-Name: u2webtools
+Name: u2webtools_mariadb
 Provides: u2webtools
 Version: SETVERSION
 Release: SETRELEASE
 License: GPL
 Group: Productivity/Networking/Web/Servers
 Source: SETSOURCE
-BuildRoot: /dev/shm/u2w_makerpm
+BuildRoot: /dev/shm/u2w_my_makerpm
 #DATAPORT#Packager: Henning Sander <henning.sander@dataport.de>
 #NODATAPORT#Packager: Henning Sander <sandix@universal-logging-system.org>
 #DATAPORT#Vendor: Henning Sander (Dataport)
 #NODATAPORT#Vendor: Universal-Logging-System.org
-Conflicts: u2webtools_mysql
+Conflicts: u2webtools_nomysql, u2webtools_mysql
 #DEB#Section: httpd
 
 %description
 Unix2Web-Http/Https-Server
-unix2webd without MySQL-Extension or MariaDB-Extension, httpget
+unix2webd with MariaDB-Extension, httpget, code_http
 
 %global debug_package %{nil}
 
@@ -27,34 +27,28 @@ echo
 echo
 
 %build
-if [[ -d SRC ]]
- then
-  if cd SRC
-   then
-    for i in *
-     do
-      (cd $i && make)
+#MAKEDEFINE#MYSQL="_mariadb"
+if [[ -d SRC ]]; then
+  if cd SRC; then
+    for i in *; do
+      (cd $i && MYSQL="_mariadb" make)
     done
   fi
 fi
 
 %install
-if [[ -n "$RPM_BUILD_ROOT" ]]
- then
+if [[ -n "$RPM_BUILD_ROOT" ]]; then
   mkdir -p $RPM_BUILD_ROOT
   cp -a `ls| grep -v 'SRC'` $RPM_BUILD_ROOT/
 else
-  rm -rf /dev/shm/u2w_makerpm
-  mkdir -p /dev/shm/u2w_makerpm
-  cp -a `ls| grep -v 'SRC'` /dev/shm/u2w_makerpm
+  rm -rf /dev/shm/u2w_my_makerpm
+  mkdir -p /dev/shm/u2w_my_makerpm
+  cp -a `ls| grep -v 'SRC'` /dev/shm/u2w_my_makerpm
 fi
-if [[ -d SRC ]]
- then
-  if cd SRC
-   then
-    for i in *
-     do
-      (cd $i && PREFIX=${RPM_BUILD_ROOT:-/dev/shm/u2w_makerpm}/usr make install)
+if [[ -d SRC ]]; then
+  if cd SRC; then
+    for i in *; do
+      (cd $i && MYSQL="_mariadb" PREFIX=${RPM_BUILD_ROOT:-/dev/shm/u2w_my_makerpm}/usr make install)
     done
   fi
 fi
@@ -63,25 +57,19 @@ fi
 
 %pre
 #BEGIN SYSTEMD#############################################################################
-if [[ -x /etc/init.d/unix2web ]]
- then
-  if [[ -d /usr/lib/systemd/system ]]
-   then
+if [[ -x /etc/init.d/unix2web ]]; then
+  if [[ -d /usr/lib/systemd/system ]]; then
     SYSTEMDSYSTEM=/usr/lib/systemd/system
   else
     SYSTEMDSYSTEM=/lib/systemd/system
   fi
-  if [[ ! -f $SYSTEMDSYSTEM/unix2web@.service ]]
-   then
+  if [[ ! -f $SYSTEMDSYSTEM/unix2web@.service ]]; then
     /etc/init.d/unix2web stop
-    if which insserv >/dev/null 2>&1
-     then
+    if which insserv >/dev/null 2>&1; then
       insserv -r -f unix2web
-    elif which chkconfig >/dev/null 2>&1
-     then
+    elif which chkconfig >/dev/null 2>&1; then
       chkconfig unix2web off
-#DEB#      elif which update-rc.d >/dev/null 2>&1
-#DEB#       then
+#DEB#      elif which update-rc.d >/dev/null 2>&1; then
 #DEB#        update-rc.d -f unix2web remove
     else
       echo "unable to disable service unix2web"
@@ -92,14 +80,12 @@ fi
 
 %post
 #BEGIN SYSTEMD#############################################################################
-if [[ -d /usr/lib/systemd/system ]]
- then
+if [[ -d /usr/lib/systemd/system ]]; then
   SYSTEMDSYSTEM=/usr/lib/systemd/system
 else
   SYSTEMDSYSTEM=/lib/systemd/system
 fi
-if [[ ! -f $SYSTEMDSYSTEM/unix2web@.service ]]
- then
+if [[ ! -f $SYSTEMDSYSTEM/unix2web@.service ]]; then
   cat >$SYSTEMDSYSTEM/unix2web@.service <<EOF
 [Unit]
 Description=Unix2Web Web Server
@@ -119,10 +105,8 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 EOF
   systemctl daemon-reload
-  if ls /etc/unix2web/*.conf &>/dev/null
-   then
-    for f in /etc/unix2web/*.conf
-     do
+  if ls /etc/unix2web/*.conf &>/dev/null; then
+    for f in /etc/unix2web/*.conf; do
       n=${f##*/}
       systemctl enable unix2web@${n%.conf}
     done
@@ -131,17 +115,13 @@ fi
 systemctl restart unix2web@* --all
 #END SYSTEMD###############################################################################
 #BEGIN NOSYSTEMD###########################################################################
-#NODEB#if [[ "$1" = "1" ]]
-#DEB#if [[ "$1" = "configure" ]]
- then
-  if which insserv >/dev/null 2>&1
-   then
+#NODEB#if [[ "$1" = "1" ]]; then
+#DEB#if [[ "$1" = "configure" ]]; then
+  if which insserv >/dev/null 2>&1; then
     insserv unix2web
-  elif which chkconfig >/dev/null 2>&1
-   then
+  elif which chkconfig >/dev/null 2>&1; then
     chkconfig unix2web on
-#DEB#  elif which update-rc.d >/dev/null 2>&1
-#DEB#   then
+#DEB#  elif which update-rc.d >/dev/null 2>&1; then
 #DEB#    update-rc.d unix2web defaults || update-rc.d -f unix2web defaults
   else
     echo "you have to enable the service unix2web"
@@ -152,23 +132,21 @@ fi
 exit 0
 
 %preun
-#NODEB#if [[ "$1" = "0" ]]
-#DEB#if [[ "$1" = "remove" || "$1" = "deconfigure" ]]
- then
+#NODEB#if [[ "$1" = "0" ]]; then
+#DEB#if [[ "$1" = "remove" || "$1" = "deconfigure" ]]; then
 #BEGIN SYSTEMD#############################################################################
   systemctl stop 'unix2web@*'
-  systemctl disable 'unix2web@*'
+  for s in $(systemctl list-units unix2web@* --all | sed -n 's/.*\(unix2web@.*\) *loaded .*/\1/p'); do
+    systemctl disable "$s"
+  done
 #END SYSTEMD###############################################################################
 #BEGIN NOSYSTEMD###########################################################################
   /etc/init.d/unix2web stop
-  if which insserv >/dev/null 2>&1
-   then
+  if which insserv >/dev/null 2>&1; then
     insserv -r -f unix2web
-  elif which chkconfig >/dev/null 2>&1
-   then
+  elif which chkconfig >/dev/null 2>&1; then
     chkconfig unix2web off
-#DEB#  elif which update-rc.d >/dev/null 2>&1
-#DEB#   then
+#DEB#  elif which update-rc.d >/dev/null 2>&1; then
 #DEB#    update-rc.d -f unix2web remove
   else
     echo "unable to disable service unix2web"
@@ -179,15 +157,12 @@ exit 0
 
 %postun
 #BEGIN SYSTEMD#############################################################################
-#NODEB#if [[ "$1" = "0" ]]
-#DEB#if [[ "$1" = "remove" ]]
- then
-  if [[ -f /usr/lib/systemd/system/unix2web@.service ]]
-   then
+#NODEB#if [[ "$1" = "0" ]]; then
+#DEB#if [[ "$1" = "remove" ]]; then
+  if [[ -f /usr/lib/systemd/system/unix2web@.service ]]; then
     rm /usr/lib/systemd/system/unix2web@.service
     systemctl daemon-reload
-  elif [[ -f /lib/systemd/system/unix2web@.service ]]
-   then
+  elif [[ -f /lib/systemd/system/unix2web@.service ]]; then
     rm /lib/systemd/system/unix2web@.service
     systemctl daemon-reload
   fi
@@ -196,8 +171,7 @@ fi
 #END SYSTEMD###############################################################################
 
 %clean
-if [[ -n "$RPM_BUILD_ROOT" ]]
- then
+if [[ -n "$RPM_BUILD_ROOT" ]]; then
   rm -rf $RPM_BUILD_ROOT
 else
   rm -rf /dev/shm/u2w_makerpm
@@ -223,6 +197,8 @@ fi
 - makepackage: new switch -B -d
 * Sun Aug 28 2022 sandix@universal-logging-system.org
 - New "%https"
+* Sun Apr 10 2022 sandix@universal-logging-system.org
+- MariaDB / MySQL added code to accept multiple statements
 * Sat May  1 2021 sandix@universal-logging-system.org
 - Bugfix: %text(...) in Tables
 * Sun Mar 14 2021 sandix@universal-logging-system.org

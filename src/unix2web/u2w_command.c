@@ -579,8 +579,8 @@ u2w_put_command_type u2w_put_commands[] =
 format_command_type format_commands[] =
 { { FS,            "<font size=\"1\">"                , "", "<font size=\"%s\">" },
   { AUS FS,        "</font>"                          , "", "" },
-  { TT,            "<tt>"                             , "", "" },
-  { AUS TT,        "</tt>"                            , "", "" },
+  { TT,            "<code>"                           , "", "" },
+  { AUS TT,        "</code>"                          , "", "" },
   { KBD,           "<kbd>"                            , "", "" },
   { AUS KBD,       "</kbd>"                           , "", "" },
   { SAMP,          "<samp>"                           , "", "" },

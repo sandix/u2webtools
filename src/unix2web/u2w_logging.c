@@ -100,6 +100,7 @@ void connectionlogging(char *ipaddress)
 { FILE *ptr;
   time_t tt;
   struct tm *tm;
+  char msg[MAX_ZEILENLAENGE+40];
 
   LOG(30, "connectionlogging, longlogpath: %s, ipaddress: %s\n", longlogpath, ipaddress);
   time(&tt);
@@ -110,13 +111,13 @@ void connectionlogging(char *ipaddress)
       { char *z;
 
         LOG(30, "connectionlogging, longlogformat: %s\n", longlogformat);
-        z = zeile + sprintf(zeile, "%04d-%02d-%02d %02d:%02d:%02d %d %s " ULONGFORMAT " ",
-                            tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-                            tm->tm_hour, tm->tm_min, tm->tm_sec,
-                            (int)getpid(), methodstr, content_length);
-        LOG(40, "connectionlogging, zeile: %s\n", zeile);
-        scan_to_teil(z, longlogformat, MAX_ZEILENLAENGE-40);
-        fprintf(ptr, "%s\n", zeile);
+        z = msg + sprintf(msg, "%04d-%02d-%02d %02d:%02d:%02d %d %s " ULONGFORMAT " ",
+                          tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
+                          tm->tm_hour, tm->tm_min, tm->tm_sec,
+                          (int)getpid(), methodstr, content_length);
+        LOG(40, "connectionlogging, msg: %s\n", msg);
+        scan_to_teil(z, longlogformat, MAX_ZEILENLAENGE);
+        fprintf(ptr, "%s\n", msg);
       }
       else
       { LOG(30, "connectionlogging, else\n");

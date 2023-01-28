@@ -746,7 +746,7 @@ short set_par_quote(char *name, char *quote)
 /*                char **out: Ziel des Ergebnisses                                     */
 /*                long n    : Platz in out                                             */
 /*                char prg_pars: übergebene Funktionsparameter                         */
-/*     u2w_queryvars belegte Variablen aus P1 zu <var1>=$>var1>&<varn>=$<varn> wandeln */
+/*     u2w_queryvars belegte Variablen aus P1 zu <var1>=$<var1>&<varn>=$<varn> wandeln */
 /***************************************************************************************/
 short u2w_queryvars(int pa, char **out, long n,
                   char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)

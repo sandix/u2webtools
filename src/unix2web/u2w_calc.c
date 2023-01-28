@@ -24,52 +24,53 @@ unaryoperatortype unaryops[] = {
   {'\0',   '\0',                  0}
 };
 
+                                        //   C: calc, S: string
 operatortype operatoren[] = {
-  {"+",    T_PLUS,                4},   /* +                                      */
-  {"-",    T_MINUS,               4},   /* -                                      */
-  {"*",    T_STERN,               3},   /* *                                      */
-  {"/",    T_GETEILT,             3},   /* /                                      */
-  {"%",    T_PROZENT,             3},   /* %                                      */
-  {"=",    T_GLEICH,              5},   /* =                                      */
-  {"=|",   T_GLEICHABS,           5},   /* I                                      */
-  {"==",   T_GLEICHGLEICH,        5},   /* G  erzw. Stringvergleich               */
-  {"==|",  T_GLEICHGLEICHICASE,   5},   /* H  Stringvergleich ignore case         */
-  {"!=",   T_UNGELICH,            5},   /* !                                      */
-  {"!==",  T_UNGLEICHGLEICH,      5},   /* U  erzw. Stringvergleich               */
-  {"!=|",  T_UNGLEICHABS,         5},   /* J                                      */
-  {"!==|", T_UNGLEICHGLEICHICASE, 5},   /* K                                      */
-  {"<",    T_KLEINER,             5},   /* <  muss vor <= stehen                  */
-  {">",    T_GROESSER,            5},   /* >  muss vor >= stehen                  */
-  {"<=",   T_KLEINERGLEICH,       5},   /* l                                      */
-  {">=",   T_GROESSERGLEICH,      5},   /* g                                      */
-  {"<=|",  T_KLEINERGLEICHABS,    5},   /* h                                      */
-  {"<|",   T_KLEINERABS,          5},   /* i                                      */
-  {">=|",  T_GROESSERGLEICHABS,   5},   /* j                                      */
-  {">|",   T_GROESSERABS,         5},   /* k                                      */
+  {"+",    T_PLUS,                4},   /* + C                                      */
+  {"-",    T_MINUS,               4},   /* - C                                      */
+  {"*",    T_STERN,               3},   /* * C                                      */
+  {"/",    T_GETEILT,             3},   /* / C                                      */
+  {"%",    T_PROZENT,             3},   /* % C                                      */
+  {"=",    T_GLEICH,              5},   /* =                                        */
+  {"=|",   T_GLEICHABS,           5},   /* I                                        */
+  {"==",   T_GLEICHGLEICH,        5},   /* G S  erzw. Stringvergleich               */
+  {"==|",  T_GLEICHGLEICHICASE,   5},   /* H S  Stringvergleich ignore case         */
+  {"!=",   T_UNGELICH,            5},   /* !                                        */
+  {"!==",  T_UNGLEICHGLEICH,      5},   /* U S  erzw. Stringvergleich               */
+  {"!=|",  T_UNGLEICHABS,         5},   /* J                                        */
+  {"!==|", T_UNGLEICHGLEICHICASE, 5},   /* K S                                      */
+  {"<",    T_KLEINER,             5},   /* <    muss vor <= stehen                  */
+  {">",    T_GROESSER,            5},   /* >    muss vor >= stehen                  */
+  {"<=",   T_KLEINERGLEICH,       5},   /* l                                        */
+  {">=",   T_GROESSERGLEICH,      5},   /* g                                        */
+  {"<=|",  T_KLEINERGLEICHABS,    5},   /* h                                        */
+  {"<|",   T_KLEINERABS,          5},   /* i                                        */
+  {">=|",  T_GROESSERGLEICHABS,   5},   /* j                                        */
+  {">|",   T_GROESSERABS,         5},   /* k                                        */
 #ifdef WITH_REGEX
-  {"~",    T_MATCH,               5},   /* ~                                      */
-  {"!~",   T_NOTMATCH,            5},   /* M                                      */
-  {"~|",   T_MATCHICASE,          5},   /* m                                      */
-  {"!~|",  T_NOTMATCHICASE,       5},   /* N                                      */
+  {"~",    T_MATCH,               5},   /* ~ S                                      */
+  {"!~",   T_NOTMATCH,            5},   /* M                                        */
+  {"~|",   T_MATCHICASE,          5},   /* m                                        */
+  {"!~|",  T_NOTMATCHICASE,       5},   /* N                                        */
 #endif
-  {"~~",   T_SUBSTRING,           5},   /* s  substring a ~~ b -> b in a          */
-  {"!~~",  T_NOTSUBSTRING,        5},   /* S  !substring                          */
-  {"~~|",  T_SUBSTRINGICASE,      5},   /* t  ignore case substr a ~~ b -> b in a */
-  {"!~~|", T_NOTSUBSTRINGICASE,   5},   /* T  !ignore case substring              */
-  {"<<",   T_LINKSSHIFT,          3},   /* L                                      */
-  {">>",   T_RECHTSSHIFT,         3},   /* R                                      */
-  {".",    T_KONKAT,              4},   /* c  String Konkatenation                */
-  {"&",    T_UND,                 3},   /* &  muss vor && stehen                  */
-  {"&&",   T_UNDUND,              7},   /* a                                      */
-  {"|",    T_ODER,                4},   /* |  muss vor || stehen                  */
-  {"||",   T_ODERODER,            6},   /* o                                      */
-  {"?",    T_FRAGEZEICHEN,       10},   /* ?                                      */
-  {":",    T_DOPPELPUNKT,         9},   /* :                                      */
-  {")",    T_KLAMMERZU,          11},   /* )                                      */
-  {"",     T_UMINUS,              1},   /* d                                      */
-  {"",     T_NEG,                 1},   /* b                                      */
-  {"",     T_NOT,                 1},   /* n                                      */
-  {"",     T_KLAMMERAUF,         11},   /* (                                      */
+  {"~~",   T_SUBSTRING,           5},   /* s S  substring a ~~ b -> b in a          */
+  {"!~~",  T_NOTSUBSTRING,        5},   /* S S  !substring                          */
+  {"~~|",  T_SUBSTRINGICASE,      5},   /* t S  ignore case substr a ~~ b -> b in a */
+  {"!~~|", T_NOTSUBSTRINGICASE,   5},   /* T S  !ignore case substring              */
+  {"<<",   T_LINKSSHIFT,          3},   /* L C                                      */
+  {">>",   T_RECHTSSHIFT,         3},   /* R C                                      */
+  {".",    T_KONKAT,              4},   /* c S  String Konkatenation                */
+  {"&",    T_UND,                 3},   /* & C  muss vor && stehen                  */
+  {"&&",   T_UNDUND,              7},   /* a                                        */
+  {"|",    T_ODER,                4},   /* | C  muss vor || stehen                  */
+  {"||",   T_ODERODER,            6},   /* o                                        */
+  {"?",    T_FRAGEZEICHEN,       10},   /* ?                                        */
+  {":",    T_DOPPELPUNKT,         9},   /* :                                        */
+  {")",    T_KLAMMERZU,          11},   /* )                                        */
+  {"",     T_UMINUS,              1},   /* d                                        */
+  {"",     T_NEG,                 1},   /* b                                        */
+  {"",     T_NOT,                 1},   /* n                                        */
+  {"",     T_KLAMMERAUF,         11},   /* (                                        */
   {"",     '\0',                  0}
 };
 
@@ -89,7 +90,7 @@ int anz_ops;
 wert wstack[MAXANZWERTE];
 int anz_wstack;
 int skipcalc_opstack_pos;     // Position im Operanden Stack des "skip-calc"
-                              // erst wenn dieser Operanden gepopt wird, wird die
+                              // erst wenn dieser Operand gepopt wird, wird die
                               // skipcalc_opstack_pos gelöscht.
                               // es gilt dann der Wert des Wertestacks.
                               // wird gesetzt bei: 0 *
@@ -770,7 +771,9 @@ int calc_double(char op)
     case T_STERN:             pushdouble(dl * dr);
                               break;
     case T_GETEILT:           if( dr == 0 )
-                                pushnonew();
+                              { pushnonew();
+                                logging("error: Divide by zero.\n");
+                              }
                               else
                                 pushdouble(dl/dr);
                               break;
@@ -868,7 +871,9 @@ int calc_long(char op)
                                 pushlong(ll % lr);
                               break;
     case T_GETEILT:           if( lr == 0 )
-                                pushnonew();
+                              { pushnonew();
+                                logging("error: Divide by zero.\n");
+                              }
                               else
                                 pushlong(ll / lr);
                               break;
@@ -956,18 +961,32 @@ int calc(void)
       }
       else if( anz_wstack >= 2 )
       { LOG(3, "calc, anz_wstack >= 2\n");
-        wr = nextwtype();
         wl = nextnextwtype();
-    
+        wr = nextwtype();
+        LOG(13, "calc wl: %d, wr: %d\n", wl, wr);
+
         if( is_string_op(op) )
           calc_string(op);
         else if( is_long_op(op) )
-          calc_long(op);
+        { if( wl == NONEW || wr == NONEW )
+            anz_wstack--;
+          else
+            calc_long(op);
+        }
         else
         { LOG(5, "calc, anz_wstack >= 2, else\n");
           if( !is_calc_op(op)
               && (wl == STRINGW || wr == STRINGW) )
             calc_string(op);
+          else if( wl == NONEW )
+          { LOG(15, "calc, wl == NONEW\n");
+            anz_wstack--;
+          }
+          else if( wr == NONEW )
+          { LOG(15, "calc, wr == NONEW\n");
+            anz_wstack--;
+            wstack[anz_wstack-1].type = NONEW;
+          }
           else if( wl == DOUBLEW || wr == DOUBLEW )
             calc_double(op);
           else if( wl == LONGW || wr == LONGW )

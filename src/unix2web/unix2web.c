@@ -420,7 +420,7 @@ fputs("\n -v       ", stdout);
 fputs("\n -x       ", stdout);
           fputs(_("print executed lines"), stdout);
 fputs("\n -B       ", stdout);
-          fputs(_("browser/cmd variables only readable by %bpar/%cpar"), stdout);
+          fputs(_("browser/cmd variables only readable by %bpar"), stdout);
 fputs("\n -E       ", stdout);
           fputs(_("ignore empty pars on calling programs"), stdout);
 #ifdef WITH_GETTEXT
