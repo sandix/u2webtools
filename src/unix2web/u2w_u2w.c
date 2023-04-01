@@ -454,6 +454,7 @@ void unix2web(int port, int backlog)
       if( bind(sockfd, (struct sockaddr *)&my_addr6, sizeof(my_addr6)) == -1 ) 
       { if( !daemonflag )
           perror("bind");
+        logging(_("Error on bind. %s\n"), strerror(errno));
         exit(1);
       }
     }
@@ -470,6 +471,7 @@ void unix2web(int port, int backlog)
       if( bind(sockfd, (struct sockaddr *)&my_addr, sizeof(my_addr)) == -1 ) 
       { if( !daemonflag )
           perror("bind");
+        logging(_("Error on bind. %s\n"), strerror(errno));
         exit(1);
       }
 #ifdef WITH_IPV6
@@ -479,6 +481,7 @@ void unix2web(int port, int backlog)
     if( listen(sockfd, backlog) == -1 )          /* auf Verbindungen warten            */
     { if( !daemonflag )
         perror("listen");
+        logging(_("Error on listen. %s\n"), strerror(errno));
       exit(1);
     }
 
