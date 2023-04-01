@@ -280,18 +280,7 @@ short scan_zeile(char *out, char **s, menutype menu, long n)
               if( **s == ' ' )
                 (*s)++;
               if( u2w_mode == U2W_MODE )
-              { if( format_commands[fktid].numhtml[0] && isalnum(0|**s) )
-                { p = zeile;
-                  while( isalnum(0|**s) && p-zeile < MAX_ZEILENLAENGE )
-                    *p++ = *(*s)++;
-                  if( **s == ' ' )
-                    (*s)++;
-                  *p = '\0';
-                  o += snprintf(o, n-(o-out), format_commands[fktid].numhtml, zeile);
-                }
-                else
-                  strcpyn_z(&o, format_commands[fktid].html, n-(o-out));
-              }
+                strcpyn_z(&o, format_commands[fktid].html, n-(o-out));
               else
                 strcpyn_z(&o, format_commands[fktid].tty, n-(o-out));
               continue;

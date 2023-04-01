@@ -128,8 +128,12 @@ if grep -q 'BuildArch: *noarch' "$1"; then
   MACHINE=noarch
   FILES=""
 elif [[ "$DEB" = "_debian" ]]; then
-  machine=$(uname -m)
-  MACHINE=${machine/x86_64/amd64}
+  machine=$(uname -r)
+  MACHINE=${machine##*-}
+  if [[ "$MACHINE" = "generic" ]]; then
+    machine=`uname -m`
+    MACHINE=${machine/x86_64/amd64}
+  fi
 else
   MACHINE=`uname -m`
 fi

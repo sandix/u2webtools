@@ -467,7 +467,7 @@ short u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
               LOG(9, "u2w_mysql_store, grosse Datei vor mysql_query.\n");
               if( mysql_query(&mh, puffer) )
               { if( mysql_error_log_flag )
-                  logging("mysql_query error: %s.\n", mysql_error(&mh));
+                  logging("mysql_query error in mysql_store: %s.\n", mysql_error(&mh));
                 close(hd_in);
                 free(puffer);
 #ifdef WEBSERVER
@@ -490,7 +490,7 @@ short u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
                    prg_pars[3]);
         if( mysql_query(&mh, puffer) )
         { if( mysql_error_log_flag )
-            logging("mysql_query error: %s.\n", mysql_error(&mh));
+            logging("mysql_query error in mysql_store: %s.\n", mysql_error(&mh));
           free(puffer);
           close(hd_in);
 #ifdef WEBSERVER
@@ -531,7 +531,7 @@ short u2w_mysql_store(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
           LOG(100, "mysql_store, puffer: %s.\n", puffer);
           if( mysql_query(&mh, puffer) )
           { if( mysql_error_log_flag )
-              logging("mysql_query error: %s.\n", mysql_error(&mh));
+              logging("mysql_query error in mysql_store: %s.\n", mysql_error(&mh));
 #ifdef WEBSERVER
             keepalive_flag = false;
 #endif
@@ -621,7 +621,7 @@ short u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
               LOG(9, "u2w_mysql_storev, grosse Datei vor mysql_query.\n");
               if( mysql_query(&mh, puffer) )
               { if( mysql_error_log_flag )
-                  logging("mysql_query error: %s.\n", mysql_error(&mh));
+                  logging("mysql_query error in mysql_storev: %s.\n", mysql_error(&mh));
                 close(hd_in);
                 free(puffer);
 #ifdef WEBSERVER
@@ -644,7 +644,7 @@ short u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
         }
         if( mysql_query(&mh, puffer) )
         { if( mysql_error_log_flag )
-            logging("mysql_query error: %s.\n", mysql_error(&mh));
+            logging("mysql_query error in mysql_storev: %s.\n", mysql_error(&mh));
           free(puffer);
           close(hd_in);
 #ifdef WEBSERVER
@@ -679,7 +679,7 @@ short u2w_mysql_storev(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS]
           LOG(100, "mysql_storev, puffer: %s.\n", puffer);
           if( mysql_query(&mh, puffer) )
           { if( mysql_error_log_flag )
-              logging("mysql_query error: %s.\n", mysql_error(&mh));
+              logging("mysql_query error in mysql_storev: %s.\n", mysql_error(&mh));
 #ifdef WEBSERVER
             keepalive_flag = false;
 #endif
@@ -1292,17 +1292,17 @@ short do_mysql_list_read(int *listlen, char list_pars[MAX_LIST_LEN][MAX_LEN_LIST
 
   if( MYSQL_QUERY(&mh, prg_pars[0]) )
   { if( mysql_error_log_flag )
-      logging("mysql_query error: %s.\n", mysql_error(&mh));
+      logging("mysql_query error: %s\nquery: %s.\n", mysql_error(&mh), prg_pars[0]);
 #ifdef WEBSERVER
     keepalive_flag = false;
 #endif
     return true;
   }
   else
-  { mysql_query_flag = 1;
-    mres = mysql_store_result(&mh);
+  { mres = mysql_store_result(&mh);
     if( mres )
-    { nf = mysql_num_fields(mres);
+    { mysql_query_flag = 1;
+      nf = mysql_num_fields(mres);
       LOG(11, "do_mysql_list_read, nf: %d.\n", nf);
       if( (mrow = mysql_fetch_row(mres)) )
       { lengths = mysql_fetch_lengths(mres);
@@ -1551,7 +1551,7 @@ short do_mysql_store_ins(int pa, char **out, long n,
               LOG(9, "u2w_mysql_store_ins, grosse Datei vor mysql_query.\n");
               if( mysql_query(&mh, puffer) )
               { if( mysql_error_log_flag )
-                  logging("mysql_query error: %s.\n", mysql_error(&mh));
+                  logging("mysql_query error in mysql_store_ins: %s.\n", mysql_error(&mh));
                 close(hd_in);
                 free(puffer);
 #ifdef WEBSERVER
@@ -1576,7 +1576,7 @@ short do_mysql_store_ins(int pa, char **out, long n,
                    prg_pars[3]);
         if( mysql_query(&mh, puffer) )
         { if( mysql_error_log_flag )
-            logging("mysql_query error: %s.\nquery: %s.\n", mysql_error(&mh), puffer);
+            logging("mysql_query error in mysql_store_ins: %s.\nquery: %s.\n", mysql_error(&mh), puffer);
           free(puffer);
           close(hd_in);
 #ifdef WEBSERVER
@@ -1609,7 +1609,7 @@ short do_mysql_store_ins(int pa, char **out, long n,
           LOG(100, "mysql_store_ins, puffer: %s.\n", puffer);
           if( mysql_query(&mh, puffer) )
           { if( mysql_error_log_flag )
-              logging("mysql_query error: %s.\n", mysql_error(&mh));
+              logging("mysql_query error in mysql_store_ins: %s.\n", mysql_error(&mh));
 #ifdef WEBSERVER
             keepalive_flag = false;
 #endif
@@ -1689,10 +1689,10 @@ short mysql2s(char *query, char **o, long n, int error_flag, char *ssep, char *z
     return true;
   }
   else
-  { mysql_query_flag = 1;
-    mres = mysql_store_result(&mh);
+  { mres = mysql_store_result(&mh);
     if( mres )
-    { nf = mysql_num_fields(mres);
+    { mysql_query_flag = 1;
+      nf = mysql_num_fields(mres);
       LOG(11, "mysql2s, nf: %d.\n", nf);
       nz = 0;
       while( (mrow = mysql_fetch_row(mres) ) )
@@ -1903,10 +1903,10 @@ short mysql2net_tbl(char *query, int error_flag, int htmlflag)
     return true;
   }
   else
-  { mysql_query_flag = 1;
-    mres = mysql_store_result(&mh);
+  { mres = mysql_store_result(&mh);
     if( mres )
-    { nf = mysql_num_fields(mres);
+    { mysql_query_flag = 1;
+      nf = mysql_num_fields(mres);
       nz = 0;
       LOG(22, "mysql2net_tbl, akt_tablecols: %d, tablecols: %d, tablelevel: %d, table_aligns: %s\n",
           akt_tablecols, tablecols, tablelevel,
@@ -2032,9 +2032,9 @@ short mysql2dat(char *query, char *path, char *ssep, char *zend)
     return true;
   }
   else
-  { mysql_query_flag = 1;
-    if( (mres = mysql_store_result(&mh)) )
-    { if( 0 <= (hd_out = open64(path, O_WRONLY | O_CREAT | O_TRUNC, 00600)) ) 
+  { if( (mres = mysql_store_result(&mh)) )
+    { mysql_query_flag = 1;
+      if( 0 <= (hd_out = open64(path, O_WRONLY | O_CREAT | O_TRUNC, 00600)) ) 
       { nf = mysql_num_fields(mres);
         while( !ret && (mrow = mysql_fetch_row(mres) ) )
         { lengths = mysql_fetch_lengths(mres);
@@ -2157,9 +2157,9 @@ short mysql2p(char *query, char *ssep, char *zsep, char *p)
     return true;
   }
   else
-  { mysql_query_flag = 1;
-    if( (mres = mysql_store_result(&mh)) )
-    { nf = mysql_num_fields(mres);
+  { if( (mres = mysql_store_result(&mh)) )
+    { mysql_query_flag = 1;
+      nf = mysql_num_fields(mres);
       nz = 0;
       while( (mrow = mysql_fetch_row(mres) ) )
       { if( nz++ )

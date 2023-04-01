@@ -406,20 +406,27 @@ void unix2web(int port, int backlog)
 #ifdef WITH_IPV6
     if( !listenip || !strchr(listenip, '.') )
     { sin_size = sizeof(their_addr6);
-      if( (sockfd = socket(AF_INET6, SOCK_STREAM, 0)) == -1 ) /* Socket oeffnen          */
-      { if( !daemonflag )
-          perror("socket");
-        exit(1);
+      if( (sockfd = socket(AF_INET6, SOCK_STREAM, 0)) == -1 ) /* Socket oeffnen        */
+      { ipv4flag = 1;                            /* wenn kein IP-V6, dann IP-V4        */
+        sin_size = sizeof(their_addr);
+        if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1 )  /* Socket oeffnen      */
+        { if( !daemonflag )
+            perror("socket");
+          logging(_("Error on opening socket.\n"));
+          exit(1);
+        }
       }
-      ipv4flag = 0;
+      else
+        ipv4flag = 0;
     }
     else
     { ipv4flag = 1;
 #endif
       sin_size = sizeof(their_addr);
-      if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1 )  /* Socket oeffnen          */
+      if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1 )  /* Socket oeffnen        */
       { if( !daemonflag )
           perror("socket");
+        logging(_("Error on opening socket.\n"));
         exit(1);
       }
 #ifdef WITH_IPV6

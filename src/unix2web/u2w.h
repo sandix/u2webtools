@@ -648,7 +648,6 @@ typedef struct { char *command;
 typedef struct { char *command;
                  char *html;
                  char *tty;
-                 char *numhtml;
                } format_command_type;
 
 #ifdef WITH_MMAP

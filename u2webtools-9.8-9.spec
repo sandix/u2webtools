@@ -177,6 +177,8 @@ else
 fi
 
 %changelog
+* Fri Feb 24 2023 sandix@universal-logging-system.org
+  Bugfix: start without IP-V6 if IP-V6 isn't supported
 * Sat Dec 17 2022 sandix@universal-logging-system.org
   new: -Hp  don't send programname and version in HTTP-header
 * Tue Dec  6 2022 sandix@universal-logging-system.org

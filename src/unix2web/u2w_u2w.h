@@ -139,7 +139,6 @@
 #define LEFT         "left"           /* das Formular wird linksbuendig dargestellt    */
 #define CENTER       "center"         /* der Text wird zentriert dargestellt           */
 #define AUS          "/"              /* Zum Ausschalten einiger Styles                */
-#define FS           "fs"             /* %fs4 Zeile in Fontgroesse 4 ausgeben          */
 #define BF           "b"              /* %b Ausdruck Fett                              */
 #define TT           "tt"             /* %tt Ausdruck in Courier New                   */
 #define KBD          "kbd"            /* % Tag <kbd>                                   */
