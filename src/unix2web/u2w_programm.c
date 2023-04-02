@@ -8,8 +8,6 @@
 
 #include "u2w.h"
 
-#ifndef COMPILER
-
 /***************************************************************************************/
 /* wertetype *store_forwerte(char *werte, char trenn)                                  */
 /*                           char *werte: Werte, die gespeichert werden sollen         */
@@ -268,7 +266,10 @@ int skip_to_case(char *zeile, char *swcase, FILE *ptr)
       else
         continue;
     }
+    else if( is_command_z(&z, SWITCH) )
+    { if( skip_to_end_loop(zeile, ptr, SWITCH) )
+        return true;
+    }
   }
   return false;
 }
-#endif  /* #ifndef COMPILER */

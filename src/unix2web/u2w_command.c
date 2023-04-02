@@ -993,6 +993,7 @@ short get_pars(char **in, int maxpars, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_P
 /*     get_letpars Parameter einer Funktion bestimmen                                  */
 /*              "..." werden beachtet und Strings werden mit '\0' beendet.             */
 /*              *in Zeigt anschliessend auf Zeichen nach ')'                           */
+/*     return: Anzahl Parameter oder P13, wenn fehlerhafte Berechnung                  */
 /***************************************************************************************/
 short get_letpars(char **in, int maxpars,
                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS],
@@ -1020,11 +1021,16 @@ short get_letpars(char **in, int maxpars,
     else
       (*in)++;
 
-    scan_to(prg_pars[1], in, MAX_LEN_PRG_PARS, 0, "", '\0');
-    LOG(2, "/get_letpars, i: 2.\n");
-    return P12;
+    if( scan_to(prg_pars[1], in, MAX_LEN_PRG_PARS, 0, "", '\0') )
+    { LOG(2, "/get_letpars, i: P1|P2ERROR.\n");
+      return P12|P2ERROR;
+    }
+    else
+    { LOG(2, "/get_letpars, i: P12.\n");
+      return P12;
+    }
   }
-  LOG(2, "/get_letpars, i: 1.\n");
+  LOG(2, "/get_letpars, i: P1.\n");
   return P1;
 }
 

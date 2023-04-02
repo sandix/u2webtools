@@ -421,7 +421,10 @@ short u2w_llistas(int pa, int lens[2], char parnames[MAX_LIST_LEN][MAX_PAR_NAME_
 /***************************************************************************************/
 short u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, HP_GLOBAL_LEVEL);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -435,7 +438,8 @@ short u2w_let(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], NONEW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -448,8 +452,11 @@ short u2w_let_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /*     u2w_leti speichert einen neuen Integer Parameter in pars                        */
 /***************************************************************************************/
 short u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
-{
-  change_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
+{ LOG(21, "u2w_leti, pa: %d, p1: %s.\n", pa, prg_pars[0]);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, HP_GLOBAL_LEVEL);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -463,7 +470,10 @@ short u2w_leti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, HP_GLOBAL_LEVEL);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -477,7 +487,10 @@ short u2w_letf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, HP_GLOBAL_LEVEL);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -491,7 +504,8 @@ short u2w_lets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], LONGW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -505,7 +519,8 @@ short u2w_let_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -519,7 +534,8 @@ short u2w_let_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], STRINGW, HP_GLOBAL_LEVEL);
   return false;
 }
 
@@ -533,7 +549,10 @@ short u2w_let_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, include_counter);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
   return false;
 }
 
@@ -547,7 +566,8 @@ short u2w_llet(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], NONEW, include_counter);
   return false;
 }
 
@@ -561,7 +581,10 @@ short u2w_llet_plus(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, include_counter);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
   return false;
 }
 
@@ -575,7 +598,10 @@ short u2w_lleti(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, include_counter);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
   return false;
 }
 
@@ -589,7 +615,10 @@ short u2w_lletf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  change_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
+  if( pa & P2ERROR )
+    change_parwert(prg_pars[0], NULL, NONEW, include_counter);
+  else
+    change_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
   return false;
 }
 
@@ -603,7 +632,8 @@ short u2w_llets(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
+  if(!(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], LONGW, include_counter);
   return false;
 }
 
@@ -617,7 +647,8 @@ short u2w_llet_plusi(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], DOUBLEW, include_counter);
   return false;
 }
 
@@ -631,7 +662,8 @@ short u2w_llet_plusf(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /***************************************************************************************/
 short u2w_llet_pluss(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 {
-  add_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
+  if( !(pa & P2ERROR) )
+    add_parwert(prg_pars[0], prg_pars[1], STRINGW, include_counter);
   return false;
 }
 

@@ -750,9 +750,26 @@ int calc_string(char op)
 int calc_double(char op)
 { double dl, dr;
 
+  if( !anz_wstack )
+    return true;
+  if( wstack[anz_wstack-1].type == NONEW )
+  { anz_wstack--;
+    if( !is_unary_op(op) )
+      dl = popdouble();
+    pushnonew();
+    return false;
+  }
   dr = popdouble();
   if( !is_unary_op(op) )
+  { if( !anz_wstack )
+      return true;
+    if( wstack[anz_wstack-1].type == NONEW )
+    { anz_wstack--;
+      pushnonew();
+      return false;
+    }
     dl = popdouble();
+  }
 #ifdef DEBUG
   else
     dl = 0;
@@ -831,10 +848,28 @@ int calc_long(char op)
 
   LOG(1, "calc_long, op: %c.\n", op);
 
+  if( !anz_wstack )
+    return true;
+  if( wstack[anz_wstack-1].type == NONEW )
+  { anz_wstack--;
+    if( !is_unary_op(op) )
+      ll = poplong();
+    pushnonew();
+    return false;
+  }
+
   if( is_bool_op(op) )
   { lr = popbool();
     if( !is_unary_op(op) )
+    { if( !anz_wstack )
+        return true;
+      if( wstack[anz_wstack-1].type == NONEW )
+      { anz_wstack--;
+        pushnonew();
+        return false;
+      }
       ll = popbool();
+    }
 #ifdef DEBUG
     else
       ll = 0;
@@ -843,7 +878,15 @@ int calc_long(char op)
   else
   { lr = poplong();
     if( !is_unary_op(op) )
+    { if( !anz_wstack )
+        return true;
+      if( wstack[anz_wstack-1].type == NONEW )
+      { anz_wstack--;
+        pushnonew();
+        return false;
+      }
       ll = poplong();
+    }
 #ifdef DEBUG
     else
       ll = 0;

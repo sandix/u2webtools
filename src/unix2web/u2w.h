@@ -704,6 +704,7 @@ typedef struct { time_t time_last_read;
 #define P8 128
 #define P9 256
 #define PA 512
+#define P2ERROR 16384
 
 /***************************************************************************************/
 #ifdef HAS_PAM

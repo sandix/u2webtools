@@ -571,7 +571,7 @@ short do_switch(void)
 /*     do_default                                                                      */
 /***************************************************************************************/
 short do_case_default(void)
-{ skip_to(inzeile, ATTRIB_STR END_SWITCH, akt_ptr);
+{ skip_to_end_loop(inzeile, akt_ptr, SWITCH);
   return -1;
 }
 

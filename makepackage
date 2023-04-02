@@ -54,6 +54,10 @@
 # #SPV-<special>#    gilt bei -V <special>
 # #NOSPV-<special>#  sonst
 #
+# Wenn Datei changelog.txt vorhanden ist, dann wird
+# der Inhalt der Datei changelog.txt hinter %changelog eingefügt
+#
+#
 # %rpmsave%     bei RPM -> "rpmsave", bei DEB -> "dpkg-old"
 # wenn es die Datei PREP.sed gibt:
 #   - 1. Zeile "sed" zum Umbenennen der Dateinamen unter files.prep
@@ -634,7 +638,11 @@ EOF
 # /debian/changelog
 ###########################################################
   echo "${PKGNAME//_/-} ($VERSION-$RELEASE) unstable; urgency=low" >"$DEBBUILD"/debian/changelog
-  sed "1,/%changelog/d;$MVBSED"'s/^\* *\(.*\)/* \1/;s/^- *\(.*\)/\1/' $SPECFILE | awk -v packager="$PACKAGER" '
+  if [[ -f $(dirname $SPECFILE)/changelog.txt ]]; then
+    cat $(dirname $SPECFILE)/changelog.txt
+  else
+    sed "1,/%changelog/d;$MVBSED"'s/^\* *\(.*\)/* \1/;s/^- *\(.*\)/\1/' $SPECFILE
+  fi | awk -v packager="$PACKAGER" '
 { if( $1 == "*" )
   { if( dat )
     { print "\n -- " packager "  " dat
@@ -808,8 +816,14 @@ EOF
 # RPM
 ###############################################################################
 else
-  sed "$PRGSED;${DISTROSED}${SOURCESED}s/^\\(Release: *\\)SETRELEASE/\\1$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE/
+  if [[ -f $(dirname $SPECFILE)/changelog.txt ]]; then
+    sed "$PRGSED;${DISTROSED}${SOURCESED}s/^\\(Release: *\\)SETRELEASE/\\1$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE/
+/%files/r $FILESLIST.a
+/%changelog/r $(dirname $SPECFILE)/changelog.txt" $SPECFILE >$BUILDDIR/SPECS/$SPEC
+  else
+    sed "$PRGSED;${DISTROSED}${SOURCESED}s/^\\(Release: *\\)SETRELEASE/\\1$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE/
 /%files/r $FILESLIST.a" $SPECFILE >$BUILDDIR/SPECS/$SPEC
+  fi
   #
   #
   if [[ $SOURCEFLAG = 1 ]]; then

@@ -1233,8 +1233,12 @@ int scan_calc(char **out, char **in, long n)
     LOG(3, "scan_calc, nach read_to, in: %.200s.\n", *in); 
 
     if( !berechne(&w, kommand) )
-    { strcpyn_z(out, wert2string(w), n);
-      return false;
+    { if( w.type == NONEW )
+        return true;
+      else
+      { strcpyn_z(out, wert2string(w), n);
+        return false;
+      }
     }
   }
   else

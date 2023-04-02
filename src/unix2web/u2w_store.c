@@ -335,7 +335,10 @@ wertetype *store_wert(char *in, wtype wt)
   wtype nwt;
 
   if( NULL != (w = alloc_wert()) )
-  { nwt = test_wtype(in);
+  { if( in )
+      nwt = test_wtype(in);
+    else
+      nwt = NONEW;
     switch( wt == NONEW || nwt == EMPTYW ? nwt : wt )
     { case STRINGW: w->wert.type = STRINGW;
                     w->wert.s = store_str(in);
@@ -349,7 +352,7 @@ wertetype *store_wert(char *in, wtype wt)
                     w->wert.w.l = getlong(&in);
                     w->wert.len = 0;
                     break;
-      default:      w->wert.type = EMPTYW;
+      default:      w->wert.type = nwt;
                     w->wert.len = 0;
                     break;
     }
@@ -788,9 +791,13 @@ int change_parwert(char *name, char *wert, wtype wt, short level)
   hparstype *hp;
   unsigned int h;
 
-  LOG(1, "change_parwert, name: %s, level: %hd, wert: %.200s.\n", name, level, wert);
+  LOG(1, "change_parwert, name: %s, level: %hd, wert: %.200s.\n", name, level,
+      wert ? wert : "(NULL)");
 
-  nwt = test_wtype(wert);
+  if( wert )
+    nwt = test_wtype(wert);
+  else
+    nwt = wt;
   h = var_hash(name);
   hp = phash[h];
   while( hp )                               /* in Parameterliste suchen                */
@@ -819,7 +826,7 @@ int change_parwert(char *name, char *wert, wtype wt, short level)
                       hp->werte->wert.w.l = getlong(&wert);
                       break;
         default:      LOG(6, "change_parwert - default.\n");
-                      hp->werte->wert.type = EMPTYW;
+                      hp->werte->wert.type = nwt;
                       break;
       }
       LOG(2, "/change_parwert - gefunden.\n");
