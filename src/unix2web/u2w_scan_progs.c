@@ -1241,7 +1241,12 @@ short do_substr(int pa, char **out, long n,
   LOG(3, "substr, str: %s, v: %d, b: %s.\n", prg_pars[0], v, prg_pars[2]);
 
   if( v >= 0 )
-    pv = prg_pars[0] + v;
+  { if( v >= strlen(prg_pars[0]) )
+      return false;
+	pv = prg_pars[0] + v;
+  }
+  else if( -v >= strlen(prg_pars[0]) )
+    return false;
   else
     pv = prg_pars[0] + (strlen(prg_pars[0])+v);
 
