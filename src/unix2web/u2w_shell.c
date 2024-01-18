@@ -6,8 +6,6 @@
 
 #include "u2w.h"
 
-#ifndef COMPILER
-
 /***************************************************************************************/
 /* int do_f2s(char *kommand, char *b, long *l, long n, int error_flag)                 */
 /*             char *kommand : Name des Kommandos, das ausgefuehrt werden soll         */
@@ -30,8 +28,10 @@ int do_f2s(char *kommand, char *b, long *l, long n, int error_flag)
 
   if( error_flag && !(logflag & LOGNOCMDERRORS) )
     strcatn(shell, " 2>&1", MAX_ZEILENLAENGE+10);
+#ifdef WEBSERVER
   else
     strcatn(shell, " 2>/dev/null", MAX_ZEILENLAENGE+10);
+#endif
   LOG(3, "do_f2s: shell: %s.\n", shell);
   if( NULL != (ptr = popen(shell, "r")) )        /* Programm starten                   */
   { while( !feof(ptr) && n > *l )                /* Ausgabe des Prorgramms             */
@@ -227,8 +227,10 @@ int doshell(char *kommand, char *par, int form_flag, int error_flag, int binflag
       return true;
   if( error_flag && !binflag && !(logflag & LOGNOCMDERRORS) )
     strcatn(shell, " 2>&1", MAX_ZEILENLAENGE);
+#ifdef WEBSERVER
   else
     strcatn(shell, " 2>/dev/null", MAX_ZEILENLAENGE);
+#endif
 
   if( NULL != (ptr = popen(shell, "r")) )      /* Programm starten                   */
   { fd = fileno(ptr);
@@ -287,4 +289,3 @@ int doshell(char *kommand, char *par, int form_flag, int error_flag, int binflag
   LOG(1, "/doshell.\n");
   return false;
 }
-#endif  /* #ifndef COMPILER */

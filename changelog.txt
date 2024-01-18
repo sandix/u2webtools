@@ -1,3 +1,5 @@
+* Sat Jan 13 2024 sandix@universal-logging-system.org
+  on u2w_interpreter send stderr while calling shell comands via ` or #
 * Sun Jul 30 2023 sandix@universal-logging-system.org
   bugfix: %substring on empty strings
 * Sun Apr  2 2023 sandix@universal-logging-system.org
