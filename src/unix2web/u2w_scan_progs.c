@@ -2256,6 +2256,24 @@ short u2w_url(int pa, char **out, long n,
 
 
 /***************************************************************************************/
+/* short do_calcstr(int pa, char **out, long n,                                        */
+/*               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)         */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*      do_calcstr fügt Wert der Berechnung ein                                        */
+/***************************************************************************************/
+short do_calcstr(int pa, char **out, long n,
+                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{
+  berechnestr(out, prg_pars[0], n);
+
+  return false;
+}
+
+
+/***************************************************************************************/
 /* short u2w_queryvars(int pa, char **out, long n,                                     */
 /*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
 /*                int pa: Anzahl Parameter in prg_pars                                 */

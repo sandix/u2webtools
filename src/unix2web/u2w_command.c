@@ -329,6 +329,7 @@ scan_prog_type scan_progs[] =
   D40(URL           , u2w_url            , P1,   P12),
   D40(GETPAR        , do_getpar          , P12,  P1),
   D40(QUERYVARS     , u2w_queryvars      , P1,   P1_4),
+  D40(CALCSTR       , do_calcstr         , P1,   P1),
 #ifdef WITH_GETTEXT
   D40(DECIMALPOINT  , do_decimalpoint    , 0,    0),
 #endif

@@ -1074,8 +1074,8 @@ int calc(void)
 
 /***************************************************************************************/
 /* int berechne(wert *w, char *f)                                                      */
-/*              char *f: Formel zur Berechnung                                         */
 /*              wert *w: Ergebnis                                                      */
+/*              char *f: Formel zur Berechnung                                         */
 /*              return : true bei Fehler                                               */
 /*     berechne Berechnet das Ergebnis der Formel aus f                                */
 /***************************************************************************************/
@@ -1286,6 +1286,92 @@ int berechne(wert *w, char *f)
   }
   else
   { LOG(1, "/berechne, Fehler in Formel: %s.\n", f);
+    return true;
+  }
+}
+
+
+/***************************************************************************************/
+/* int berechnestr(char **out, char *f, long n)                                        */
+/*              char **out: Ergebnis                                                   */
+/*              char *f: Formel zur Berechnung                                         */
+/*              long n: Platz in out                                                   */
+/*              return : true bei Fehler                                               */
+/*     berechnestr Berechnet das Ergebnis der Formel aus f, dabei werden keine         */
+/*               U2W Funktionen oder Parameter ausgewertet                             */
+/***************************************************************************************/
+int berechnestr(char **out, char *f, long n)
+{ char *b, **pb, *p;
+  char parwert[MAX_ZEILENLAENGE];
+  int op_flag = false;                      /* Es wird kein Operator erwartet          */
+  char swert[MAX_ZEILENLAENGE];
+  wert wwert;
+  long lwert;
+  int nf;
+
+  LOG(1, "berechnestr, f: %s.\n", f);
+
+  b = f;
+  anz_ops = 0;
+  anz_wstack = 0;
+  skipcalc_opstack_pos = 0;
+
+  while( *b )
+  { while( *b == ' ' || *b == '\n' )
+      b++;
+    if( !*b )
+      break;
+
+    pb = &b;
+
+    LOG(5, "berechnestr, pb: %s, op_flag: %d.\n", *pb, op_flag);
+    if( op_flag )
+    { if( pushop(pb, &op_flag) )
+        return false;
+    }
+    else if( isunaryop(**pb) && !(**pb == '-' && isdigit(*(*pb+1))) )
+    { if( pushunaryop(pb) )
+        return false;
+    }
+    else
+    { if( skipcalc_opstack_pos )
+      { if( !parflag )
+          skip(&b);
+      }
+      else
+      { p = b;
+        if( *p == '-' )                           /* '-' überlesen, wird nicht getestet*/
+          p++;
+        strcpyn_str(parwert, &p, OPS " \t", MAX_ZEILENLAENGE);
+        LOG(4, "berechnestr, parwert: %s.\n", parwert);
+        if( test_long(parwert) )
+        { if( pushlong(getlong(&b)) )
+            return false;
+        }
+        else if( test_double(parwert) )
+        { if( pushdouble(getdouble(&b)) )
+            return false;
+        }
+        else
+        { if( pushstring(getstring(&b)) )
+            return false;
+        }
+      }
+      op_flag = true;
+    }
+    LOG(3, "berechnestr, b: %s, opstack: %c.\n", b, anz_ops ? opstack[anz_ops-1] : ' ');
+  }
+
+  while( anz_ops && !calc() )
+    ;
+  LOG(2, "/berechnestr, anz_wstack: %d, Wert: %s.\n",
+      anz_wstack, wert2string(wstack[0]));
+  if( anz_wstack == 1 )
+  { strcpyn_z(out, wert2string(wstack[0]), n);
+    return false;
+  }
+  else
+  { LOG(1, "/berechnestr, Fehler in Formel: %s.\n", f);
     return true;
   }
 }

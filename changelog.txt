@@ -1,3 +1,5 @@
+* Sun Jan 28 2024 sandix@universal-logging-system.org
+  new function %calc(<str>)
 * Sat Jan 13 2024 sandix@universal-logging-system.org
   on u2w_interpreter send stderr while calling shell comands via ` or #
 * Sun Jul 30 2023 sandix@universal-logging-system.org

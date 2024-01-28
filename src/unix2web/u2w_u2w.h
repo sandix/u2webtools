@@ -166,6 +166,8 @@
 #define FI           "fi"             /* Ende else/then Fall                           */
 #define CALC         '{'              /* Bloecke zwischen %{ ... } werden berechnet    */
 #define CALC_ENDE    '}'
+#define CALCSTR      "calc"           /* %calc($a), es wird der Inhalt von $a berechnet*/
+                                      /* %{$a} ergibt den String $a                    */
 #define ISSET        "isset"          /* %isset($a) ist true, wenn $a definiert ist    */
 #define IMAGE        "image"          /* %image(<url>) Image einfügen                  */
 #define OBJECT       "object"         /* %object(data, width, heigth[, type[, pars]])  */
