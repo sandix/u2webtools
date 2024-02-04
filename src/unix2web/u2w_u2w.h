@@ -306,6 +306,15 @@
 #define CPARRTRIM      "cparrtrim"    /* %cparrtrim(<v>[, <cs>]) CMD <v> trimmen       */
 #define REPLACE        "replace"      /* %replace(<r>, <s>, <t>) alle Vorkommen von    */
                                       /* <r> durch <s> in <t> ersetzen.                */
+#define REPLACEQUOTED  "replacequoted" /* %replacequoted(<s>, <q>) in <s> gequotete    */
+                                      /* Zeichen durch binärwerte 0x1 bis 0xn ersetzen */
+                                      /* z. B. <q> = '\$@%' -->>                       */
+                                      /* \\ -> 0x1, \$ -> 0x2, \@ -> 0x3, % -> 0x4     */
+#define UNREPLACE      "unreplace"    /* %unreplace(<s>, <q>)                          */
+                                      /* %replacequoted rückgängig machen und          */
+                                      /* Quotierung entfernen                          */
+                                      /* z. B. <q> = '\$@%' -->>                       */
+                                      /* 0x1 -> \, 0x2 -> $, 0x3 -> @, 0x4 -> %        */
 #define COUNTCHAR      "countchar"    /* %countchar(<s>, <c>) Vorkommen von <c> in <s> */
                                       /*  zählen                                       */
 #define RANDOM         "rand"         /* %rand([von],[bis]) Zufallszahl generieren     */

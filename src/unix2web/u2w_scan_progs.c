@@ -1817,12 +1817,79 @@ short do_replace(int pa, char **out, long n,
   { if( *p == prg_pars[0][0] && str_starts_z(&p, prg_pars[0]) )
       strqcpyn_z(out, prg_pars[1], n-(*out-o), qf_strings[quote]);
     else
-    { if( (*out-o) < n-1)
+    { if( (*out-o) < n-1 )
       { if( *qf_strings[quote] && strchr(qf_strings[quote], *p) )
           *(*out)++ = *qf_strings[quote];
         *(*out)++ = *p++;
       }
     }
+  }
+  return false;
+}
+
+
+/***************************************************************************************/
+/* short do_replacequoted(int pa, char **out, long n,                                  */
+/*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*     do_replacequoted quotierte Zeichen durch binary ersetzen, damit diese Zeichen   */
+/*              bei der weiteren Verarbeiteung nicht mehr beachtet werden              */
+/*              mit unreplace wird diese Ersetzung rückgängig gemacht und das          */
+/*              Quotingzeichen entfern.                                                */
+/***************************************************************************************/
+short do_replacequoted(int pa, char **out, long n,
+               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{ char *p, *o, *q;
+
+  LOG(1, "do_replacequoted, s: %s, q: %s.\n", prg_pars[0], prg_pars[1]);
+
+  o = *out;
+  p = prg_pars[0];
+  while( *p && (*out-o) < n )
+  { if( *p == prg_pars[1][0] )
+	{ q = strchr(prg_pars[1], *(p+1));
+      if( q )
+      { *(*out)++ = (char)(1 + (q-prg_pars[1]));
+	    p += 2;
+	  }
+      else
+        *(*out)++ = *p++;
+	}
+    else
+      *(*out)++ = *p++;
+  }
+  return false;
+}
+
+
+/***************************************************************************************/
+/* short do_unreplace(int pa, char **out, long n,                                      */
+/*                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)        */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*     do_unreplace durch %replacequoted ersetzte quotierte Zeichen unquoten           */
+/*              wird nach der Weiterverarbeitung aufgerufen                            */
+/***************************************************************************************/
+short do_unreplace(int pa, char **out, long n,
+               char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{ char *p, *o;
+  short ml;
+
+  LOG(1, "do_unreplace, r: %s, s: %s, t: %s.\n", prg_pars[0], prg_pars[1]);
+
+  ml = strlen(prg_pars[1]);
+  o = *out;
+  p = prg_pars[0];
+  while( *p && (*out-o) < n )
+  { if( *p <= ml )
+      *(*out)++ = prg_pars[1][*p++-1];
+    else
+      *(*out)++ = *p++;
   }
   return false;
 }

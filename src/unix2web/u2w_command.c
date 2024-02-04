@@ -317,6 +317,8 @@ scan_prog_type scan_progs[] =
   D40(LTRIM         , do_ltrim           , P1,   P12),
   D40(RTRIM         , do_rtrim           , P1,   P12),
   D40(REPLACE       , do_replace         , P1_3, P1_3),
+  D40(REPLACEQUOTED , do_replacequoted   , P12,  P12),
+  D40(UNREPLACE     , do_unreplace       , P12,  P12),
   D40(COUNTCHAR     , do_countchar       , P12,  P12),
   D40(RANDOM        , do_random          , 0,    P12),
   D40(READLINE      , do_readline        , 0,    P1),
