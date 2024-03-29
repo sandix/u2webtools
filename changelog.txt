@@ -1,5 +1,6 @@
 * Fri Mar 29 2024 sandix@universal-logging-system.org
   new: -Ff - flush before %parameter
+  %countpar: don't count empty Value
 * Sun Feb  4 2024 sandix@universal-logging-system.org
   new functions %replacequoted and %unreplace
 * Sun Jan 28 2024 sandix@universal-logging-system.org

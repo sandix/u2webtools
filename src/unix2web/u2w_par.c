@@ -616,7 +616,7 @@ void countpar(char **p, char *parname, size_t n, short level)
     LOG(4, "countpar, parname: %s, hp->name: %s.\n", parname, hp->name);
 
     w = hp->werte;
-    while( w != NULL )
+    while( w != NULL && w->wert.type != EMPTYW )
     { z++;
       w = w->next;
     }
