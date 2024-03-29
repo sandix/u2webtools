@@ -520,9 +520,6 @@ u2w_put_command_type u2w_put_header_commands[] =
   { HTML_HEADS_OFF     , do_html_head_off      , PCU2WFLAG },
   /* ACHTUNG: Die Position der ersten 4 Eintraege darf nicht veraendert werden         */
   /* ansonsten muss "T_U2W_PUT_HEADER_S_ELEMENTS" geaendert werden                     */
-  { PARAMETER_GET      , do_parameter_get      , PCU2WFLAG },
-  { PARAMETER_MULTIPART, do_parameter_multipart, PCU2WFLAG },
-  { PARAMETER          , do_parameter          , PCU2WFLAG },
   { REFRESH            , do_refresh            , 0         },
   { FRAME              , do_frame              , PCU2WFLAG },
   { FRAME_END          , do_frame_end          , PCU2WFLAG },
@@ -550,6 +547,9 @@ u2w_put_command_type u2w_put_http_header_commands[] =
   { HTTP_HEAD_OFF      , do_http_head_off      , PCU2WFLAG },
   { HTTP_HEADS_ON      , do_http_heads_on      , PCU2WFLAG },
   { HTTP_HEADS_OFF     , do_http_head_off      , PCU2WFLAG },
+#ifdef WEBSERVER
+  { FLUSH         , do_flush         , PCU2WFLAG },
+#endif
   { ""                 , NULL                  , 0 },
 };
 
@@ -558,10 +558,10 @@ u2w_put_command_type u2w_put_http_header_commands[] =
 u2w_put_command_type u2w_put_commands[] =
 { { PRE_OFF       , do_pre_off       , PCU2WFLAG },
   /* PRE_OFF muss an erster Stelle stehen                         */
+  { PARAMETER_GET      , do_parameter_get      , PCU2WFLAG },
+  { PARAMETER_MULTIPART, do_parameter_multipart, PCU2WFLAG },
+  { PARAMETER          , do_parameter          , PCU2WFLAG },
   { PRE_ON        , do_pre_on        , PCU2WFLAG },
-#ifdef WEBSERVER
-  { FLUSH         , do_flush         , PCU2WFLAG },
-#endif
   { SHELLMENU     , do_shellmenu     , PCU2WFLAG },
   { SUBFILE       , do_subfile       , PCU2WFLAG },
   { EXITMENU      , do_exitmenu      , PCU2WFLAG },

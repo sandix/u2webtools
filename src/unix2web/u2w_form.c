@@ -1175,7 +1175,10 @@ int start_formular(int getflag, int multipart_flag, char *action)
            || dosend("\">") )
       return true;
 
-
+#ifdef WEBSERVER
+  if( flushmode & 4 )
+    send_chunk();
+#endif
   return false;
 }
 

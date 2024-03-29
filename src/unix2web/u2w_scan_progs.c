@@ -1877,14 +1877,15 @@ short do_replacequoted(int pa, char **out, long n,
 /***************************************************************************************/
 short do_unreplace(int pa, char **out, long n,
                char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
-{ char *p, *o;
+{ unsigned char *p;
+  char *o;
   short ml;
 
   LOG(1, "do_unreplace, r: %s, s: %s, t: %s.\n", prg_pars[0], prg_pars[1]);
 
   ml = strlen(prg_pars[1]);
   o = *out;
-  p = prg_pars[0];
+  p = (unsigned char *)prg_pars[0];
   while( *p && (*out-o) < n )
   { if( *p <= ml )
       *(*out)++ = prg_pars[1][*p++-1];

@@ -455,7 +455,7 @@ int u2w_put(FILE *ptr)
             }
             else
               html_head_flag = 2;
-            if( flushmode == 1 )
+            if( flushmode & 1 )
               send_chunk();
           }
 
@@ -490,7 +490,7 @@ int u2w_put(FILE *ptr)
               parflag = 2;
             }
             html_head_flag = 2;
-            if( flushmode == 2 )
+            if( flushmode & 2 )
               send_chunk();
           }
 
@@ -680,7 +680,7 @@ int u2w_put(FILE *ptr)
               }
               else
                 html_head_flag = 2;
-              if( flushmode == 1 )
+              if( flushmode & 1 )
                 send_chunk();
             }
 
@@ -715,7 +715,7 @@ int u2w_put(FILE *ptr)
                 parflag = 2;
               }
               html_head_flag = 2;
-              if( flushmode == 2 )
+              if( flushmode & 2 )
                 send_chunk();
             }
 
@@ -816,7 +816,7 @@ int u2w_put(FILE *ptr)
 #endif
           if( u2w_send_http_header() )
             return true;
-          if( flushmode == 1 )
+          if( flushmode & 1 )
             send_chunk();
 
           if( headflag )                                 /* Methode HEAD?              */
@@ -848,7 +848,7 @@ int u2w_put(FILE *ptr)
             }
             html_head_flag = 2;
           }
-          if( flushmode == 2 )
+          if( flushmode & 2 )
             send_chunk();
         }
 #endif

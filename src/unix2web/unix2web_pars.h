@@ -115,6 +115,7 @@
 #define OPT_SKIP_EMPTY          'E'  /* Leere Parameter nicht an Programme übergeben   */
 #define OPT_FLUSH_MODE          'F'  /* Flush-Mode einstellen                          */
 #define OPT_FLUSH_MODE_HTTP      'h' /* -Fh flush nach http- aber vor html-Header      */
+#define OPT_FLUSH_MODE_FORM      'f' /* -Ff flush nach <form ...>                      */
                                      /* -F flush nach Beginn html-Header               */
 #define OPT_BACKLOG             'G'  /* Num Backlog in listen                          */
 #define OPT_HEADER              'H'  /* keinen HTTP-Header senden                      */

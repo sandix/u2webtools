@@ -173,6 +173,7 @@ short verzeichnis_mode = VZ_NO_CHANGE;/* VZ_NO_CHANGE: root des Servers wechselt
 short flushmode = 0;                 /* 0: flush erst, wenn Puffer voll                */
                                      /* 1: flush, direkt vor html-Header               */
                                      /* 2: nach html-Header                            */
+                                     /* 4: nach <form ...>                             */
 char get_home[HOME_LENGTH];          /* Root des Servers für != PUT                    */
 char put_home[HOME_LENGTH];          /* Root des Servers für PUT                       */
 
@@ -485,7 +486,7 @@ fputs("\n -R       ", stdout);
 #ifdef HAS_DAEMON
           "                 [-D] [-Dp path]\n"
 #endif
-          "                 [-E] [-F|-Fh] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]\n"
+          "                 [-E] [-F] [-Fh] [-Ff] [-G bcklg] [-H] [-I td] [-Ip path] [-L ip] [-N] [-P]\n"
 #ifdef WITH_MMAP
           "                 [-Q[cCqQsSrReEtUpPAf]]\n"
 #endif
@@ -663,6 +664,8 @@ fputs("\n -F       ", stdout);
           fputs(_("flush after html-header"), stdout);
 fputs("\n -Fh      ", stdout);
           fputs(_("flush after http-header"), stdout);
+fputs("\n -Ff      ", stdout);
+          fputs(_("flush after <form ...>"), stdout);
 fputs("\n -G bcklg ", stdout);
           fputs(_("set backlog in listen to bcklg"), stdout);
 fputs("\n -H       ", stdout);
@@ -1137,7 +1140,8 @@ int main(int argc, char **argv)
                            set_get_home = argv[options];
                          }
                          break;
-      case OPT_FLUSH_MODE: flushmode = argv[options][2] == OPT_FLUSH_MODE_HTTP ? 1 : 2;
+      case OPT_FLUSH_MODE: flushmode |= argv[options][2] == OPT_FLUSH_MODE_HTTP ? 1 : 
+                                          ( argv[options][2] == OPT_FLUSH_MODE_FORM ? 4 : 2);
                          break;
 #ifdef WITH_HTTPS
       case OPT_SSL:      ssl_mode = ssl_mode | SSL_MODE_ON;
