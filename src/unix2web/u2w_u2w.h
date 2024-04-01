@@ -91,6 +91,7 @@
 #define TITLE        "title"          /* %title <Title> Titel des Headers festlegen    */
 #define AUTHORIZE    "authorize"      /* %authorize verlangt Authentifizierung         */
 #define LOGIN        "login"          /* %login, 401 Authorize senden                  */
+#define UNAUTHORIZED "unauthorized"   /* http/1.1 401 Unauthorized                     */
 #define CHECK_CRED   "check_cred"     /* %check_cred(<user>, <pwd>) test User und PWD  */
                                       /* beim Betriebssystem UNIX / PAM                */
 #define PAGE_NOT_FOUND "page_not_found" /* %page_not_found Server sendt page not found */

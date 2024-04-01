@@ -17,6 +17,7 @@
 #define AUTHORIZE_SEITE_NUM  "401"
 #define AUTHORIZE_SEITE_DESC "Authorization Required"
 #define AUTHORIZE_SEITE_HTTP "WWW-Authenticate: Basic realm=\"%s\"" CRLF
+#define AUTHORIZE_LINE_HTTP "WWW-Authenticate: %s" CRLF
 #define STD_REALM            "WWW Syko"
 #define AUTHORIZE_DIGEST_HTTP "WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\"" CRLF
 #define AUTHORIZE_DIGEST_STALE_HTTP "WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\", stale=\"true\"" CRLF

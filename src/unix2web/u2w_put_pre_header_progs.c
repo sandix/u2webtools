@@ -178,6 +178,27 @@ short do_authorize(void)
 
 
 /***************************************************************************************/
+/* short do_unauthorized(void)                                                         */
+/*     do_unauthorized                                                                 */
+/***************************************************************************************/
+short do_unauthorized(void)
+{ char out[MAX_ZEILENLAENGE];                        /* Aufbau des Ergebnisses         */
+  char zeile[MAX_ZEILENLAENGE];
+
+  scan_to_teil(out, inz, MAX_ZEILENLAENGE);
+
+  if( *out )
+    snprintf(zeile, MAX_ZEILENLAENGE, AUTHORIZE_LINE_HTTP, out);
+  else
+    snprintf(zeile, MAX_ZEILENLAENGE, AUTHORIZE_SEITE_HTTP, realm);
+
+  send_error_page(AUTHORIZE_SEITE_NUM, AUTHORIZE_SEITE_DESC,
+                  zeile, AUTHORIZE_SEITE_TEXT);
+  return 0;
+}
+
+
+/***************************************************************************************/
 /* short do_page_not_found(void)                                                       */
 /*     do_page_not_found                                                               */
 /***************************************************************************************/

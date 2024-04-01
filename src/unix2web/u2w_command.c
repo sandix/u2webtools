@@ -475,6 +475,7 @@ u2w_put_command_type u2w_put_pre_http_commands[] =
   { AUTHORIZE     , do_authorize          , 0       },
   { PAGE_NOT_FOUND, do_page_not_found     , 0       },
   { LOGIN         , do_login              , 0       },
+  { UNAUTHORIZED  , do_unauthorized       , 0       },
 #endif  /* WEBSERVER */
   { INCLUDE       , do_include            , PCFILEFLAG},
   { INPUT         , do_input              , PCFILEFLAG},
