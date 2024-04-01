@@ -434,6 +434,10 @@ int do_httpd(void)
         }
       }
     }
+    else if( par )
+    { LOG(17, "do_httpd - par: %s.\n", par);
+      get_parwerte(par);
+    }
 
 #ifdef WITH_HTTPS
     if( ssl_mode )

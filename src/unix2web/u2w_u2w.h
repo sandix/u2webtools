@@ -28,6 +28,7 @@
 #define MYPORT       "myport"         /* %myport ist der Port des u2w-Servers          */
 #define PRINTUSER    "user"           /* %user ist angemeldeter User                   */
 #define PRINTPWD     "pwd"            /* %pwd ist das Passwort zum User                */
+#define TOKEN        "token"          /* %token Bearer token                           */ 
 #define METHOD       "method"         /* %method ist die HTTP-Methode (GET/POST...)    */
 #define PUTDATA      "putdata"        /* Pfad zu den PUT Daten                         */
 #define CLIENTIP     "clientip"       /* %clientip ist die Connect-IP-Adresse          */

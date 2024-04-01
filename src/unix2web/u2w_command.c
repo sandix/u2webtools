@@ -281,6 +281,7 @@ scan_prog_type scan_progs[] =
   D40(GETHTTP       , do_https           , 0,    0),
   D40(PRINTUSER     , do_printuser       , 0,    0),
   D40(PRINTPWD      , do_printpwd        , 0,    0),
+  D40(TOKEN         , do_token           , 0,    0),
   D40(CLIENTIP      , do_clientip        , 0,    0),
 #ifdef WITH_IPV6
   D40(CLIENTIP6     , do_clientip6       , 0,    0),

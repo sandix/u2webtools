@@ -93,6 +93,7 @@ char clientip[MAX_IP_LEN];           /* IP-Adresse des Clients                  
 #endif
 struct in_addr *clientipstruct;      /* IPV4 Adresse network order                     */
 char *auth_basic = "";               /* Platz fuer den Auth Basic String               */
+char *auth_token = NULL;             /* Bearer Token                                   */
 char *realm=STD_REALM;               /* String im Anmeldefenster                       */
 int digestnum = 0;                   /* Digest num                                     */
 char servernonce[MAX_LEN_DIGEST_NONCE];  /* Digest nonce                               */

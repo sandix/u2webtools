@@ -465,6 +465,11 @@ int read_http_header(methodtype *method, char **par,
           read_header_pos++;
         auth_basic = read_header_pos;
       }
+      else if( str_lcasestarts_z(&read_header_pos, "token ") || str_lcasestarts_z(&read_header_pos, "bearer ") )
+      { while( *read_header_pos == ' ' )
+          read_header_pos++;
+        auth_token = read_header_pos;
+      }
       else if( str_lcasestarts_z(&read_header_pos, "digest ") )
       { while( *read_header_pos == ' ' )
           read_header_pos++;

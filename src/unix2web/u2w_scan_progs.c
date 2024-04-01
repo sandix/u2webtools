@@ -546,6 +546,26 @@ short do_printpwd(int pa, char **out, long n,
 
 
 /***************************************************************************************/
+/* short do_token(int pa, char **out, long n,                                          */
+/*                  char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)      */
+/*              int pa: Anzahl Parameter in prg_pars                                   */
+/*              char **out: Ziel des Ergebnisses                                       */
+/*              long n    : Platz in out                                               */
+/*              char prg_pars: übergebene Funktionsparameter                           */
+/*     do_token %token: Token aus Authentication: Bearer (token)                       */
+/***************************************************************************************/
+short do_token(int pa, char **out, long n,
+                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)
+{
+#ifdef WEBSERVER
+  if( auth_token )
+    strqcpyn_z(out, auth_token, n, qf_strings[quote]);
+#endif
+  return false;
+}
+
+
+/***************************************************************************************/
 /* short do_clientip(int pa, char **out, long n,                                       */
 /*                 char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS], int quote)       */
 /*              int pa: Anzahl Parameter in prg_pars                                   */

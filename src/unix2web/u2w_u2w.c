@@ -38,6 +38,7 @@ void init_global_vars(void)
   user[0] = '\0';
   passwd = "";
   auth_basic = "";
+  auth_token = NULL;
   http_head_flag = 0;                /* true, Header ist komplett gesendet             */
   file_flag = true;                  /* false, ptr aus %input, true sonst              */
                                      /*  false: '`' und '#' nicht auswerten.           */
