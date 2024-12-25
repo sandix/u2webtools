@@ -44,6 +44,9 @@ void show_version(char *prg, int buildflag)
 #ifdef POSTGRESQLCLIENT
   " postgresqlclient"
 #endif
+#ifdef SQLITE3
+  " sqlite3"
+#endif
   ".\n", stdout);
 #endif 
   fputs("Copyright: " COPYRIGHT, stdout);

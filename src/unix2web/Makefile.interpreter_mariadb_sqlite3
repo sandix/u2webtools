@@ -1,0 +1,14 @@
+###############################################
+# LINUX Interpreter
+
+BINFILE ?= u2w_interpreter
+
+BINFILE := ${BINFILE}${DEBUGEXT}
+
+MINCFLAGS := -D_GNU_SOURCE -DUNIX -DWITH_MALLOC -DINTERPRETER
+
+TESTCFLAGS := -DMARIADBCLIENT -DWITH_GETTEXT -DSQLITE3
+
+MINLIBS = 
+
+include Makefile.u2w

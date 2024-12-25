@@ -38,6 +38,24 @@ int sql3_res_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 int sql3_line_flag[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 int sql3_next_value[MAX_ANZ_INCLUDE+MAX_P_QUERIES];
 
+#define SQLITEABORT 0
+#define SQLITECONTINUE 1
+#define SQLITEMAXATTEMPTS 10
+
+
+/***************************************************************************************/
+/* int sql3_busy_handler(void *data, int attempt)                                      */
+/*        void *data:                                                                  */
+/*        int attempt: Versuchszähler                                                  */
+/***************************************************************************************/
+int sql3_busy_handler(void *data, int attempt)
+{
+  if( attempt < SQLITEMAXATTEMPTS )
+  { sqlite3_sleep(10);
+    return SQLITECONTINUE;
+  }
+  return SQLITEABORT;
+}
 
 /***************************************************************************************/
 /* void sql3_init_flags(void)                                                          */
@@ -85,13 +103,14 @@ void sql3_free_res(void)
 
 
 /***************************************************************************************/
-/* short sql3_open(char *dbpath, int errorflag)                                        */
+/* short sql3_open(char *dbpath, int errorflag, int flags)                             */
 /*             char *dbpath: Pfad zur slite3 DB Datei                                  */
 /*             int errorflag: bei true werden Fehlermeldungen auf stderr ausgegeben    */
+/*             int flags: open flags to sqlite3_open_v2                                */
 /*             return: true bei Fehler                                                 */
 /*     sql3_open öffnet eine sqlite3 DB Datei                                          */
 /***************************************************************************************/
-short sql3_open(char *path, int errorflag)
+short sql3_open(char *path, int errorflag, int flags)
 { static char cursql3path[MAX_PATH_LEN];
 
   LOG(1, "sql3_open, path: %s.\n", path);
@@ -106,13 +125,16 @@ short sql3_open(char *path, int errorflag)
     }
   }
 
-  if( SQLITE_OK != sqlite3_open(path, &sql3db) )
+  if( SQLITE_OK != sqlite3_open_v2(path, &sql3db, flags, NULL) )
   { if( errorflag || sqlite3_error_log_flag )
       logging("Failed to open database %s - Error: %s.\n",
               path, sqlite3_errmsg(sql3db));
+    sqlite3_close(sql3db);
     sqlite3_open_flag = false;
     return true;
   }
+
+  sqlite3_busy_handler(sql3db, sql3_busy_handler, NULL);
 
   strcpyn(cursql3path, path, MAX_PATH_LEN);
   sqlite3_open_flag = true;
@@ -128,7 +150,26 @@ short sql3_open(char *path, int errorflag)
 /*     u2w_sql3_open öffnet eine sqlite3 Datei                                         */
 /***************************************************************************************/
 short u2w_sql3_open(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
-{ return sql3_open(prg_pars[0], false);
+{ int flags;
+
+  if( pa & P2 )
+  { flags = 0;
+    if( strchr(prg_pars[1][0], 'R') || strchr(prg_pars[1][0], 'r') )
+      flags = SQLITE_OPEN_READONLY;
+    if( strchr(prg_pars[1][0], 'U') || strchr(prg_pars[1][0], 'u') )
+      flags |= SQLITE_OPEN_URI;
+    if( strchr(prg_pars[1][0], 'M') || strchr(prg_pars[1][0], 'm') )
+      flags |= SQLITE_OPEN_MEMORY;
+    if( strchr(prg_pars[1][0], 'C') || strchr(prg_pars[1][0], 'c') )
+      flags |= SQLITE_OPEN_CREATE;
+    if( strchr(prg_pars[1][0], 'W') || strchr(prg_pars[1][0], 'w') )
+      flags |= SQLITE_OPEN_READWRITE;
+    if( !flags )
+      flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+  }
+  else
+    flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+  return sql3_open(prg_pars[0], false, flags);
 }
 
 

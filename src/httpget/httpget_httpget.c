@@ -331,22 +331,63 @@ int httpget(char *path, char *outputfile, char *gfile, char *host,
   { perror("getaddrinfo");
     return ERROR_GETADDRINFO;
   }
-  sh = -1;
-  res = connectres;
 
-  while( res )
-  { LOG(21, "httpget - while(res)...\n");
-    if( 0 <= (sh = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) )
-    { if( setsockopt(sh, SOL_SOCKET, SO_REUSEADDR, &i, sizeof(i)) < 0 )
-      { perror("setsockopt");
-        return ERROR_SOCKET;
+#ifndef MINGW
+  if( connect_timeout_secs )
+  { int fsave;
+    fd_set fds;                                   /* Set von Filedescriptoren          */
+    struct timeval tv;                            /* Timeval Struktur                  */
+
+    sh = -1;
+    res = connectres;
+    while( res )
+    { LOG(11, "httpget, connect mit timeout: %d.\n", connect_timeout_secs);
+      if( 0 <= (sh = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) )
+      { if( (fsave = fcntl(sh, F_GETFL, NULL)) < 0 )
+          return ERROR_FCNTL_GET;
+        if( fcntl(sh, F_SETFL, fsave | O_NONBLOCK) < 0 )
+          return ERROR_FCNTL_SET;
+        if( connect(sh, res->ai_addr, res->ai_addrlen) < 0 ) 
+        { if( errno == EINPROGRESS )
+          { int err;
+            socklen_t len = sizeof err;
+        
+            FD_ZERO(&fds);                            /* Alle fds auf Null                 */
+            FD_SET(sh, &fds);                         /* Bit fuer sh setzen                */
+            tv.tv_sec = connect_timeout_secs;         /* Timeout                           */
+            tv.tv_usec = 0;
+        
+            if( !select(sh+1, NULL, &fds, NULL, &tv) )
+            { fprintf(stderr, "connect: %s.\nconnect to: %s.\n", strerror(ETIMEDOUT), h);
+              return ERROR_CONNECT_TIMEO;
+            }
+            getsockopt(sh, SOL_SOCKET, SO_ERROR, &err, &len);
+            if( err && !res->ai_next )
+            { fprintf(stderr, "connect: %s.\nconnect to: %s.\n", strerror(err), h);
+              return ERROR_CONNECT;
+            }
+          }
+        }
+        if( fcntl(sh, F_SETFL, fsave) < 0 && !res->ai_next )
+          return ERROR_FCNTL_SET;
+        res = res->ai_next;
       }
-      if( connect(sh, res->ai_addr, res->ai_addrlen) >= 0 )
-        break;
-      close(sh);
-      sh = -1;
     }
-    res = res->ai_next;
+  }
+  else
+#endif  /* MINGW */
+  { sh = -1;
+    res = connectres;
+    while( res )
+    { LOG(21, "httpget - while(res)...\n");
+      if( 0 <= (sh = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) )
+      { if( connect(sh, res->ai_addr, res->ai_addrlen) >= 0 )
+          break;
+        close(sh);
+        sh = -1;
+      }
+      res = res->ai_next;
+    }
   }
   freeaddrinfo(connectres);
   if( sh < 0 )

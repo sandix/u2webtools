@@ -579,7 +579,16 @@ int main(int argc, char **argv)
 
                                      /* zu empfangende Dateien als Parameter angegeben */
   for( i = 2+options; i < argc; i++ )   /* alle Dateien                                */
-  { strcpy(getfile, argv[i]);           /* Dateiname aus Parameterliste                */
+  {
+#ifdef WINDOWSQUOTING
+    if( (argv[i][0] == '"' && argv[i][strlen(argv[i])-1] == '"')
+        || (argv[i][0] == '\'' && argv[i][strlen(argv[i])-1] == '\'') )
+    { strcpy(getfile, argv[i]+1);
+      getfile[strlen(getfile)-1] = '\0';
+    }
+    else
+#endif
+    strcpy(getfile, argv[i]);           /* Dateiname aus Parameterliste                */
     if( !stdout_flag && !*outputfile )  /* nicht stdout und -f nicht angegeben         */
     { if( *outpath )
       { char *p;

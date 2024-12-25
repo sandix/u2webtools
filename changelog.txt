@@ -1,3 +1,5 @@
+* Wed Dec 25 2024 sandix@universal-logging-system.org
+  bugfix: connectiontimeout on IP-V6 wasn't working
 * Fri Mar 29 2024 sandix@universal-logging-system.org
   new: -Ff - flush before %parameter
   %countpar: don't count empty Value

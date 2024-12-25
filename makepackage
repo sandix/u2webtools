@@ -72,18 +72,19 @@ DEBIANBASE=/dev/shm/$(id -un)-deb
 #
 TAREXCLUDE='--exclude=.*.swp'
 #
-unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES DONTRM
+unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES DONTRM onlyspec
 FUSER="root"
 FGROUP="root"
 SOURCEFLAG=0
 #
-while getopts An:v:V:sSu:g:RBDd? op; do
+while getopts An:v:V:sSu:g:RBDdP? op; do
   case "$op" in
    A) APPLIANCE="-appliance";;
    B) BINFILES=1;;
    d) export 'DEBUG=-DDEBUG'
       export DEBUGEXT='_debug';;
-   n) SETNAME="$OPTARG";;
+   n) SETNAME="$OPTARG"
+      NAMEEXT=".$OPTARG";;
    v) SETVERSION="$OPTARG";;
    V) SPECIALVERSION="$OPTARG"
       SPECIALV=".$OPTARG";;
@@ -93,6 +94,7 @@ while getopts An:v:V:sSu:g:RBDd? op; do
    g) FGROUP=$OPTARG;;
    D) D=_dataport;;
    R) DONTRM=1;;
+   P) onlyspec=1;;
    ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-R] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
   -A Appliance
   -B only binaries
@@ -124,8 +126,15 @@ if [[ $# -lt 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
   exit 1
 fi
 #
-if uname -v | grep -Eqi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
-  DEB=_debian
+if grep -q '%[a-zA-Z]*%' $SPECFILE && [[ -z "$SETNAME" ]]; then
+  echo "Error: missing -n <name>"
+  exit 1
+fi
+#
+if [[ -z "$onlyspec" ]]; then
+  if uname -v | grep -Eqi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
+    DEB=_debian
+  fi
 fi
 #
 if grep -q 'BuildArch: *noarch' "$1"; then
@@ -165,7 +174,7 @@ else
   MVBSED="s/#CHANGELOGDATE#/$(date '+%a %b %e %Y')/g;"
 fi
 if [[ "$PKGNAME" = "SETNAME" ]]; then
-  PKGNAME="${SETNAME:-$(sed 's/-[0-9][0-9]*\.[1-9][0-9]*-[1-9][0-9]*.*//') <<<$SPECFILENAME}"
+  PKGNAME="${SETNAME:-$(sed 's/-[0-9][0-9]*\.[1-9][0-9]*-[1-9][0-9]*.*//' <<<$SPECFILENAME)}"
   MVBSED="${MVBSED}s|^\\(Name: *\\)SETNAME|\\1$PKGNAME|g;"
 fi
 if [[ "$PROVIDES" = "SETNAME" ]]; then
@@ -312,15 +321,15 @@ STARTDIR=$(pwd)
 if [[ -n "$SOURCE" ]]; then
   BD=$TMPDIR
   if mkdir -p "$TMPDIR" && cd "$WD"; then
-    if [[ -d files ]]; then
-      cp -a files "$TMPDIR/$NAME"
+    if [[ -d files$NAMEEXT ]]; then
+      cp -a files$NAMEEXT "$TMPDIR/$NAME"
     else
       mkdir -p "$TMPDIR/$NAME"
     fi
     [[ -d src ]] && cp -a src "$TMPDIR/$NAME/SRC"
-    if [[ -f PREP.seds ]]; then
-      FNSED="`head -1 PREP.seds`"
-      PRGSED="`tail -1 PREP.seds`;$SPECSED"
+    if [[ -f PREP.seds$NAMEEXT ]]; then
+      FNSED="`head -1 PREP.seds$NAMEEXT`"
+      PRGSED="`tail -1 PREP.seds$NAMEEXT`;$SPECSED"
       ( if cd files.prep; then
           for f in `find * -type d`; do
             ND=$(sed "$FNSED" <<<$f)
@@ -416,7 +425,7 @@ elif [[ -n "$SOURCE" ]]; then
       )
     else
       ( if cd $BD/$NAME; then
-          DIRS=`find * -type d -name "$DIRSEARCH*"`
+          DIRS=`find * -type d -name "$DIRSEARCH*" | grep -Ev '^SRC/|^/MAN/'`
           if [[ -n "$DIRS" ]]; then
             find $DIRS -type d | sed 's|^\(.*\)$|%dir /\1|'
           fi
@@ -424,7 +433,7 @@ elif [[ -n "$SOURCE" ]]; then
       )
     fi
     cd $BD && tar cvfz $BUILDDIR/SOURCES/$SOURCE $TAREXCLUDE $NAME | sed "s|^$NAME||;s/^\(.*\.conf$\)/%config \1/$REPLS" | grep -Ev '/$|^/SRC/|^/MAN/'
-  ) >$FILESLIST
+  ) | grep -Ev '%dir /usr/share/man|%dir /usr/share/locale' >$FILESLIST
 fi
 #
 awk '/%files/,/^$/{if($NF != "%files" && $NF != "")print $NF}' "$SPECFILE" >$FILESLIST.v
@@ -467,7 +476,7 @@ if [[ -d $BD/$NAME/MAN ]]; then
 fi
 #
 if [[ -n "$DISTRO" ]]; then
-  DISTROSED="s/^License:/distribution: $DISTRO\\nLicense:/;"
+  DISTROSED="s|^License:|distribution: $DISTRO\\nLicense:|;"
 else
   unset DISTROSED
 fi
@@ -479,7 +488,9 @@ if [[ -n "$BINFILES$BUILDPROGRAM" ]]; then
   if cd "$TMPDIR/$NAME/SRC"; then
     export OUTPUTDIR
     if [[ -n "$MAKEDEFINE" ]]; then
-      eval export $MAKEDEFINE
+      for m in $MAKEDEFINE; do
+       eval export $m
+      done
     fi
     for i in *; do
       if [[ -z "$BUILDPROGRAM" ]] || grep -q "BINFILE[ ?]*= *$BUILDPROGRAM[^a-zA-Z_-]" $i/Makefile; then 
@@ -826,17 +837,24 @@ else
   fi
   #
   #
-  if [[ $SOURCEFLAG = 1 ]]; then
-    rpmbuild -bs $BUILDDIR/SPECS/$SPEC
+  ###############################################################################
+  # Only Spec-File
+  ###############################################################################
+  if [[ -n "$onlyspec" ]]; then
+    cp $BUILDDIR/SOURCES/$SOURCE $OUTPUTDIR
+    cp $BUILDDIR/SPECS/$SPEC $OUTPUTDIR/$PKGNAME.spec
+    echo "Ende"
+  elif [[ $SOURCEFLAG = 1 ]]; then
+    rpmbuild --define "_topdir $BUILDDIR" -bs $BUILDDIR/SPECS/$SPEC
     cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$D.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.src.rpm
   elif [[ $SOURCEFLAG = 2 ]]; then
-    rpmbuild -ba --target=$MACHINE $BUILDDIR/SPECS/$SPEC
+    rpmbuild --define "_topdir $BUILDDIR" -ba --target=$MACHINE $BUILDDIR/SPECS/$SPEC
     MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
     cp $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
     cp $BUILDDIR/SRPMS/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.src.rpm $OUTPUTDIR/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV.src.rpm
     chmod og+r $PKGNAME-$VERSION-$RELEASE.src.rpm $PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
   else
-    rpmbuild -bb --target=$MACHINE $BUILDDIR/SPECS/$SPEC
+    rpmbuild --define "_topdir $BUILDDIR" -bb --target=$MACHINE $BUILDDIR/SPECS/$SPEC
     MYSQLEXT=`rpm -qpR $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm | sed -n 's/.*[(]libmysqlclient\(_[0-9]*\)[)].*/\1/p'`
     cp $BUILDDIR/RPMS/$MACHINE/$PKGNAME-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE.$MACHINE.rpm $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm
     chmod og+r $OUTPUTDIR/$PKGNAME$MYSQLEXT-$VERSION-$RELEASE${DISTRV:+.}$DISTRV$APPLIANCE$SPECIALV$D.$MACHINE.rpm

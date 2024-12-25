@@ -1215,11 +1215,12 @@ int main(int argc, char **argv)
                                 break;
                            case OPT_SQL3_ERROROUT: sqlite3_error_out_flag = true;
                                 break;
-                           case OPT_SQL3_DBPATH: sql3_open(argv[++options], true);
+                           case OPT_SQL3_DBPATH: sql3_open(argv[++options], true,
+                                  SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX);
                                 break;
                          }
                          break;
-#endif  /* #ifdef MAYDBCLIENT */
+#endif  /* #ifdef SQLITE3 */
 #ifdef POSTGRESQLCLIENT
       case OPT_PGSQL:    switch( argv[options][2] )
                          { case OPT_PGSQL_ERRORLOG: pgsql_error_log_flag = true;
