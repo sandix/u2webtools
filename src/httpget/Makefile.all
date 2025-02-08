@@ -20,7 +20,7 @@ LIBS := ${MINLIBS} ${ILIBS}
 
 ODIR := ${BINFILE}.$(shell ./objdirname.sh ${LIBS})${STATIC}
 
-CFLAGS := -O3 ${SYSCFLAG} ${MINCFLAGS} ${CICPATHS} ${ICFLAGS} ${DEBUG} ${WALL}
+CFLAGS := -O3 ${addcflags} ${SYSCFLAG} ${MINCFLAGS} ${CICPATHS} ${ICFLAGS} ${DEBUG} ${WALL}
 
 BINDIR := ${ODIR}
 

@@ -1,6 +1,6 @@
 PREFIX ?= /usr
 
-CC := $(shell if which clang >/dev/null 2>&1 ; then echo clang; else echo gcc; fi)
+CC ?= $(shell if which clang >/dev/null 2>&1 ; then echo clang; else echo gcc; fi)
 
 SYSCFLAG := $(shell ./getsystem.sh)
 
@@ -22,7 +22,7 @@ LIBS := ${MINLIBS} ${ILIBS}
 
 ODIR := ${BINFILE}.$(shell ./objdirname.sh ${LIBS})${STATIC}
 
-CFLAGS := -O3 ${SYSCFLAG} ${MINCFLAGS} ${CICPATHS} ${ICFLAGS} ${DEBUG} ${WALL}
+CFLAGS := -O3 ${addcflags} ${SYSCFLAG} ${MINCFLAGS} ${CICPATHS} ${ICFLAGS} ${DEBUG} ${WALL}
 
 BINDIR := ${ODIR}
 

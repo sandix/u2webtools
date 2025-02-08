@@ -35,6 +35,7 @@
 
 #ifdef CYGWIN
 #undef _LARGEFILE64_SOURCE
+#undef WITH_GETTEXT
 #endif
 
 #ifdef WITH_GETTEXT

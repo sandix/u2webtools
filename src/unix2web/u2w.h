@@ -56,16 +56,6 @@ typedef struct {
 
 #endif /* WITH_SSL */
 
-#ifdef WITH_GETTEXT
-#include <libintl.h>
-#include <locale.h>
-#define U2WTEXTDOMAIN "unix2web"
-#define U2WTEXTDOMAINPATH "/usr/share/locale"
-#define _(txt) gettext(txt)
-#else
-#define _(txt) (txt)
-#endif
-
 #ifdef WITH_MMAP
 #include <sys/mman.h>
 #endif
@@ -88,7 +78,7 @@ typedef struct {
 #include <sys/ioctl.h>
 #include <time.h>
 #define SCANDIR 1
-#define LONGLONG 1
+#define LLONGFORMAT 1
 #define MAX_INT_VALUE LLONG_MAX
 #define NUM_DIGITS_TEST_INT 19
 #else
@@ -102,7 +92,28 @@ typedef struct {
 #define TIOCNOTTY _IO('t', 113)
 #undef HAS_SHADOW
 /* #define HAS_TRUSTED 1 */
-#define LONGLONG 1
+#define LLONGFORMAT 1
+#endif
+
+#ifdef CYGWIN
+#include <windows.h>
+#include <sys/cygwin.h>
+#include <sys/ioctl.h>
+#define TIOCNOTTY _IO('t', 113)
+#undef HAS_SHADOW
+#undef WITH_GETTEXT
+#define SCANDIR 1
+#define LLONGFORMAT 1
+#endif
+
+#ifdef WITH_GETTEXT
+#include <libintl.h>
+#include <locale.h>
+#define U2WTEXTDOMAIN "unix2web"
+#define U2WTEXTDOMAINPATH "/usr/share/locale"
+#define _(txt) gettext(txt)
+#else
+#define _(txt) (txt)
 #endif
 
 #ifdef OLDUNIX
@@ -116,16 +127,8 @@ int snprintf(char *, size_t, char *, ...);
 #include <stdint.h>
 #endif
 
+#ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))
-
-#ifdef CYGWIN
-#include <windows.h>
-#include <sys/cygwin.h>
-#include <sys/ioctl.h>
-#define TIOCNOTTY _IO('t', 113)
-#undef HAS_SHADOW
-#define SCANDIR 1
-#define LONGLONG 1
 #endif
 
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -427,7 +430,7 @@ typedef enum { NO_MODE = 0, U3W_MODE = 1, U2W_HTML_MODE = 2, U2W_MODE = 4,
 #define MAXANZOPS 90
 
 
-#ifdef LONGLONG
+#ifdef LLONGFORMAT
 #define LONGWERT long long
 #define LONGFORMAT "%lld"
 #define ULONGFORMAT "%llu"

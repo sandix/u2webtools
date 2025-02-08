@@ -494,7 +494,7 @@ int main(int argc, char **argv)
                 break;
       case 'R': http_flag = false;
                 break;
-      case 'v': printf("httpget version %s, %s, build %d.\n%s\n",
+      case 'v': printf("httpget version %s, %s, build %d.\n%s",
                        VERSION, COMPILEDATE, BUILD, COPYRIGHT);
                 exit(0);
       default : usage(argv[0]);

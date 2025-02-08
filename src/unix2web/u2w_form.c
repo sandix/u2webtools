@@ -9,14 +9,15 @@
 
 
 /***************************************************************************************/
-/* void getopt_value(char *opt, char *text, char *title, char **in)                    */
+/* void getopt_value(char *opt, char *text, char *title, char *flags, char **in)       */
 /*                   char *opt  : Name des Optionsfeldes                               */
 /*                   char *text: Text, wenn angegeben                                  */
 /*                   char *title: Titel, wenn angegeben                                */
+/*                   char *flags: Flags (D - disabled)                                 */
 /*                   char **in  : String mit den Namen                                 */
 /*`     getopt_value extrahiert ein Optionsfeldeintrag ggf. mit Value                  */
 /***************************************************************************************/
-void getopt_value(char *opt, char *text, char *title, char **in)
+void getopt_value(char *opt, char *text, char *title, char *flags, char **in)
 {
   LOG(3, "getopt_value, in: %s.\n", *in);
 
@@ -30,17 +31,37 @@ void getopt_value(char *opt, char *text, char *title, char **in)
     if( **in == '"' )
       strcpyn_qs(text, in, PARLEN);
     else
-      strcpyn_str(text, in, " :\t", PARLEN);
+    { if( **in == ':' )
+        text[0] = '\0';
+      else
+        strcpyn_str(text, in, " :\t", PARLEN);
+    }
     if( **in == ':' )
     { (*in)++;
-      strcpyn_qs(title, in, PARLEN);
+      if( **in == '"' )
+        strcpyn_qs(title, in, PARLEN);
+      else
+      { if( **in == ':' )
+          title[0] = '\0';
+        else
+          strcpyn_str(title, in, " :\t", PARLEN);
+      }
+      if( **in == ':' )
+      { (*in)++;
+        strcpyn_str(flags, in, " :\t", PARLEN);
+      }
+      else
+        flags[0] = '\0';
     }
     else
-      title[0] = '\0';
+    { title[0] = '\0';
+      flags[0] = '\0';
+    }
   }
   else
   { text[0] = '\0';
     title[0] = '\0';
+    flags[0] = '\0';
   }
 
   LOG(5, "/getopt_value, opt: %s, text:%s, title: %s.\n", opt, text, title);
@@ -61,7 +82,7 @@ void getopt_value(char *opt, char *text, char *title, char **in)
 int send_radiobuttons(char *name, char *radios, char *def, int b, char *ro, char *class)
 { char rad[PARLEN];                                         /* Name des Buttons        */
   char *r;                                                  /* zeigt auf die Buttons   */
-  char extend[PARLEN+20], text[PARLEN], title[PARLEN];
+  char extend[PARLEN+20], text[PARLEN], title[PARLEN], flags[PARLEN];
   int i;
 
   if( b < 1 )
@@ -75,7 +96,7 @@ int send_radiobuttons(char *name, char *radios, char *def, int b, char *ro, char
     return true;
   i = 1;
   while( *r )
-  { getopt_value(rad, text, title, &r);                     /* Name des Buttons        */
+  { getopt_value(rad, text, title, flags, &r);              /* Name des Buttons        */
     if( *rad )
     { if( i == 1 && dosend("<tr>") )
         return true;
@@ -117,7 +138,7 @@ int send_radiobuttons(char *name, char *radios, char *def, int b, char *ro, char
 int send_checkboxen(char *name, char *checks, char *def, int b, char *ro, char *class)
 { char check[PARLEN];                                       /* Name der Checkbox       */
   char *r;                                                  /* zeigt auf die Buttons   */
-  char extend[PARLEN+20], text[PARLEN], title[PARLEN];
+  char extend[PARLEN+20], text[PARLEN], title[PARLEN], flags[PARLEN];
   int i;
 
   if( b < 1 )
@@ -131,7 +152,7 @@ int send_checkboxen(char *name, char *checks, char *def, int b, char *ro, char *
     return true;
   i = 1;
   while( *r )
-  { getopt_value(check, text, title, &r);                   /* Name des Buttons        */
+  { getopt_value(check, text, title, flags, &r);            /* Name des Buttons        */
     if( *check )
     { if( i == 1 && dosend("<tr>") )
         return true;
@@ -184,10 +205,13 @@ int send_opteintraege(char *opts, char *defs)
 { char opt[PARLEN];                                         /* Optionsfeldeintrag      */
   char *o;                                                  /* zeigt auf die Eintraege */
   char extend[2*PARLEN+20], text[PARLEN], title[PARLEN];    /* Value=... String        */
+  char flags[PARLEN];
+  short notfirstflag;
 
+  notfirstflag = 0;
   o = opts;
   while( *o )
-  { getopt_value(opt, text, title, &o);                     /* Name extrahieren        */
+  { getopt_value(opt, text, title, flags, &o);              /* Name extrahieren        */
     if( *opt )
     { if( *text && *title )
         snprintf(extend, 2*PARLEN+20, " value=\"%s\" title=\"%s\"", opt, title);
@@ -197,13 +221,16 @@ int send_opteintraege(char *opts, char *defs)
         snprintf(extend, 2*PARLEN+20, " title=\"%s\"", title);
       else
         extend[0] = '\0';
-      if( dosendhf("<option %s%s%s>%H</option>\n",
-               isempty(*text ? text : opt) ? "label=\" \" " : "",
-               is_elem(defs, opt) ? " selected" : "",       /* ggf. selektieren        */
+      if( dosendhf("<option%s%s%s%s>%H</option>\n",
+               flags[0] == 'D' ? " disabled" : "",
+               isempty(*text ? text : opt) ? " label=\" \"" : "",
+               is_elem(defs, opt) || !(notfirstflag || *defs) ? " selected" : "",
+                                                            /* ggf. selektieren        */
                extend,                                      /* ggf. Value/Title        */
                *text ? text : opt) )
         return true;
     }
+    notfirstflag = 1;
   }
   return false;
 }
@@ -221,7 +248,7 @@ int send_datalistvalues(char *opts)
 
   o = opts;
   while( *o )
-  { getopt_value(opt, dummy, dummy, &o);                    /* Value extrahieren       */
+  { getopt_value(opt, dummy, dummy, dummy, &o);             /* Value extrahieren       */
     if( *opt )
     { if( dosendhf("<option value=\"%s\">\n", opt) )
         return true;
@@ -242,7 +269,7 @@ int send_datalistvalues(char *opts)
 int send_linklisteintraege(char *links, char *name, int b, char *class)
 { char link[PARLEN];                                        /* Linkeintrag             */
   char *l;                                                  /* zeigt auf die Eintraege */
-  char extend[PARLEN+20], text[PARLEN], title[PARLEN];
+  char extend[PARLEN+20], text[PARLEN], title[PARLEN], flags[PARLEN];
   int i;
 
   l = links;
@@ -257,7 +284,7 @@ int send_linklisteintraege(char *links, char *name, int b, char *class)
   }
   i = 1;
   while( *l )
-  { getopt_value(link, text, title, &l);                    /* Name extrahieren        */
+  { getopt_value(link, text, title, flags, &l);             /* Name extrahieren        */
     if( *link )
     { if( b > 1 && i == 1 && dosend("<tr>") )
         return true;

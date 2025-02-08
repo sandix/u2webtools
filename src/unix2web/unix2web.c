@@ -332,7 +332,6 @@ time_t starttime;
 
 /* Ende globale Variablen */
 
-#ifndef U2W_PASSWD
 /***************************************************************************************/
 /* void usage(char *prg, char *msg, char *msgpar)                                      */
 /*            char *prg: Name, mit dem Programm aufgerufen wurde                       */
@@ -742,7 +741,6 @@ fputs("\n -R       ", stdout);
   fputs("\n", stdout);
 }
 #endif  /* #else #ifdef INTERPRETER */
-#endif  /* #ifdef U2W_PASSWD */
 
 /***************************************************************************************/
 /* int main(int argc, char **argv)                                                     */

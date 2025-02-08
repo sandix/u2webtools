@@ -212,11 +212,11 @@ int update_passwd(char *pwddat, char *user, char *pwd, char *realm)
 
 
 /***************************************************************************************/
-/* void usage(char *prg)                                                               */
+/* void u2w_passwd_usage(char *prg)                                                    */
 /*            char *prg: Name, mit dem Programm aufgerufen wurde                       */
 /*      usage zeigt Aufrufparameter                                                    */
 /***************************************************************************************/
-void usage(char *prg)
+void u2w_passwd_usage(char *prg)
 { char *p;
 
   if( (p=strrchr(prg, '/')) )
@@ -282,20 +282,20 @@ int main(int argc, char **argv)
   { options++;
     switch( argv[options][1] )
     { case 'r': if( argc < ++options+1 )
-                { usage(argv[0]);
+                { u2w_passwd_usage(argv[0]);
                   return 3;
                 }
                 realm = argv[options];
                 break;
       case 'p': if( argc < ++options+1 )
-                { usage(argv[0]);
+                { u2w_passwd_usage(argv[0]);
                   return 3;
                 }
                 pwdp = argv[options];
                 break;
       case 'v': show_version(argv[0], true);
                 return 0;
-      default:  usage(argv[0]);
+      default:  u2w_passwd_usage(argv[0]);
                 return 1;
     }
   }

@@ -94,7 +94,7 @@ pidfile()
   else
     PF="u2wpidfile${PF//\//_}"
   fi
-  if [[ -z "$SWITCHUSER" ]]; then
+  if [[ -z "$SWITCHUSER" && -w /var/run ]]; then
     U2WPIDFILE="/var/run/$PF"
   else
     U2WPIDFILE="/var/tmp/$PF"

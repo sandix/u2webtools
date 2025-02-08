@@ -11,8 +11,6 @@
 # Version: SETVERSION
 # Release: SETRELEASE
 # Source: SETSOURCE
-# BuildRoot: /dev/shm/#NAME#_makerpm
-#            #BUILDROOT#
 #
 # #DATAPORT#   ... nur bei Dataport-Paketen (Schalter -D)
 # #NODATAPORT# ... Pakete ohne Dataport (Schalter -D) 
@@ -60,31 +58,35 @@
 #
 # %rpmsave%     bei RPM -> "rpmsave", bei DEB -> "dpkg-old"
 # wenn es die Datei PREP.sed gibt:
-#   - 1. Zeile "sed" zum Umbenennen der Dateinamen unter files.prep
+#   - 1. Zeile "sed" zum Umbenennen der Dateinamen unter files.prep (files.init)
 #   - 2. Zeile "sed" zum anpassen der Dateien unter files.prep
 #
 # wenn es nur den Ordner files.prep gibt:
 #   - es werden die Codes wie bei der SPEC-Datei angewendet
 #####################################################################
 #
-BUILDDIR=/dev/shm/$(id -un)-rpmbuild
-DEBIANBASE=/dev/shm/$(id -un)-deb
-#
 TAREXCLUDE='--exclude=.*.swp'
 #
-unset DISTRV CFGFILES D DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES DONTRM onlyspec
+unset DISTRV CFGFILES D d DEBUG DEB DISTRO SETNAME SETVERSION SPECIALVERSION SPECIALV APPLIANCE BINFILES DONTRM onlyspec SOURCEFLAG BUILDDIR cygwin addcflags binext nosystemd
 FUSER="root"
 FGROUP="root"
-SOURCEFLAG=0
 #
-while getopts An:v:V:sSu:g:RBDdP? op; do
+while getopts b:ACNn:v:V:sSu:g:RBDdP? op; do
   case "$op" in
    A) APPLIANCE="-appliance";;
+   b) BUILDDIR="$OPTARG";;
    B) BINFILES=1;;
+   C) cygwin='cygwin64-'
+      export MAKE='cygwin64-make'
+      export addcflags='-DCYGWIN'
+      export binext='.exe'
+      BINFILES=1;;
    d) export 'DEBUG=-DDEBUG'
       export DEBUGEXT='_debug';;
    n) SETNAME="$OPTARG"
       NAMEEXT=".$OPTARG";;
+   N) nosystemd=1
+      D="$D-nosystemd";;
    v) SETVERSION="$OPTARG";;
    V) SPECIALVERSION="$OPTARG"
       SPECIALV=".$OPTARG";;
@@ -92,16 +94,19 @@ while getopts An:v:V:sSu:g:RBDdP? op; do
    S) SOURCEFLAG=2;;
    u) FUSER=$OPTARG;;
    g) FGROUP=$OPTARG;;
-   D) D=_dataport;;
+   D) D="$D-dataport";;
    R) DONTRM=1;;
    P) onlyspec=1;;
-   ?) echo "usage: `basename $0` [-A] [-B] [-D] [-d] [-g <grp>] [-n <name>] [-R] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
+   ?) echo "usage: `basename $0` [-A] [-B] [-C] [-D] [-d] [-N] [-g <grp>] [-n <name>] [-P] [-R] [-s|-S] [-u <user>] [-v <version>] [-V <sv>] <spec> <outputdir> [<program>]
   -A Appliance
   -B only binaries
+  -C build for cygwin
   -D Dataport package
   -d Debug package
   -g set group to <grp>
   -n set name to <name>
+  -N build without systemd for docker
+  -P create only specfile
   -R don't delete temporary files
   -s only source package
   -S source and binary package
@@ -116,6 +121,37 @@ while getopts An:v:V:sSu:g:RBDdP? op; do
 done
 shift $(( $OPTIND - 1))
 #
+cd $(dirname $0)
+#
+if [[ -z "$BUILDDIR" ]]; then
+  if grep -q ' /dev/shm .* rw' /proc/mounts && ! grep -q ' /dev/shm .*,noexec' /proc/mounts; then
+    BUILDDIR=/dev/shm/$(id -un)-rpmbuild
+  elif grep -q ' /tmp ' /proc/mounts; then
+    if grep -q ' /tmp .* rw' /proc/mounts && ! grep -q ' /tmp .*,noexec' /proc/mounts; then
+      BUILDDIR=/tmp/$(id -un)-rpmbuild
+    fi
+  else
+    BUILDDIR=/tmp/$(id -un)-rpmbuild
+  fi
+  if [[ -z "$BUILDDIR" ]]; then
+    if grep -q ' /var/tmp ' /proc/mounts; then
+      if grep -q ' /var/tmp .* rw' /proc/mounts && ! grep -q ' /var/tmp .*,noexec' /proc/mounts; then
+        BUILDDIR=/var/tmp/$(id -un)-rpmbuild
+      fi
+    elif grep -q ' /var ' /proc/mounts; then
+      if grep -q ' /var .* rw' /proc/mounts && ! grep -q ' /var .*,noexec' /proc/mounts; then
+        BUILDDIR=/var/tmp/$(id -un)-rpmbuild
+      fi
+    fi
+    if [[ -z "$BUILDDIR" ]]; then
+      echo "ERROR: can't find tempdir without noexec" >&2
+      exit 1
+    fi
+  fi
+fi
+DEBIANBASE=${BUILDDIR%/*}/$(id -un)-deb
+TMPBASE=${BUILDDIR%/*}/rpmbuild.tmp.
+#
 SPECFILE="$1"
 SPECFILENAME=$(basename "$SPECFILE")
 OUTPUTDIR=$(readlink -f "$2")
@@ -126,13 +162,13 @@ if [[ $# -lt 2 || ! -f "$SPECFILE" || ! -d "$OUTPUTDIR" ]]; then
   exit 1
 fi
 #
-if grep -q '%[a-zA-Z]*%' $SPECFILE && [[ -z "$SETNAME" ]]; then
+if grep -q '%%[a-zA-Z]*%' $SPECFILE && [[ -z "$SETNAME" ]]; then
   echo "Error: missing -n <name>"
   exit 1
 fi
 #
 if [[ -z "$onlyspec" ]]; then
-  if uname -v | grep -Eqi 'Ubuntu|Debian' || [[ $((which rpm >/dev/null 2>&1 && rpm -qa) | wc -l) -eq 0 ]]; then
+  if grep -Eqi 'Ubuntu|Debian' /etc/os-release || ! rpmbuild &>/dev/null; then
     DEB=_debian
   fi
 fi
@@ -269,7 +305,7 @@ else
   MANSED="/^#[A-Z][A-Z]*=\"[^\"]*\"#/d"
 fi
 #
-if which systemctl &>/dev/null; then
+if [[ -z "$nosystemd" ]]; then
   SYSTEMDSPEC='/^#NOSYSTEMD#/d;s/^#SYSTEMD#//;/^#BEGIN SYSTEMD#/d;/^#END SYSTEMD#/d'
 else
   SYSTEMDSPEC='/^#SYSTEMD#/d;s/^#NOSYSTEMD#//;/^#BEGIN NOSYSTEMD#/d;/^#END NOSYSTEMD#/d'
@@ -288,13 +324,12 @@ fi
 MYDIR=$(pwd -P)
 DIRSEARCH=`basename $SPEC | sed 's/[^a-zA-Z].*//'`
 #
-TMPBASE=/dev/shm/rpmbuild.tmp.
 TMPDIR=$TMPBASE$$
 mkdir -p $TMPDIR
 FILESLIST=$TMPDIR/fileslist
 SYSDIRSLIST=$TMPDIR/sysdirslist
 #
-if which rpm >/dev/null 2>&1; then
+if rpm --help &>/dev/null; then
   rpm -ql filesystem >$SYSDIRSLIST
 else
   >$SYSDIRSLIST
@@ -322,11 +357,11 @@ if [[ -n "$SOURCE" ]]; then
   BD=$TMPDIR
   if mkdir -p "$TMPDIR" && cd "$WD"; then
     if [[ -d files$NAMEEXT ]]; then
-      cp -a files$NAMEEXT "$TMPDIR/$NAME"
+      cp -dR --preserve=timestamps files$NAMEEXT "$TMPDIR/$NAME"
     else
       mkdir -p "$TMPDIR/$NAME"
     fi
-    [[ -d src ]] && cp -a src "$TMPDIR/$NAME/SRC"
+    [[ -d src ]] && cp -dR --preserve=timestamps src "$TMPDIR/$NAME/SRC"
     if [[ -f PREP.seds$NAMEEXT ]]; then
       FNSED="`head -1 PREP.seds$NAMEEXT`"
       PRGSED="`tail -1 PREP.seds$NAMEEXT`;$SPECSED"
@@ -340,6 +375,7 @@ if [[ -n "$SOURCE" ]]; then
             sed "$PRGSED" "$f" >$TMPDIR/$NAME/$NF
             chmod --reference="$f" $TMPDIR/$NAME/$NF
             touch --reference="$f" $TMPDIR/$NAME/$NF
+            chmod og-w $TMPDIR/$NAME/$NF
           done
         fi
       )
@@ -352,6 +388,20 @@ if [[ -n "$SOURCE" ]]; then
             sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
             chmod --reference="$f" $TMPDIR/$NAME/$f
             touch --reference="$f" $TMPDIR/$NAME/$f
+            chmod og-w $TMPDIR/$NAME/$f
+          done
+        fi
+      )
+    elif [[ -n "$nosystemd" && -d files.init ]]; then
+      ( if cd files.init; then
+          for f in `find * -type d`; do
+            mkdir -p $TMPDIR/$NAME/$f
+          done
+          for f in `find * -type f`; do
+            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
+            chmod --reference="$f" $TMPDIR/$NAME/$f
+            touch --reference="$f" $TMPDIR/$NAME/$f
+            chmod og-w $TMPDIR/$NAME/$f
           done
         fi
       )
@@ -363,8 +413,6 @@ if [[ -n "$SOURCE" ]]; then
           done
           for f in `find * -type f`; do
             sed "$PRGSED" "$f" >$TMPDIR/$NAME/SRC/$f
-            chmod --reference="$f" $TMPDIR/$NAME/SRC/$f
-            touch --reference="$f" $TMPDIR/$NAME/SRC/$f
           done
         fi
       )
@@ -488,13 +536,11 @@ if [[ -n "$BINFILES$BUILDPROGRAM" ]]; then
   if cd "$TMPDIR/$NAME/SRC"; then
     export OUTPUTDIR
     if [[ -n "$MAKEDEFINE" ]]; then
-      for m in $MAKEDEFINE; do
-       eval export $m
-      done
+      eval export $MAKEDEFINE
     fi
     for i in *; do
       if [[ -z "$BUILDPROGRAM" ]] || grep -q "BINFILE[ ?]*= *$BUILDPROGRAM[^a-zA-Z_-]" $i/Makefile; then 
-        (cd $i && PREFIX="$OUTPUTDIR" make $BUILDPROGRAM && PREFIX="$OUTPUTDIR" make copy${BUILDPROGRAM:-bin})
+        (cd $i && PREFIX="$OUTPUTDIR" ${cygwin}make $BUILDPROGRAM && PREFIX="$OUTPUTDIR" ${cygwin}make copy${BUILDPROGRAM:-bin})
       fi
     done
   else
@@ -505,7 +551,7 @@ if [[ -n "$BINFILES$BUILDPROGRAM" ]]; then
 # DEB
 ###############################################################################
 elif [[ -n "$DEB" ]]; then
-  DEBBUILD="$DEBIANBASE/${PKGNAME//_/-}-$VERSION.$RELEASE$DISTRV$APPLIANCE"
+  DEBBUILD="$DEBIANBASE/${PKGNAME//_/-}-$VERSION.$RELEASE$DISTRV$APPLIANCE$D"
   if [[ -d "$DEBBUILD" ]]; then
     if [[ -d "$DEBBUILD".old ]]; then
       rm -rf "$DEBBUILD".old
@@ -514,7 +560,7 @@ elif [[ -n "$DEB" ]]; then
   fi
   mkdir -p "$DEBBUILD"/debian
   if [[ -n "$SOURCE" ]]; then
-    cp -a "$TMPDIR/$NAME"/* "$DEBBUILD"
+    cp -dR --preserve=timestamps "$TMPDIR/$NAME"/* "$DEBBUILD"
   fi
 ###########################################################
 # MAKE.sh
@@ -567,7 +613,7 @@ distclean:
 #
 install:
 	mkdir -p \$(DESTDIR)/usr/bin
-	cp -a \`ls|grep -Ev 'debian|SRC|Makefile|MAKE.sh'\` \$(DESTDIR)/
+	cp -dR --preserve=timestamps \`ls|grep -Ev 'debian|SRC|Makefile|MAKE.sh'\` \$(DESTDIR)/
 	DESTDIR=\$(DESTDIR) ./MAKE.sh install
 EOF
   else
@@ -600,7 +646,7 @@ fi
   CONFLICTS=$(awk -F ': *' '/^Conflicts:/{print $2}' $SPECFILE)
   SUMMARY=$(awk -F ': *' '/^Summary:/{print $2}' $SPECFILE)
   DESCRIPTION="$(sed -n '/%description/,/^$/s/^\([^%]\)/ \1/p' $SPECFILE)"
-  DEPENDS=$(awk -F ': *' '/^#DEB#Requires:/ || /^Requires:/ {
+  DEPENDS=$(sed "$PRGSED" $SPECFILE | awk -F ': *' '/^#DEB#Requires:/ || /^Requires:/ {
               gsub(".*Requires: *", "", $0)
               n = split($0, a, " *, *")
               for( i = 1; i <= n; i++ )
@@ -616,7 +662,7 @@ fi
                     printf(" %s", b[1])
                 }
               }
-            }' $SPECFILE)
+            }')
   DEBSECTION=$(awk -F ': *' '/#DEB#Section:/ {print $2}' $SPECFILE)
   if [[ "$MACHINE" = "noarch" ]]; then
     DEBARCH='all'
@@ -785,7 +831,7 @@ EOF
   if [[ "$DEBARCH" = "all" ]]; then
     DHEXT=''
   else
-    DHEXT="--dpkg-gencontrol-params=-v$VERSION-$RELEASE$DISTRV$APPLIANCE"
+    DHEXT="--dpkg-gencontrol-params=-v$VERSION-$RELEASE$DISTRV$APPLIANCE$D"
   fi
   cat >"$DEBBUILD"/debian/rules <<EOF
 #!/usr/bin/make -f
@@ -814,14 +860,23 @@ include /usr/share/dpkg/default.mk
 EOF
   chmod 755 "$DEBBUILD"/debian/rules
   #
+set -x
   cd "$DEBBUILD"
-  fakeroot debian/rules binary
-  if [[ "$DEBARCH" = "all" ]]; then
-    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2_all.deb/" <<<${SPECFILENAME//_/-})
-  else
-    DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2${DISTRV}${APPLIANCE}_$DEBARCH.deb/" <<<${SPECFILENAME//_/-})
+  if [[ ${SOURCEFLAG:-2} = 2 ]]; then
+    fakeroot debian/rules binary
+    if [[ "$DEBARCH" = "all" ]]; then
+      DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2_all.deb/" <<<${SPECFILENAME//_/-})
+    else
+      DEB=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2${DISTRV}${APPLIANCE}${D}_$DEBARCH.deb/" <<<${SPECFILENAME//_/-})
+    fi
+    [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
   fi
-  [[ -f ../$DEB ]] && mv ../$DEB "$OUTPUTDIR"
+  if [[ "$SOURCEFLAG" = 1 ]]; then
+    dpkg-buildpackage -us -uc
+    dsc=$(sed "s/^\(.*\)-\([^-]*-[0-9]*\).spec/\1_\2.dsc/" <<<${SPECFILENAME//_/-})
+    [[ -f ../$dsc ]] && mv ../$dsc "$OUTPUTDIR"
+    [[ -f ../${dsc%.dsc}.tar.gz ]] && mv ../${dsc%.dsc}.tar.gz "$OUTPUTDIR"
+  fi
 #
 ###############################################################################
 # RPM

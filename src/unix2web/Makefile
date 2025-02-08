@@ -17,42 +17,44 @@
 #
 #****************************************************************
 #
+MAKE ?= make
+
 all:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}${SQLITE3}
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}${SQLITE3}
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd${MYSQL}${SQLITE3}
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter${MYSQL}${SQLITE3}
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd
 
 install:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}${SQLITE3} install
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}${SQLITE3} install
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd install
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd${MYSQL}${SQLITE3} install
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter${MYSQL}${SQLITE3} install
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd install
 
 copybin:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}${SQLITE3} copybin
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}${SQLITE3} copybin
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd copybin
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd${MYSQL}${SQLITE3} copybin
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter${MYSQL}${SQLITE3} copybin
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd copybin
 
 clean:
-	BINFILE=unix2webd make -f Makefile.unix2webd clean
-	BINFILE=unix2webd make -f Makefile.unix2webd_mysql clean
-	BINFILE=u2w_interpreter make -f Makefile.interpreter clean
-	BINFILE=u2w_interpreter make -f Makefile.interpreter_mysql clean
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd clean
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd clean
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd_mysql clean
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter clean
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter_mysql clean
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd clean
 
 unix2webd:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}${SQLITE3}
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd${MYSQL}${SQLITE3}
 
 u2w_interpreter:
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}${SQLITE3}
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter${MYSQL}${SQLITE3}
 
 u2w_passwd:
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd
 
 copyunix2webd:
-	BINFILE=unix2webd make -f Makefile.unix2webd${MYSQL}${SQLITE3} copybin
+	BINFILE=unix2webd ${MAKE} -f Makefile.unix2webd${MYSQL}${SQLITE3} copybin
 
 copyu2w_interpreter:
-	BINFILE=u2w_interpreter make -f Makefile.interpreter${MYSQL}${SQLITE3} copybin
+	BINFILE=u2w_interpreter ${MAKE} -f Makefile.interpreter${MYSQL}${SQLITE3} copybin
 
 copyu2w_passwd:
-	BINFILE=u2w_passwd make -f Makefile.u2w_passwd copybin
+	BINFILE=u2w_passwd ${MAKE} -f Makefile.u2w_passwd copybin

@@ -129,7 +129,7 @@
 
 #define DIRLIST_START       HEADLINE "%s %s" HEADLINE_ENDE START_FIXED_FONT
 #define DIRLIST_START_SUCH  HEADLINE "%s %s%s" HEADLINE_ENDE START_FIXED_FONT
-#ifdef LONGLONG
+#ifdef LLONGFORMAT
 #define DIRLIST_ENTRY       LINK " %*s %9llu\n"
 #else
 #define DIRLIST_ENTRY       LINK " %*s %9lu\n"

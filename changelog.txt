@@ -1,3 +1,5 @@
+* Sat Feb  8 2025 sandix@universal-logging-system.org
+  %select: disabled elements
 * Wed Dec 25 2024 sandix@universal-logging-system.org
   bugfix: connectiontimeout on IP-V6 wasn't working
 * Fri Mar 29 2024 sandix@universal-logging-system.org
