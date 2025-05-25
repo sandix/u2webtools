@@ -356,55 +356,57 @@ STARTDIR=$(pwd)
 if [[ -n "$SOURCE" ]]; then
   BD=$TMPDIR
   if mkdir -p "$TMPDIR" && cd "$WD"; then
-    if [[ -d files$NAMEEXT ]]; then
+    if [[ -z "$BINFILES" && -d files$NAMEEXT ]]; then
       cp -dR --preserve=timestamps files$NAMEEXT "$TMPDIR/$NAME"
     else
       mkdir -p "$TMPDIR/$NAME"
     fi
     [[ -d src ]] && cp -dR --preserve=timestamps src "$TMPDIR/$NAME/SRC"
-    if [[ -f PREP.seds$NAMEEXT ]]; then
-      FNSED="`head -1 PREP.seds$NAMEEXT`"
-      PRGSED="`tail -1 PREP.seds$NAMEEXT`;$SPECSED"
-      ( if cd files.prep; then
-          for f in `find * -type d`; do
-            ND=$(sed "$FNSED" <<<$f)
-            mkdir -p $TMPDIR/$NAME/$ND
-          done
-          for f in `find * -type f`; do
-            NF=$( sed "$FNSED" <<<$f )
-            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$NF
-            chmod --reference="$f" $TMPDIR/$NAME/$NF
-            touch --reference="$f" $TMPDIR/$NAME/$NF
-            chmod og-w $TMPDIR/$NAME/$NF
-          done
-        fi
-      )
-    elif [[ -d files.prep ]]; then
-      ( if cd files.prep; then
-          for f in `find * -type d`; do
-            mkdir -p $TMPDIR/$NAME/$f
-          done
-          for f in `find * -type f`; do
-            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
-            chmod --reference="$f" $TMPDIR/$NAME/$f
-            touch --reference="$f" $TMPDIR/$NAME/$f
-            chmod og-w $TMPDIR/$NAME/$f
-          done
-        fi
-      )
-    elif [[ -n "$nosystemd" && -d files.init ]]; then
-      ( if cd files.init; then
-          for f in `find * -type d`; do
-            mkdir -p $TMPDIR/$NAME/$f
-          done
-          for f in `find * -type f`; do
-            sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
-            chmod --reference="$f" $TMPDIR/$NAME/$f
-            touch --reference="$f" $TMPDIR/$NAME/$f
-            chmod og-w $TMPDIR/$NAME/$f
-          done
-        fi
-      )
+    if [[ -z "$BINFILES" ]]; then
+      if [[ -f PREP.seds$NAMEEXT ]]; then
+        FNSED="`head -1 PREP.seds$NAMEEXT`"
+        PRGSED="`tail -1 PREP.seds$NAMEEXT`;$SPECSED"
+        ( if cd files.prep; then
+            for f in `find * -type d`; do
+              ND=$(sed "$FNSED" <<<$f)
+              mkdir -p $TMPDIR/$NAME/$ND
+            done
+            for f in `find * -type f`; do
+              NF=$( sed "$FNSED" <<<$f )
+              sed "$PRGSED" "$f" >$TMPDIR/$NAME/$NF
+              chmod --reference="$f" $TMPDIR/$NAME/$NF
+              touch --reference="$f" $TMPDIR/$NAME/$NF
+              chmod og-w $TMPDIR/$NAME/$NF
+            done
+          fi
+        )
+      elif [[ -d files.prep ]]; then
+        ( if cd files.prep; then
+            for f in `find * -type d`; do
+              mkdir -p $TMPDIR/$NAME/$f
+            done
+            for f in `find * -type f`; do
+              sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
+              chmod --reference="$f" $TMPDIR/$NAME/$f
+              touch --reference="$f" $TMPDIR/$NAME/$f
+              chmod og-w $TMPDIR/$NAME/$f
+            done
+          fi
+        )
+      elif [[ -n "$nosystemd" && -d files.init ]]; then
+        ( if cd files.init; then
+            for f in `find * -type d`; do
+              mkdir -p $TMPDIR/$NAME/$f
+            done
+            for f in `find * -type f`; do
+              sed "$PRGSED" "$f" >$TMPDIR/$NAME/$f
+              chmod --reference="$f" $TMPDIR/$NAME/$f
+              touch --reference="$f" $TMPDIR/$NAME/$f
+              chmod og-w $TMPDIR/$NAME/$f
+            done
+          fi
+        )
+      fi
     fi
     if [[ -d src.prep ]]; then
       ( if cd src.prep; then
@@ -539,7 +541,7 @@ if [[ -n "$BINFILES$BUILDPROGRAM" ]]; then
       eval export $MAKEDEFINE
     fi
     for i in *; do
-      if [[ -z "$BUILDPROGRAM" ]] || grep -q "BINFILE[ ?]*= *$BUILDPROGRAM[^a-zA-Z_-]" $i/Makefile; then 
+      if [[ -z "$BUILDPROGRAM" ]] || grep -q "BINFILE[ ?]*= *$BUILDPROGRAM\\([^a-zA-Z_-]\\|\$\\)" $i/Makefile; then 
         (cd $i && PREFIX="$OUTPUTDIR" ${cygwin}make $BUILDPROGRAM && PREFIX="$OUTPUTDIR" ${cygwin}make copy${BUILDPROGRAM:-bin})
       fi
     done

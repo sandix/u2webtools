@@ -671,7 +671,7 @@ fputs("\n -G bcklg ", stdout);
 fputs("\n -H       ", stdout);
           fputs(_("send no HTTP-header"), stdout);
 fputs("\n -Hp      ", stdout);
-          fputs(_("do'nt send program and version in HTTP-header"), stdout);
+          fputs(_("don't send program and version in HTTP-header"), stdout);
 #ifdef WITH_GETTEXT
 fputs("\n -I td    ", stdout);
           fputs(_("set textdomain to td"), stdout);

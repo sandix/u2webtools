@@ -65,6 +65,24 @@ void calc_md5sum(char *md5sum, unsigned char *s, long n)
   MD5_Init(&ctx);
   MD5_Update(&ctx, s, n);
   MD5_Final(md5digest, &ctx);
+#if defined(__BYTE_ORDER__)&&(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  for( i = 0, p = (unsigned char *)md5sum; i < MD5_DIGEST_LENGTH; i += 4 )
+  { int j;
+
+    for( j = 3; j >= 0; j-- )
+    { d1 = (md5digest[i+j] & 0xF0) >> 4;
+      d2 = md5digest[i+j] & 0xF;
+      if( d1 > 9 )
+        *p++ = d1 - 10 + 'a';
+      else
+        *p++ = d1 + '0';
+      if( d2 > 9 )
+        *p++ = d2 - 10 + 'a';
+      else
+        *p++ = d2 + '0';
+    }
+  }
+#else
   for( i = 0, p = (unsigned char *)md5sum; i < MD5_DIGEST_LENGTH; i++ )
   { d1 = (md5digest[i] & 0xF0) >> 4;
     d2 = md5digest[i] & 0xF;
@@ -77,6 +95,7 @@ void calc_md5sum(char *md5sum, unsigned char *s, long n)
     else
       *p++ = d2 + '0';
   }
+#endif
   *p = '\0';
 }
 
