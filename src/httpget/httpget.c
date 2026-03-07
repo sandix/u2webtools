@@ -302,9 +302,9 @@ int main(int argc, char **argv)
                 { usage(argv[0]);
                   return ERROR_CALLINGPARS;
                 }
-	        if( anz_headeradd < MAX_ANZ_HEADERADD )
-		  headeradd[anz_headeradd++] = argv[options];
-		break;
+                if( anz_headeradd < MAX_ANZ_HEADERADD )
+                  headeradd[anz_headeradd++] = argv[options];
+                break;
       case 'd': if( argc < ++options+1 )
                 { usage(argv[0]);
                   return ERROR_CALLINGPARS;
@@ -540,7 +540,7 @@ int main(int argc, char **argv)
       }
       if( *h++ != '@' )
         return 1;
-	}
+    }
     if( strcpyn_str(host, &h, "/", MAX_LEN_HOST) )
       return 1;
     if( *h == '/' )
@@ -592,7 +592,7 @@ int main(int argc, char **argv)
     if( !stdout_flag && !*outputfile )  /* nicht stdout und -f nicht angegeben         */
     { if( *outpath )
       { char *p;
-		strcpy(outputfile, outpath);
+        strcpy(outputfile, outpath);
         if( NULL != (p = strrchr(getfile, '/')) )
           strcat(outputfile, p+1);
         else

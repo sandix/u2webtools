@@ -71,7 +71,7 @@ void calc_md5sum(char *md5sum, unsigned char *s, long n)
 /*                   char *userpfad: Pfad, in den gewchselt werden soll, NULL, wenn    */
 /*                                   userpfad nicht übergebe werden soll               */
 /*                   return: true, Eintrag gefunden                                    */
-/*     test_ppwd_file bestimmt anhand der Datei .passwd die Zugriffsrechte             */
+/*     test_pwd_file bestimmt anhand der Datei .passwd die Zugriffsrechte              */
 /***************************************************************************************/
 auth_type test_pwd_file(char *pd, char *auth, int *r_flag, int *w_flag, int *a_flag,
                         char *setuser, char *userpfad)
@@ -145,6 +145,7 @@ auth_type test_pwd_file(char *pd, char *auth, int *r_flag, int *w_flag, int *a_f
             strcpyn_l(all_user_userpfad, &z, MAX_LEN_FILENAME);
           continue;
         }
+        dp = NULL;
         if( !strcmp(a, auth)
             || (NULL != (dp = strchr(a, ':')) && !strcmp(dp+1, md5sum)) )
                                                  /* mit Anmeldung vergleichen          */
@@ -163,6 +164,10 @@ auth_type test_pwd_file(char *pd, char *auth, int *r_flag, int *w_flag, int *a_f
             strcpyn_l(userpfad, &z, MAX_LEN_FILENAME);
 
           return AUTH;                           /* Eintrag gefunden                   */
+        }
+        else if( dp && !strncmp(a, user, dp-a) )
+        { fclose(ptr);
+          return BAD;
         }
       }
       fclose(ptr);

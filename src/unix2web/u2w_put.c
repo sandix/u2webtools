@@ -297,7 +297,7 @@ int doput(char *file, char *par, time_t test_mod_time, int read_flag,
           else if( test_ext(file, U4W_EXT) )
           { u2w_mode = U4W_MODE;                     /* Auswertungsmodus der Zeile     */
             if( NULL != (ptr = fopen(file, "r")) )   /* Datei oeffnen                  */
-              ret = u2w_put(ptr);                    /* *.u3w Datei verarbeiten        */
+              ret = u2w_put(ptr);                    /* *.u4w Datei verarbeiten        */
           }
           else if( test_ext(file, SHELL_EXT) )
           { u2w_mode = S2W_MODE;                     /* Auswertungsmodus der Zeile     */
@@ -312,12 +312,12 @@ int doput(char *file, char *par, time_t test_mod_time, int read_flag,
           else if( test_ext(file, S4W_EXT) )
           { u2w_mode = S4W_MODE;                     /* Auswertungsmodus der Zeile     */
             if( NULL != (ptr = fopen(file, "r")) )   /* Datei oeffnen                  */
-              ret = u2w_put(ptr);                    /* *.s2w Datei verarbeiten        */
+              ret = u2w_put(ptr);                    /* *.s4w Datei verarbeiten        */
           }
           else if( test_ext(file, S5W_EXT) )
           { u2w_mode = S5W_MODE;                     /* Auswertungsmodus der Zeile     */
             if( NULL != (ptr = fopen(file, "r")) )   /* Datei oeffnen                  */
-              ret = u2w_put(ptr);                    /* *.s3w Datei verarbeiten        */
+              ret = u2w_put(ptr);                    /* *.s5w Datei verarbeiten        */
           }
           else if( !test_ext(file, STD_INC_EXT) )
           { if( 0 <= (hd_in = open64(file, O_RDONLY)) )  /* Datei oeffnen              */

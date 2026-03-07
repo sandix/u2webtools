@@ -739,6 +739,23 @@ short test_ext(const char *s, const char *e)
 
 
 /***************************************************************************************/
+/* short test_ext_start(const char *s, const char c)                                   */
+/*              const char *s: String, der getestet wird                               */
+/*              const char c: 1. Zeichen der extension, mit dem verglichen wird        */
+/*              return       : true, s endet mit t                                     */
+/*     test_ext_start testet, ob die Extension von s mit c beginnt                     */
+/***************************************************************************************/
+short test_ext_start(const char *s, char c)
+{ if( strlen(s) < 4 )
+    return false;
+  s += strlen(s) - 4;
+  if( *s++ != '.' )
+    return false;
+  return tolower(c) == tolower(*s);
+}
+
+
+/***************************************************************************************/
 /* LONGWERT get_int_z(char **z)                                                        */
 /*               char **z: Zeiger auf Eingabezeile                                     */
 /*               return  : Wert der Zahl an z oder 0, wenn keine Zahl                  */

@@ -23,9 +23,12 @@ int send_error_page(char *num, char *desc, char *http, char *text)
 
   LOG(1, "send_error_page, num: %s, desc: %s, http: %s, text: %s.\n",
       num, desc, http, text);
+  LOG(10, "send_error_page, u2w_mode: %d.\n", u2w_mode);
 
   if( headflag )
     zeile[0] = '\0';
+  else if( test_ext_start(clientgetfile, 's') )
+    snprintf(zeile, MAX_ZEILENLAENGE, "%s", text);
   else
     snprintf(zeile, MAX_ZEILENLAENGE, PAGE_ERROR_HEADER "%s" PAGE_END,
              num, desc, desc, text);

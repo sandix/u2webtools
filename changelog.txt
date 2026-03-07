@@ -1,3 +1,6 @@
+* Tue Dec 30 2025 sandix@universal-logging-system.org
+  bugfix: test_pwd_file - don't skip user with wrong password
+  bugfix: u2w_error - don't send html on *.s?? files
 * Sun May 25 2025 sandix@universal-logging-system.org
   bugfix: calc md5sum on s390x
 * Sat Feb  8 2025 sandix@universal-logging-system.org
