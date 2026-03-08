@@ -3,7 +3,7 @@
 /* Funktionen fuer MD5, falls kein SSL ausgweählt         */
 /* Wenn https aktiviert ist, dann werdendie MD5-Funktinen */
 /* der SSL-Library verwendet.                             */
-/* timestamp: 2021-12-12 20:10:32                         */
+/* timestamp: 2025-07-22 09:46:40                         */
 /**********************************************************/
 
 #include "u2w.h"
@@ -183,7 +183,19 @@ void MD5_Final(unsigned char digest[16], MD5_CTX *ctx)
   ctx->in[63] = (ctx->bits[1] >> 24) & 0xFF;
 
   MD5_Transform(ctx->state, ctx->in);
+
+#if defined(__BYTE_ORDER__)&&(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  { size_t i;
+    for (i = 0; i < 4; ++i)
+    { digest[3-i] = (ctx->state[0] >> (i * 8)) & 0x000000ff;
+      digest[7-i]  = (ctx->state[1] >> (i * 8)) & 0x000000ff;
+      digest[11-i]  = (ctx->state[2] >> (i * 8)) & 0x000000ff;
+      digest[15-i] = (ctx->state[3] >> (i * 8)) & 0x000000ff;
+    }
+  }
+#else
   memcpy(digest, ctx->state, 16);
+#endif
 }
 
 #endif
