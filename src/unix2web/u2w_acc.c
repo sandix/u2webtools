@@ -2,7 +2,7 @@
 /* File: u2w_acc.c                                              */
 /* Funktionen zum Bestimmen der Berechtigungen eines Directorys */
 /* ueber die Datei .access                                      */
-/* timestamp: 2013-10-27 11:23:47                               */
+/* timestamp: 2021-12-12 20:10:32                               */
 /****************************************************************/
 
 

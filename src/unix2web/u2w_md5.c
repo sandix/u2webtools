@@ -3,7 +3,7 @@
 /* Funktionen fuer MD5, falls kein SSL ausgweählt         */
 /* Wenn https aktiviert ist, dann werdendie MD5-Funktinen */
 /* der SSL-Library verwendet.                             */
-/* timestamp: 2013-02-10 10:21:31                         */
+/* timestamp: 2021-12-12 20:10:32                         */
 /**********************************************************/
 
 #include "u2w.h"

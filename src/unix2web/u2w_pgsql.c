@@ -1,7 +1,7 @@
 /**********************************************/
 /* File: u2w_pgsql.c                          */
 /* Funktionen zum Ansprechen von PostgreQL    */
-/* timestamp: 2013-10-27 11:13:51             */
+/* timestamp: 2022-04-10 22:09:56             */
 /**********************************************/
 
 #ifdef POSTGRESQLCLIENT

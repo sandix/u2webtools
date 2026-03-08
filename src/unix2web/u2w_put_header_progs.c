@@ -2,7 +2,7 @@
 /* File: u2w_put_header_progs.c          */
 /* Funktionen aus Arrays u2w_put_header  */
 /* Funktionen nach HTTP, vor HTML Header */
-/* timestamp: 2016-03-28 15:56:14        */
+/* timestamp: 2022-04-10 22:09:56        */
 /*****************************************/
 
 

@@ -1,7 +1,7 @@
 /****************************************/
 /* File: u2w_version.c                  */
 /* Programm zum anzeigen der Version    */
-/* timestamp: 2015-12-26 14:42:52       */
+/* timestamp: 2024-12-25 18:31:21       */
 /****************************************/
 
 #include "unix2web_version.h"

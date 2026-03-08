@@ -2,7 +2,7 @@
 /* File: u2w_hash.c                          */
 /* Funktionen zur Erstellung und Nutzung der */
 /* u2w-Kommando Hashtabelle                  */
-/* timestamp: 2014-04-16 21:34:12            */
+/* timestamp: 2021-12-12 20:10:32            */
 /*********************************************/
 
 

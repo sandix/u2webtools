@@ -1,7 +1,7 @@
 /**********************************************/
 /* File: u2w_mysql.c                          */
 /* Funktionen zum Ansprechen von MySQL        */
-/* timestamp: 2013-10-27 11:09:34             */
+/* timestamp: 2022-04-10 22:09:56             */
 /**********************************************/
 
 #ifdef MAXDBCLIENT

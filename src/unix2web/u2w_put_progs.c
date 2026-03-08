@@ -2,7 +2,7 @@
 /* File: u2w_put_progs.c                   */
 /* Funktionen aus Arrays u2w_put_progs     */
 /* Funktionen nach Senden des HTML-Headers */
-/* timestamp: 2017-02-25 20:00:36          */
+/* timestamp: 2022-12-17 16:13:04          */
 /*******************************************/
 
 

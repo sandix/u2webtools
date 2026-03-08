@@ -2,7 +2,7 @@
 /* File: unix2webd.c                                                */
 /* Ein einfacher HTTP-Server, der es erlaubt, die Ausgaben diverser */
 /* Skripte als WEB-Seiten zu generieren.                            */
-/* timestamp: 2017-02-12 14:49:25                                   */
+/* timestamp: 2025-05-25 17:25:16                                   */
 /********************************************************************/
 
 #include "u2w.h"

@@ -1,7 +1,7 @@
 /**********************************************/
 /* File: u2w_sql.c                            */
 /* Funktionen zum Ansprechen von Datenbanken  */
-/* timestamp: 2015-12-26 14:40:41             */
+/* timestamp: 2021-12-12 20:10:32             */
 /**********************************************/
 
 #ifdef DBCLIENT
