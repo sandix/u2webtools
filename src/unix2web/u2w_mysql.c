@@ -13,9 +13,7 @@ short mysql_error_log_flag = false;    /* true: MySQL-Error ins Logfile/stderr  
 short mysql_error_out_flag = false;    /* true: MySQL-Error an stdout / HTML           */
 short mysql_connect_flag = false;
 #ifdef MAYDBRECONNECT
-short mysql_reconnect_secs = 0;
-#else
-#define MYSQL_QUERY(mh, q) mysql_query(mh, q)
+short mysql_reconnect_secs = MAYDBRECONNECT_SECONDS;
 #endif
 MYSQL mh;
 int mysqlport = STD_MYSQLPORT;
@@ -120,6 +118,40 @@ MYSQL_RES *sql_mysql_query(MYSQL *mh, char *query)
 #endif  /* #ifdef DBCLIENT */
 /***************************************************************************************/
 
+#ifdef MAYDBRECONNECT
+
+#include <mariadb/errmsg.h>
+
+int mysql_query_reconnect(MYSQL *mh, const char *q)
+{ int ret;
+  int s = 0;
+
+  LOG(1, "MYSQL_QUERY, mysql_reconnect_secs: %d.\n", mysql_reconnect_secs);
+  while( (ret = mysql_query(mh, q)) )
+  { if( mysql_errno(mh) == CR_SERVER_GONE_ERROR )
+    { LOG(10, "MYSQL_QUERY, errno: %d.\n", mysql_errno(mh));
+      if( s < mysql_reconnect_secs )
+      { sleep(1);
+        u2w_mysql_connect(0, NULL);
+        s++;
+        LOG(10, "MYSQL_QUERY, s: %d.\n", s);
+      }
+      else
+        return ret;
+    }
+    else
+      return ret;
+  }
+  return ret;
+}
+
+#define MYSQL_QUERY(mh, q) (mysql_reconnect_secs ? mysql_query_reconnect(mh, q) : mysql_query(mh, q))
+
+#else
+#define MYSQL_QUERY(mh, q) mysql_query(mh, q)
+#endif
+
+
 
 /***************************************************************************************/
 /* mysql_clean_multistatements                                                         */
@@ -202,24 +234,42 @@ short u2w_mysql_port(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
 /* short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])  */
 /*             int pa: Anzahl Parameter in prg_pars                                    */
 /*             char prg_pars: übergebene Funktionsparameter                            */
+/*                            oder NULL bei reconnect                                  */
 /*             return: true bei Fehler                                                 */
 /*     u2w_mysql_connect öffnet eine Verbindung zum MySQL-Server                       */
 /***************************************************************************************/
 short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS])
-{ static char cursqlserver[128], cursqluser[128], cursqlpwd[128], cursqldb[128];
+{ static char cursqlserver[128], cursqluser[128], cursqlpwd[128], cursqldb[128],
+              curcharset[16];
 
   LOG(1, "u2w_mysql_connect.\n");
 
-  LOG(3, "u2w_mysql_connect, server: %s, user: %s, pwd, %s, db: %s.\n", prg_pars[0],
-      prg_pars[1], prg_pars[2], prg_pars[3]);
+  if( pa && prg_pars )
+  { LOG(3, "u2w_mysql_connect, server: %s, user: %s, db: %s.\n", prg_pars[0],
+        prg_pars[1], prg_pars[3]);
+    LOG(5, "u2w_mysql_conncet, port: %d.\n", mysqlport);
 
-  LOG(5, "u2w_mysql_conncet, port: %d.\n", mysqlport);
-
-  if( mysql_connect_flag )
-  { if( !strcmp(prg_pars[0], cursqlserver) && !strcmp(prg_pars[1], cursqluser)
-        && !strcmp(prg_pars[2], cursqlpwd) && !strcmp(prg_pars[3], cursqldb) )
-      return false;
+    if( mysql_connect_flag )
+    { if( !strcmp(prg_pars[0], cursqlserver) && !strcmp(prg_pars[1], cursqluser)
+          && !strcmp(prg_pars[2], cursqlpwd) && !strcmp(prg_pars[3], cursqldb) )
+        return false;
+      else
+      { mysql_free_res();
+        mysql_close(&mh);
+        mysql_query_flag = 0;
+      }
+    }
+    strcpyn(cursqlserver, prg_pars[0], 128);
+    strcpyn(cursqluser, prg_pars[1], 128);
+    strcpyn(cursqlpwd, prg_pars[2], 128);
+    strcpyn(cursqldb, prg_pars[3], 128);
+    if( pa & P5 )
+      strcpyn(curcharset, prg_pars[4], 16);
     else
+      *curcharset = '\0';
+  }
+  else  // reconnect
+  { if( mysql_connect_flag )
     { mysql_free_res();
       mysql_close(&mh);
       mysql_query_flag = 0;
@@ -228,17 +278,20 @@ short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS
 
   mysql_init(&mh);
 
-  if( NULL == mysql_real_connect(&mh, prg_pars[0], prg_pars[1], prg_pars[2],
-                                 prg_pars[3], mysqlport, NULL, 0) )
+  LOG(10, "u2w_mysql_connect, server: %s, user: %s, db: %s.\n",
+      cursqlserver, cursqluser, cursqldb);
+
+  if( NULL == mysql_real_connect(&mh, cursqlserver, cursqluser, cursqlpwd,
+                                 cursqldb, mysqlport, NULL, 0) )
   { if( mysql_error_log_flag )
       logging("Failed to connect to database: Error: %s.\n", mysql_error(&mh));
     mysql_connect_flag = false;
     return true;
   }
 
-  if( pa & P5 )
-  { LOG(11, "u2w_mysql_connect, mysql_set_character_set: %s.\n", prg_pars[4]);
-    mysql_set_character_set(&mh, prg_pars[4]);
+  if( *curcharset )
+  { LOG(11, "u2w_mysql_connect, mysql_set_character_set: %s.\n", curcharset);
+    mysql_set_character_set(&mh, curcharset);
   }
 #ifdef WEBSERVER
   else if( u2w_charset && !strcmp(u2w_charset, "UTF-8") )
@@ -248,10 +301,6 @@ short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS
   }
 #endif
 
-  strcpyn(cursqlserver, prg_pars[0], 128);
-  strcpyn(cursqluser, prg_pars[1], 128);
-  strcpyn(cursqlpwd, prg_pars[2], 128);
-  strcpyn(cursqldb, prg_pars[3], 128);
   mysql_connect_flag = true;
   return false;
 }

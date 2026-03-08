@@ -184,6 +184,7 @@ int snprintf(char *, size_t, char *, ...);
 
 #define TIMEOUT_SECS 10              /* 30 Sekunden auf Daten vom Client warten        */
 #define MAX_TIMEOUT_SECS 36000       /* Maximal 36000 Sekunden auf Daten warten        */
+#define MAYDBRECONNECT_SECONDS 10    /* Maximal 10 Sekunden MariaDB Reconnect versuchen*/
 
 
 
