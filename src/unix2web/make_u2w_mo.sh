@@ -1,6 +1,5 @@
 #
-if [ $# -ne 1 ]
- then
+if [[ $# -ne 1 ]]; then
   echo "usage: $0 <po-file>"
   exit 1
 fi

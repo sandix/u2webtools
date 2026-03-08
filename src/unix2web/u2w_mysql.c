@@ -257,6 +257,7 @@ short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS
       { mysql_free_res();
         mysql_close(&mh);
         mysql_query_flag = 0;
+        mysql_connect_flag = false;
       }
     }
     strcpyn(cursqlserver, prg_pars[0], 128);
@@ -273,6 +274,7 @@ short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS
     { mysql_free_res();
       mysql_close(&mh);
       mysql_query_flag = 0;
+      mysql_connect_flag = false;
     }
   }
 
@@ -283,9 +285,8 @@ short u2w_mysql_connect(int pa, char prg_pars[MAX_ANZ_PRG_PARS][MAX_LEN_PRG_PARS
 
   if( NULL == mysql_real_connect(&mh, cursqlserver, cursqluser, cursqlpwd,
                                  cursqldb, mysqlport, NULL, 0) )
-  { if( mysql_error_log_flag )
+  { if( pa && mysql_error_log_flag )
       logging("Failed to connect to database: Error: %s.\n", mysql_error(&mh));
-    mysql_connect_flag = false;
     return true;
   }
 

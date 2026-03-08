@@ -1,8 +1,7 @@
 #
 D=`date '+%Y-%m-%d'`
 #
-if [ $# -ne 1 ]
- then
+if [[ $# -ne 1 ]]; then
   echo "usage: $0 <old.po>"
   exit 1
 fi

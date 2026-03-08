@@ -10,8 +10,7 @@ TMPMT=/dev/shm/mime_types.$$.h
 WDIR=$(dirname $0)
 #
 unset FORCE
-if [[ "$1" == "-f" ]]
- then
+if [[ "$1" == "-f" ]]; then
   FORCE=1
 fi
 #
@@ -22,8 +21,7 @@ BEGIN { print "char *content_types[][2] = {" }
 
 END   { print "{ \"\", \"\"}\n};" }' >"$TMPMT"
 
-if [[ -n "$FORCE" || $(wc -l <"$TMPMT") -gt $(wc -l <"$WDIR/unix2web/mime_types.h") ]]
- then
+if [[ -n "$FORCE" || $(wc -l <"$TMPMT") -gt $(wc -l <"$WDIR/unix2web/mime_types.h") ]]; then
   cp "$TMPMT" "$WDIR/unix2web/mime_types.h"
   mv "$TMPMT" "$WDIR/httpget/mime_types.h"
 else

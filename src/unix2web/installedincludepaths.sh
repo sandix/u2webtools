@@ -9,24 +9,17 @@
 H="$1"
 shift
 #
-while [[ $# -gt 0 ]]
- do
-  awk '/#ifdef '${1#-D}'/,/^#e/ {if( $1 == "#include" ) print $2}' "$H" | sed 's/^<//;s/>$//' | while read i
-   do
-    if [[ ! -f /usr/include/$i ]]
-     then
-      for ip in `find /usr/local -name 'include' -type d -print 2>/dev/null`
-       do
-        if [[ -f $ip/$i ]]
-         then
+while [[ $# -gt 0 ]]; do
+  awk '/#ifdef '${1#-D}'/,/^#e/ {if( $1 == "#include" ) print $2}' "$H" | sed 's/^<//;s/>$//' | while read i; do
+    if [[ ! -f /usr/include/$i ]]; then
+      for ip in `find /usr/local -name 'include' -type d -print 2>/dev/null`; do
+        if [[ -f $ip/$i ]]; then
           echo $ip
         fi
       done
-    elif [[ /usr/include/$i == /usr/include/mysql/* ]]
-     then
+    elif [[ /usr/include/$i == /usr/include/mysql/* ]]; then
       echo /usr/include/mysql
-    elif [[ /usr/include/$i == /usr/include/mariadb/* ]]
-     then
+    elif [[ /usr/include/$i == /usr/include/mariadb/* ]]; then
       echo /usr/include/mariadb
     fi
   done

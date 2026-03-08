@@ -7,13 +7,10 @@
 #
 UO=`uname -s`
 #
-if [[ "$UO" = "Linux" ]]
- then
+if [[ "$UO" = "Linux" ]]; then
   echo "-DLINUX"
-elif [[ "$UO" = "SunOS" ]]
- then
+elif [[ "$UO" = "SunOS" ]]; then
   echo "-DSOLARIS"
-elif echo "$UO" | grep -qi "Cygwin"
- then
+elif echo "$UO" | grep -qi "Cygwin"; then
   echo "-DCYGWIN"
 fi
